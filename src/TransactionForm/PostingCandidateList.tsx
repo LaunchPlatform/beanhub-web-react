@@ -4,7 +4,7 @@ import PostingCandidate from "./PostingCandidate";
 export interface Candidate {
   readonly prefix: string;
   readonly suffix: string;
-  readonly account: string;
+  readonly value: string;
 }
 
 export interface Props {
@@ -23,11 +23,12 @@ const PostingCandidateList: FunctionComponent<Props> = ({
   <div className="list-group" style={style}>
     {candidates.map((candidate, index) => (
       <PostingCandidate
-        key={candidate.account}
+        key={candidate.value}
         prefix={candidate.prefix}
         suffix={candidate.suffix}
         active={index === activeIndex}
-        onClick={() => onClick?.(candidate.account)}
+        first={index === 0}
+        onClick={() => onClick?.(candidate.value)}
       />
     ))}
   </div>

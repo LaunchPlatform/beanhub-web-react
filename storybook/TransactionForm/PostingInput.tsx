@@ -24,21 +24,42 @@ export const Primary: ComponentStory<typeof PostingInput> = () => (
   />
 );
 
-export const WithCandidates: ComponentStory<typeof PostingInput> = () => (
-  <PostingInput
-    account=""
-    unitNumber=""
-    unitCurrency=""
-    index={0}
-    onDelete={action("onDelete")}
-    onAccountChange={action("onAccountChange")}
-    onUnitNumberChange={action("onUnitNumberChange")}
-    onUnitCurrencyChange={action("onUnitCurrencyChange")}
-    onAccountCandidateClick={action("onAccountCandidateClick")}
-    candidates={[
-      { account: "Assets", prefix: "Assets", suffix: "" },
-      { account: "Assets:Bank", prefix: "Assets", suffix: ":Bank" },
-      { account: "Assets:Cash", prefix: "Assets", suffix: ":Cash" },
-    ]}
-  />
-);
+export const WithAccountCandidates: ComponentStory<typeof PostingInput> =
+  () => (
+    <PostingInput
+      account=""
+      unitNumber=""
+      unitCurrency=""
+      index={0}
+      onDelete={action("onDelete")}
+      onAccountChange={action("onAccountChange")}
+      onUnitNumberChange={action("onUnitNumberChange")}
+      onUnitCurrencyChange={action("onUnitCurrencyChange")}
+      onAccountCandidateClick={action("onAccountCandidateClick")}
+      accountCandidates={[
+        { value: "Assets", prefix: "Assets", suffix: "" },
+        { value: "Assets:Bank", prefix: "Assets", suffix: ":Bank" },
+        { value: "Assets:Cash", prefix: "Assets", suffix: ":Cash" },
+      ]}
+    />
+  );
+
+export const WithCurrencyCandidates: ComponentStory<typeof PostingInput> =
+  () => (
+    <PostingInput
+      account=""
+      unitNumber=""
+      unitCurrency=""
+      index={0}
+      onDelete={action("onDelete")}
+      onAccountChange={action("onAccountChange")}
+      onUnitNumberChange={action("onUnitNumberChange")}
+      onUnitCurrencyChange={action("onUnitCurrencyChange")}
+      onAccountCandidateClick={action("onAccountCandidateClick")}
+      unitCurrencyCandidates={[
+        { value: "Assets", prefix: "Assets", suffix: "" },
+        { value: "Assets:Bank", prefix: "Assets", suffix: ":Bank" },
+        { value: "Assets:Cash", prefix: "Assets", suffix: ":Cash" },
+      ]}
+    />
+  );

@@ -4,6 +4,7 @@ export interface Props {
   readonly prefix: string;
   readonly suffix: string;
   readonly active?: boolean;
+  readonly first?: boolean;
   readonly onClick?: () => void;
 }
 
@@ -11,6 +12,7 @@ const PostingCandidate: FunctionComponent<Props> = ({
   prefix,
   suffix,
   active,
+  first,
   onClick,
 }: Props) => (
   <a
@@ -27,6 +29,9 @@ const PostingCandidate: FunctionComponent<Props> = ({
     onClick={(event) => {
       onClick?.();
       event.preventDefault();
+    }}
+    style={{
+      ...(first ? { borderTopLeftRadius: 0, borderTopRightRadius: 0 } : {}),
     }}
   >
     <strong>{prefix}</strong>
