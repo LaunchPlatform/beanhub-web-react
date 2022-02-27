@@ -3,9 +3,11 @@ import DateInput from "./DateInput";
 import FileInput from "./FileInput";
 import NarrationInput from "./NarrationInput";
 import PostingListContainer, { PostingRecord } from "./PostingListContainer";
+import SubmitButton from "./SubmitButton";
 
 export interface Props {
-  readonly action: string;
+  readonly action?: string;
+  readonly method?: string;
   readonly initialDate?: string;
   readonly initialNarration?: string;
   readonly initialPostings?: Array<PostingRecord>;
@@ -16,6 +18,7 @@ export interface Props {
 
 const Form: FunctionComponent<Props> = ({
   action,
+  method,
   initialDate,
   initialNarration,
   initialPostings,
@@ -23,7 +26,7 @@ const Form: FunctionComponent<Props> = ({
   accounts,
   currencies,
 }: Props) => (
-  <form action={action}>
+  <form action={action} method={method ?? "POST"}>
     <FileInput files={files} />
     <DateInput defaultValue={initialDate} />
     <NarrationInput defaultValue={initialNarration} />
@@ -32,6 +35,7 @@ const Form: FunctionComponent<Props> = ({
       accounts={accounts}
       currencies={currencies}
     />
+    <SubmitButton title="Create" />
   </form>
 );
 export default Form;
