@@ -55,12 +55,13 @@ const PostingInputContainer: FunctionComponent<Props> = ({
         setDisplayAccountCandidates(true);
       }}
       onAccountKeyDown={(event) => {
+        if (!displayAccountCandidates) {
+          // we are not showing candidates, just let the default behavior
+          // takes over
+          return;
+        }
         let delta = 0;
         if (event.key === "Tab") {
-          if (!displayAccountCandidates) {
-            // we are not showing candidates, just jump to next input
-            return;
-          }
           delta = event.shiftKey ? -1 : 1;
         } else if (event.key === "ArrowUp") {
           delta = -1;
@@ -84,6 +85,11 @@ const PostingInputContainer: FunctionComponent<Props> = ({
       onAccountCandidateClick={(value) => {
         setAccountValue(value);
         setDisplayAccountCandidates(false);
+      }}
+      onAccountBlur={() => {
+        // TODO: onAccountCandidateClick won't get called first,
+        // need to find a way around it
+        // setDisplayAccountCandidates(false);
       }}
     />
   );

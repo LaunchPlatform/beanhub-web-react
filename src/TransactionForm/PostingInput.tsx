@@ -17,6 +17,7 @@ export interface Props {
   readonly onAccountChange?: (value: string) => void;
   readonly onAccountKeyPress?: (event: KeyboardEvent<HTMLInputElement>) => void;
   readonly onAccountKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
+  readonly onAccountBlur?: () => void;
   readonly onUnitNumberChange?: (value: string) => void;
   readonly onUnitCurrencyChange?: (value: string) => void;
   readonly onAccountCandidateClick?: (value: string) => void;
@@ -33,6 +34,7 @@ const PostingInput: FunctionComponent<Props> = ({
   onAccountChange,
   onAccountKeyPress,
   onAccountKeyDown,
+  onAccountBlur,
   onUnitNumberChange,
   onUnitCurrencyChange,
   onAccountCandidateClick,
@@ -51,6 +53,7 @@ const PostingInput: FunctionComponent<Props> = ({
           onChange={(event) => onAccountChange?.(event.target.value)}
           onKeyDown={(event) => onAccountKeyDown?.(event)}
           onKeyPress={(event) => onAccountKeyPress?.(event)}
+          onBlur={() => onAccountBlur?.()}
         />
         {accountCandidates !== undefined ? (
           <PostingCandidateList
