@@ -1,10 +1,14 @@
 import React, { FunctionComponent, useEffect } from "react";
 
+export interface PostingRecord {
+  readonly account?: string;
+}
+
 export interface Props {
   readonly defaultValue?: string;
 }
 
-const NarrationInput: FunctionComponent<Props> = ({ defaultValue }: Props) => {
+const PostingList: FunctionComponent<Props> = ({ defaultValue }: Props) => {
   return (
     <div className="form-group row">
       <label className="col-form-label col-12 col-lg-1 form-label text-lg-right">
@@ -24,4 +28,4 @@ const NarrationInput: FunctionComponent<Props> = ({ defaultValue }: Props) => {
   );
 };
 
-export default NarrationInput;
+export default PostingList;

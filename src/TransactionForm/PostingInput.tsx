@@ -23,11 +23,11 @@ const PostingInput: FunctionComponent<Props> = ({
 }: Props) => {
   return (
     <div className="input-group">
-      <div className="posting-account-container position-relative">
+      <div className="position-relative">
         <input
           type="text"
           aria-label="Account"
-          className="form-control posting-account"
+          className="form-control"
           placeholder="Account"
           name={`postings-${index}-account`}
           value={account}
@@ -37,7 +37,7 @@ const PostingInput: FunctionComponent<Props> = ({
       <input
         type="number"
         aria-label="Unit Number"
-        className="form-control posting-number"
+        className="form-control"
         placeholder="12.34"
         name={`postings-${index}-number`}
         value={unitNumber}
@@ -46,7 +46,7 @@ const PostingInput: FunctionComponent<Props> = ({
       <input
         type="text"
         aria-label="Unit Currency"
-        className="form-control posting-currency"
+        className="form-control"
         placeholder="USD"
         name={`postings-${index}-currency`}
         value={unitCurrency}
