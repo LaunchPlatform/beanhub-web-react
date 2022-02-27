@@ -15,6 +15,17 @@ const accounts: Array<string> = [
   "Equity:CommonStock",
 ];
 
+const currencies: Array<string> = [
+  "USD",
+  "UYU",
+  "UZS",
+  "BTC",
+  "EUR",
+  "TVD",
+  "TWD",
+  "TZS",
+];
+
 export default {
   title: "PostingInputContainer",
   component: PostingInputContainer,
@@ -22,5 +33,10 @@ export default {
 } as ComponentMeta<typeof PostingInputContainer>;
 
 export const Primary: ComponentStory<typeof PostingInputContainer> = () => (
-  <PostingInputContainer onDelete={action("onDelete")} accounts={accounts} />
+  <PostingInputContainer
+    index={0}
+    accounts={accounts}
+    currencies={currencies}
+    onDelete={action("onDelete")}
+  />
 );

@@ -1,5 +1,5 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
-import PostingCandidateList, { Candidate } from "./PostingCandidateList";
+import React, { FunctionComponent, useState, KeyboardEvent } from "react";
+import { Candidate } from "./PostingCandidateList";
 import PostingInput from "./PostingInput";
 
 export interface Props {
@@ -8,105 +8,149 @@ export interface Props {
   readonly unitNumber?: string;
   readonly unitCurrency?: string;
   readonly accounts: Array<string>;
+  readonly currencies: Array<string>;
   readonly onDelete?: () => void;
 }
+
+interface AutoCompleteProps {
+  readonly value: string;
+  readonly candidateIndex: number;
+  readonly candidates?: Array<Candidate>;
+  readonly onChange?: (value: string) => void;
+  readonly onKeyPress?: (event: KeyboardEvent<HTMLInputElement>) => void;
+  readonly onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
+  readonly onBlur?: () => void;
+  readonly onCandidateClick?: (value: string) => void;
+}
+
+const makeAutoCompleteProps = (
+  inputValue: string,
+  candidateValues: Array<string>
+): AutoCompleteProps => {
+  const [value, setValue] = useState<string>(inputValue ?? "");
+  const [candidateIndex, setCandidateIndex] = useState<number>(0);
+  const [displayCandidates, setDisplayCandidates] = useState<boolean>(false);
+
+  const lowerTrimedValue = value.trim().toLowerCase();
+  const matchedValues: Array<Candidate> = candidateValues
+    .filter((candidateValue) =>
+      candidateValue.toLowerCase().startsWith(lowerTrimedValue)
+    )
+    .map(
+      (candidateValue) =>
+        ({
+          value: candidateValue,
+          prefix: candidateValue.substring(0, lowerTrimedValue.length),
+          suffix: candidateValue.substring(
+            lowerTrimedValue.length,
+            candidateValue.length
+          ),
+        } as Candidate)
+    );
+  return {
+    value,
+    candidateIndex,
+    candidates: displayCandidates ? matchedValues : undefined,
+    onChange: (value) => {
+      setValue(value);
+      setDisplayCandidates(true);
+    },
+    onKeyDown: (event) => {
+      console.log("!!!!");
+      if (!displayCandidates) {
+        // we are not showing candidates, just let the default behavior
+        // takes over
+        return;
+      }
+      let delta = 0;
+      switch (event.key) {
+        case "Tab": {
+          delta = event.shiftKey ? -1 : 1;
+          break;
+        }
+        case "ArrowUp": {
+          delta = -1;
+          break;
+        }
+        case "ArrowDown": {
+          delta = 1;
+          break;
+        }
+      }
+      if (delta !== 0) {
+        const size = matchedValues.length;
+        const nextIndex = (candidateIndex + size + delta) % size;
+        setCandidateIndex(nextIndex);
+        event.preventDefault();
+      }
+    },
+    onKeyPress: (event) => {
+      switch (event.key) {
+        case "Enter":
+        case " ": {
+          setValue(matchedValues[candidateIndex].value);
+          setDisplayCandidates(false);
+          setCandidateIndex(0);
+          event.preventDefault();
+          break;
+        }
+      }
+    },
+    onCandidateClick: (value) => {
+      setValue(value);
+      setDisplayCandidates(false);
+      setCandidateIndex(0);
+    },
+    onBlur: () => {
+      setDisplayCandidates(false);
+      setCandidateIndex(0);
+    },
+  };
+};
 
 const PostingInputContainer: FunctionComponent<Props> = ({
   account,
   unitNumber,
   unitCurrency,
   accounts,
+  currencies,
   index,
   onDelete,
 }: Props) => {
-  const [accountValue, setAccountValue] = useState<string>(account ?? "");
   const [unitNumberValue, setUnitNumberValue] = useState<string>(
     unitNumber ?? ""
   );
-  const [unitCurrencyValue, setUnitCurrencyValue] = useState<string>(
-    unitCurrency ?? ""
+
+  const accountProps = makeAutoCompleteProps(account ?? "", accounts);
+  const unitCurrencyProps = makeAutoCompleteProps(
+    unitCurrency ?? "",
+    currencies
   );
-  const [accountCandidateIndex, setAccountCandidateIndex] = useState<number>(0);
-  const [displayAccountCandidates, setDisplayAccountCandidates] =
-    useState<boolean>(false);
-  const lowerAccountValue = (accountValue ?? "").trim().toLowerCase();
-  const matchedAccounts: Array<Candidate> | undefined =
-    accountValue !== undefined
-      ? accounts
-          .filter((account) =>
-            account.toLowerCase().startsWith(lowerAccountValue)
-          )
-          .map((account) => ({
-            account,
-            prefix: account.substring(0, accountValue.length),
-            suffix: account.substring(accountValue.length, account.length),
-          }))
-      : undefined;
+
   return (
     <PostingInput
-      account={accountValue}
-      unitNumber={unitNumberValue}
-      unitCurrency={unitCurrencyValue}
       index={index}
-      accountCandidates={displayAccountCandidates ? matchedAccounts : undefined}
-      accountCandidateIndex={accountCandidateIndex}
-      onAccountChange={(value) => {
-        setAccountValue(value);
-        setDisplayAccountCandidates(true);
-      }}
-      onAccountKeyDown={(event) => {
-        if (!displayAccountCandidates) {
-          // we are not showing candidates, just let the default behavior
-          // takes over
-          return;
-        }
-        let delta = 0;
-        switch (event.key) {
-          case "Tab": {
-            delta = event.shiftKey ? -1 : 1;
-            break;
-          }
-          case "ArrowUp": {
-            delta = -1;
-            break;
-          }
-          case "ArrowDown": {
-            delta = 1;
-            break;
-          }
-        }
-        if (delta !== 0) {
-          const size = matchedAccounts!.length;
-          const nextIndex = (accountCandidateIndex + size + delta) % size;
-          setAccountCandidateIndex(nextIndex);
-          event.preventDefault();
-        }
-      }}
-      onAccountKeyPress={(event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          setAccountValue(matchedAccounts![accountCandidateIndex].account);
-          setDisplayAccountCandidates(false);
-          setAccountCandidateIndex(0);
-          event.preventDefault();
-        }
-      }}
-      onAccountCandidateClick={(value) => {
-        setAccountValue(value);
-        setDisplayAccountCandidates(false);
-        setAccountCandidateIndex(0);
-      }}
-      onAccountBlur={() => {
-        // TODO: onAccountCandidateClick won't get called first,
-        // need to find a way around it
-        setDisplayAccountCandidates(false);
-        setAccountCandidateIndex(0);
-      }}
-      onUnitNumberChange={(value) => {
-        setUnitNumberValue(value);
-      }}
-      onUnitCurrencyChange={(value) => {
-        setUnitCurrencyValue(value);
-      }}
+      // Account value
+      account={accountProps.value}
+      accountCandidates={accountProps.candidates}
+      accountCandidateIndex={accountProps.candidateIndex}
+      onAccountChange={accountProps.onChange}
+      onAccountKeyDown={accountProps.onKeyDown}
+      onAccountKeyPress={accountProps.onKeyPress}
+      onAccountCandidateClick={accountProps.onCandidateClick}
+      onAccountBlur={accountProps.onBlur}
+      // Unit number
+      unitNumber={unitNumberValue}
+      onUnitNumberChange={setUnitNumberValue}
+      // Unit currency
+      unitCurrency={unitCurrencyProps.value}
+      unitCurrencyCandidates={unitCurrencyProps.candidates}
+      unitCurrencyCandidateIndex={unitCurrencyProps.candidateIndex}
+      onUnitCurrencyChange={unitCurrencyProps.onChange}
+      onUnitCurrencyKeyDown={unitCurrencyProps.onKeyDown}
+      onUnitCurrencyKeyPress={unitCurrencyProps.onKeyPress}
+      onUnitCurrencyCandidateClick={unitCurrencyProps.onCandidateClick}
+      onUnitCurrencyBlur={unitCurrencyProps.onBlur}
     />
   );
 };
