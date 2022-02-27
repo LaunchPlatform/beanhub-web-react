@@ -1,4 +1,10 @@
-import React, { FunctionComponent, useState, KeyboardEvent } from "react";
+import React, {
+  FunctionComponent,
+  KeyboardEvent,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import { Candidate } from "./PostingCandidateList";
 import PostingInput from "./PostingInput";
 
@@ -32,31 +38,31 @@ const makeAutoCompleteProps = (
   const [displayCandidates, setDisplayCandidates] = useState<boolean>(false);
 
   const lowerTrimedValue = value.trim().toLowerCase();
-  const matchedValues: Array<Candidate> = candidateValues
-    .filter((candidateValue) =>
-      candidateValue.toLowerCase().startsWith(lowerTrimedValue)
-    )
-    .map(
-      (candidateValue) =>
-        ({
-          value: candidateValue,
-          prefix: candidateValue.substring(0, lowerTrimedValue.length),
-          suffix: candidateValue.substring(
-            lowerTrimedValue.length,
-            candidateValue.length
-          ),
-        } as Candidate)
-    );
-  return {
-    value,
-    candidateIndex,
-    candidates: displayCandidates ? matchedValues : undefined,
-    onChange: (value) => {
-      setValue(value);
-      setDisplayCandidates(true);
-    },
-    onKeyDown: (event) => {
-      console.log("!!!!");
+  const matchedValues: Array<Candidate> = useMemo(
+    () =>
+      candidateValues
+        .filter((candidateValue) =>
+          candidateValue.toLowerCase().startsWith(lowerTrimedValue)
+        )
+        .map(
+          (candidateValue) =>
+            ({
+              value: candidateValue,
+              prefix: candidateValue.substring(0, lowerTrimedValue.length),
+              suffix: candidateValue.substring(
+                lowerTrimedValue.length,
+                candidateValue.length
+              ),
+            } as Candidate)
+        ),
+    [value, candidateValues]
+  );
+  const onChange = useCallback((value) => {
+    setValue(value);
+    setDisplayCandidates(true);
+  }, []);
+  const onKeyDown = useCallback(
+    (event) => {
       if (!displayCandidates) {
         // we are not showing candidates, just let the default behavior
         // takes over
@@ -84,7 +90,10 @@ const makeAutoCompleteProps = (
         event.preventDefault();
       }
     },
-    onKeyPress: (event) => {
+    [value, candidateValues, matchedValues, candidateIndex]
+  );
+  const onKeyPress = useCallback(
+    (event) => {
       switch (event.key) {
         case "Enter":
         case " ": {
@@ -96,15 +105,26 @@ const makeAutoCompleteProps = (
         }
       }
     },
-    onCandidateClick: (value) => {
-      setValue(value);
-      setDisplayCandidates(false);
-      setCandidateIndex(0);
-    },
-    onBlur: () => {
-      setDisplayCandidates(false);
-      setCandidateIndex(0);
-    },
+    [value, candidateValues, matchedValues, candidateIndex]
+  );
+  const onCandidateClick = useCallback((value) => {
+    setValue(value);
+    setDisplayCandidates(false);
+    setCandidateIndex(0);
+  }, []);
+  const onBlur = useCallback(() => {
+    setDisplayCandidates(false);
+    setCandidateIndex(0);
+  }, []);
+  return {
+    value,
+    candidateIndex,
+    candidates: displayCandidates ? matchedValues : undefined,
+    onChange,
+    onKeyDown,
+    onKeyPress,
+    onCandidateClick,
+    onBlur,
   };
 };
 
@@ -130,6 +150,7 @@ const PostingInputContainer: FunctionComponent<Props> = ({
   return (
     <PostingInput
       index={index}
+      onDelete={onDelete}
       // Account value
       account={accountProps.value}
       accountCandidates={accountProps.candidates}
