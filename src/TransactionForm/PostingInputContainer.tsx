@@ -94,6 +94,9 @@ const PostingInputContainer: FunctionComponent<Props> = ({
         setDisplayAccountCandidates(false);
         setAccountCandidateIndex(0);
       }}
+      onUnitNumberChange={(value) => {
+        setUnitNumberValue(value);
+      }}
     />
   );
 };

@@ -73,6 +73,7 @@ const PostingInput: FunctionComponent<Props> = ({
         aria-label="Unit Number"
         className="form-control"
         placeholder="12.34"
+        style={{ appearance: "none" }}
         name={`postings-${index}-number`}
         value={unitNumber}
         onChange={(event) => onUnitNumberChange?.(event.target.value)}
