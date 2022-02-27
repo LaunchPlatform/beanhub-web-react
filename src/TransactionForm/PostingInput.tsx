@@ -1,9 +1,17 @@
 import React, { FunctionComponent, useEffect } from "react";
+import PostingCandidateList from "./PostingCandidateList";
+
+export interface Candidate {
+  readonly prefix: string;
+  readonly suffix: string;
+  readonly account: string;
+}
 
 export interface Props {
   readonly account?: string;
   readonly unitNumber?: string;
   readonly unitCurrency?: string;
+  readonly candidates?: Array<Candidate>;
   readonly index: number;
   readonly onAccountChange?: (value: string) => void;
   readonly onUnitNumberChange?: (value: string) => void;
@@ -16,6 +24,7 @@ const PostingInput: FunctionComponent<Props> = ({
   unitNumber,
   unitCurrency,
   index,
+  candidates,
   onAccountChange,
   onUnitNumberChange,
   onUnitCurrencyChange,
@@ -33,6 +42,15 @@ const PostingInput: FunctionComponent<Props> = ({
           value={account}
           onChange={(event) => onAccountChange?.(event.target.value)}
         />
+        {candidates !== undefined ? (
+          <PostingCandidateList
+            candidates={candidates.map((item) => ({
+              account: item.account,
+              prefix: item.prefix,
+              suffix: item.suffix,
+            }))}
+          />
+        ) : null}
       </div>
       <input
         type="number"

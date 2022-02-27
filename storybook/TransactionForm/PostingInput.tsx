@@ -20,3 +20,18 @@ export const Primary: ComponentStory<typeof PostingInput> = () => (
     onUnitCurrencyChange={action("onUnitCurrencyChange")}
   />
 );
+
+export const WithCandidates: ComponentStory<typeof PostingInput> = () => (
+  <PostingInput
+    index={0}
+    onDelete={action("onDelete")}
+    onAccountChange={action("onAccountChange")}
+    onUnitNumberChange={action("onUnitNumberChange")}
+    onUnitCurrencyChange={action("onUnitCurrencyChange")}
+    candidates={[
+      { account: "Assets", prefix: "Assets", suffix: "" },
+      { account: "Assets:Bank", prefix: "Assets", suffix: ":Bank" },
+      { account: "Assets:Cash", prefix: "Assets", suffix: ":Cash" },
+    ]}
+  />
+);

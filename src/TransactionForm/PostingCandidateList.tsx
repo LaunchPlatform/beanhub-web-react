@@ -15,20 +15,17 @@ export interface Props {
 const PostingCandidateList: FunctionComponent<Props> = ({
   candidates,
   onClick,
-}: Props) => {
-  console.log("!!!!!!!!!!!@@@@@@@@", candidates);
-  return (
-    <div className="list-group">
-      {candidates.map((candidate) => (
-        <PostingCandidate
-          key={candidate.account}
-          prefix={candidate.prefix}
-          suffix={candidate.suffix}
-          onClick={() => onClick?.(candidate.account)}
-        />
-      ))}
-    </div>
-  );
-};
+}: Props) => (
+  <div className="list-group">
+    {candidates.map((candidate) => (
+      <PostingCandidate
+        key={candidate.account}
+        prefix={candidate.prefix}
+        suffix={candidate.suffix}
+        onClick={() => onClick?.(candidate.account)}
+      />
+    ))}
+  </div>
+);
 
 export default PostingCandidateList;
