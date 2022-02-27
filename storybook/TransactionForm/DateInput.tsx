@@ -10,5 +10,5 @@ export default {
 } as ComponentMeta<typeof DateInput>;
 
 export const Primary: ComponentStory<typeof DateInput> = () => (
-  <DateInput today="2022-02-26" />
+  <DateInput defaultValue="2022-02-26" />
 );

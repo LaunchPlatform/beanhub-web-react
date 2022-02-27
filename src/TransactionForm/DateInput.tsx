@@ -6,10 +6,10 @@ const controls = {
 };
 
 export interface Props {
-  readonly today: string;
+  readonly defaultValue?: string;
 }
 
-const DateInput: FunctionComponent<Props> = ({ today }: Props) => {
+const DateInput: FunctionComponent<Props> = ({ defaultValue }: Props) => {
   useEffect(() => {
     $("#datepicker").datepicker({
       format: "yyyy-mm-dd",
@@ -31,7 +31,7 @@ const DateInput: FunctionComponent<Props> = ({ today }: Props) => {
             className="form-control"
             id="datepicker"
             name="date"
-            defaultValue={today}
+            defaultValue={defaultValue}
             placeholder="Date of transaction"
           />
           <div className="input-group-append">
