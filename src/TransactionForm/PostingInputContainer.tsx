@@ -61,12 +61,19 @@ const PostingInputContainer: FunctionComponent<Props> = ({
           return;
         }
         let delta = 0;
-        if (event.key === "Tab") {
-          delta = event.shiftKey ? -1 : 1;
-        } else if (event.key === "ArrowUp") {
-          delta = -1;
-        } else if (event.key === "ArrowDown") {
-          delta = 1;
+        switch (event.key) {
+          case "Tab": {
+            delta = event.shiftKey ? -1 : 1;
+            break;
+          }
+          case "ArrowUp": {
+            delta = -1;
+            break;
+          }
+          case "ArrowDown": {
+            delta = 1;
+            break;
+          }
         }
         if (delta !== 0) {
           const size = matchedAccounts!.length;
@@ -76,7 +83,7 @@ const PostingInputContainer: FunctionComponent<Props> = ({
         }
       }}
       onAccountKeyPress={(event) => {
-        if (event.key === "Enter" || event.key === "Space") {
+        if (event.key === "Enter" || event.key === " ") {
           setAccountValue(matchedAccounts![accountCandidateIndex].account);
           setDisplayAccountCandidates(false);
           setAccountCandidateIndex(0);
@@ -96,6 +103,9 @@ const PostingInputContainer: FunctionComponent<Props> = ({
       }}
       onUnitNumberChange={(value) => {
         setUnitNumberValue(value);
+      }}
+      onUnitCurrencyChange={(value) => {
+        setUnitCurrencyValue(value);
       }}
     />
   );
