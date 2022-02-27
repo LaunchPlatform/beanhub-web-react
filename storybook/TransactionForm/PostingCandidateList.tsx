@@ -12,6 +12,7 @@ export default {
 
 export const Primary: ComponentStory<typeof PostingCandidateList> = () => (
   <PostingCandidateList
+    activeIndex={0}
     candidates={[
       { account: "Assets", prefix: "Assets", suffix: "" },
       { account: "Assets:Bank", prefix: "Assets", suffix: ":Bank" },

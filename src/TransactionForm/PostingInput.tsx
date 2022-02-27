@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import PostingCandidateList from "./PostingCandidateList";
 
 export interface Candidate {
@@ -44,6 +44,8 @@ const PostingInput: FunctionComponent<Props> = ({
         />
         {candidates !== undefined ? (
           <PostingCandidateList
+            style={{ position: "absolute", width: "100%" }}
+            activeIndex={0}
             candidates={candidates.map((item) => ({
               account: item.account,
               prefix: item.prefix,
