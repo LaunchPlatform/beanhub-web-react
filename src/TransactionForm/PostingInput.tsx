@@ -16,6 +16,7 @@ export interface Props {
   readonly onAccountChange?: (value: string) => void;
   readonly onUnitNumberChange?: (value: string) => void;
   readonly onUnitCurrencyChange?: (value: string) => void;
+  readonly onAccountCandidateClick?: (value: string) => void;
   readonly onDelete?: () => void;
 }
 
@@ -28,6 +29,7 @@ const PostingInput: FunctionComponent<Props> = ({
   onAccountChange,
   onUnitNumberChange,
   onUnitCurrencyChange,
+  onAccountCandidateClick,
   onDelete,
 }: Props) => {
   return (
@@ -51,6 +53,7 @@ const PostingInput: FunctionComponent<Props> = ({
               prefix: item.prefix,
               suffix: item.suffix,
             }))}
+            onClick={(value) => onAccountCandidateClick?.(value)}
           />
         ) : null}
       </div>

@@ -28,6 +28,7 @@ export const WithCandidates: ComponentStory<typeof PostingInput> = () => (
     onAccountChange={action("onAccountChange")}
     onUnitNumberChange={action("onUnitNumberChange")}
     onUnitCurrencyChange={action("onUnitCurrencyChange")}
+    onAccountCandidateClick={action("onAccountCandidateClick")}
     candidates={[
       { account: "Assets", prefix: "Assets", suffix: "" },
       { account: "Assets:Bank", prefix: "Assets", suffix: ":Bank" },
