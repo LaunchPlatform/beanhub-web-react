@@ -42,7 +42,10 @@ const PostingInput: FunctionComponent<Props> = ({
 }: Props) => {
   return (
     <div className="input-group">
-      <div className="position-relative">
+      <div
+        className="form-control-wrapper position-relative"
+        style={{ marginLeft: -10 }}
+      >
         <input
           type="text"
           aria-label="Account"
@@ -54,6 +57,10 @@ const PostingInput: FunctionComponent<Props> = ({
           onKeyDown={(event) => onAccountKeyDown?.(event)}
           onKeyPress={(event) => onAccountKeyPress?.(event)}
           onBlur={() => onAccountBlur?.()}
+          style={{
+            borderTopRightRadius: 0,
+            borderBottomRightRadius: 0,
+          }}
         />
         {accountCandidates !== undefined ? (
           <PostingCandidateList
@@ -73,10 +80,10 @@ const PostingInput: FunctionComponent<Props> = ({
         aria-label="Unit Number"
         className="form-control"
         placeholder="12.34"
-        style={{ appearance: "none" }}
         name={`postings-${index}-number`}
         value={unitNumber}
         onChange={(event) => onUnitNumberChange?.(event.target.value)}
+        style={{ marginLeft: -1 }}
       />
       <input
         type="text"
