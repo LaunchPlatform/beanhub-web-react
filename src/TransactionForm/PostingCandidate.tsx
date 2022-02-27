@@ -18,6 +18,12 @@ const PostingCandidate: FunctionComponent<Props> = ({
       active ?? false ? " active" : ""
     }`}
     href="#"
+    onMouseDown={(event) => {
+      // We need to prevent mouse down triggering blur for
+      // the account input first, so that click gets a call first
+      // ref: https://stackoverflow.com/a/57630197
+      event.preventDefault();
+    }}
     onClick={(event) => {
       onClick?.();
       event.preventDefault();

@@ -77,19 +77,22 @@ const PostingInputContainer: FunctionComponent<Props> = ({
       }}
       onAccountKeyPress={(event) => {
         if (event.key === "Enter" || event.key === "Space") {
-          setAccountValue(accounts[accountCandidateIndex]);
+          setAccountValue(matchedAccounts![accountCandidateIndex].account);
           setDisplayAccountCandidates(false);
+          setAccountCandidateIndex(0);
           event.preventDefault();
         }
       }}
       onAccountCandidateClick={(value) => {
         setAccountValue(value);
         setDisplayAccountCandidates(false);
+        setAccountCandidateIndex(0);
       }}
       onAccountBlur={() => {
         // TODO: onAccountCandidateClick won't get called first,
         // need to find a way around it
-        // setDisplayAccountCandidates(false);
+        setDisplayAccountCandidates(false);
+        setAccountCandidateIndex(0);
       }}
     />
   );
