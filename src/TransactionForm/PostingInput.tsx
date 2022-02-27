@@ -44,7 +44,7 @@ const PostingInput: FunctionComponent<Props> = ({
     <div className="input-group">
       <div
         className="form-control-wrapper position-relative"
-        style={{ marginLeft: -10 }}
+        style={{ marginLeft: -10, flex: 2 }}
       >
         <input
           type="text"
