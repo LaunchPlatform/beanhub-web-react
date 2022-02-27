@@ -15,6 +15,7 @@ export interface Props {
   readonly unitCurrency?: string;
   readonly accounts: Array<string>;
   readonly currencies: Array<string>;
+  readonly onAccountChange?: (value: string) => void;
   readonly onDelete?: () => void;
 }
 
@@ -22,11 +23,11 @@ interface AutoCompleteProps {
   readonly value: string;
   readonly candidateIndex: number;
   readonly candidates?: Array<Candidate>;
-  readonly onChange?: (value: string) => void;
-  readonly onKeyPress?: (event: KeyboardEvent<HTMLInputElement>) => void;
-  readonly onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
-  readonly onBlur?: () => void;
-  readonly onCandidateClick?: (value: string) => void;
+  readonly onChange: (value: string) => void;
+  readonly onKeyPress: (event: KeyboardEvent<HTMLInputElement>) => void;
+  readonly onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => void;
+  readonly onBlur: () => void;
+  readonly onCandidateClick: (value: string) => void;
 }
 
 const makeAutoCompleteProps = (
@@ -135,6 +136,7 @@ const PostingInputContainer: FunctionComponent<Props> = ({
   accounts,
   currencies,
   index,
+  onAccountChange,
   onDelete,
 }: Props) => {
   const [unitNumberValue, setUnitNumberValue] = useState<string>(
@@ -155,7 +157,10 @@ const PostingInputContainer: FunctionComponent<Props> = ({
       account={accountProps.value}
       accountCandidates={accountProps.candidates}
       accountCandidateIndex={accountProps.candidateIndex}
-      onAccountChange={accountProps.onChange}
+      onAccountChange={(value) => {
+        onAccountChange?.(value);
+        accountProps.onChange(value);
+      }}
       onAccountKeyDown={accountProps.onKeyDown}
       onAccountKeyPress={accountProps.onKeyPress}
       onAccountCandidateClick={accountProps.onCandidateClick}

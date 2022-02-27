@@ -48,6 +48,31 @@ const PostingList: FunctionComponent<Props> = ({
           index={index}
           accounts={accounts}
           currencies={currencies}
+          onAccountChange={(account) => {
+            let newPostings = [...postingsState];
+            newPostings[index] = {
+              ...newPostings[index],
+              account,
+            };
+            if (newPostings.every((item) => item.account.trim().length > 0)) {
+              // Append a new posting
+              newPostings = [
+                ...newPostings,
+                {
+                  key: uuid(),
+                } as PostingRecordState,
+              ];
+            }
+            setPostingsState(newPostings);
+          }}
+          onDelete={() => {
+            if (postingsState.length <= 2) {
+              return;
+            }
+            setPostingsState(
+              postingsState.filter((item) => item.key != posting.key)
+            );
+          }}
         />
       ))}
     </FormRow>
