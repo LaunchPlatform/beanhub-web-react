@@ -1,8 +1,5 @@
+import { ComponentMeta, ComponentStory } from "@storybook/react";
 import React from "react";
-
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
-
 import PostingListContainer from "../../src/TransactionForm/PostingListContainer";
 
 const accounts: Array<string> = [
@@ -32,5 +29,5 @@ export default {
 } as ComponentMeta<typeof PostingListContainer>;
 
 export const Primary: ComponentStory<typeof PostingListContainer> = () => (
-  <PostingListContainer index={0} accounts={accounts} currencies={currencies} />
+  <PostingListContainer accounts={accounts} currencies={currencies} />
 );

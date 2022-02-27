@@ -17,14 +17,12 @@ interface PostingRecordState {
 }
 
 export interface Props {
-  readonly index: number;
   readonly initialPostings?: Array<PostingRecord>;
   readonly accounts: Array<string>;
   readonly currencies: Array<string>;
 }
 
-const PostingList: FunctionComponent<Props> = ({
-  index,
+const PostingListContainer: FunctionComponent<Props> = ({
   initialPostings,
   accounts,
   currencies,
@@ -79,4 +77,4 @@ const PostingList: FunctionComponent<Props> = ({
   );
 };
 
-export default PostingList;
+export default PostingListContainer;

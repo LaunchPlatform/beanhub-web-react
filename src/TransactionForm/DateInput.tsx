@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useEffect } from "react";
+import FormRow from "./FormRow";
 
 const controls = {
   leftArrow: '<i class="fal fa-angle-left" style="font-size: 1.25rem"></i>',
@@ -19,29 +20,23 @@ const DateInput: FunctionComponent<Props> = ({ defaultValue }: Props) => {
     });
   }, []);
   return (
-    <div className="form-group row">
-      <label className="col-form-label col-12 col-lg-1 form-label text-lg-right">
-        Date
-        <strong style={{ color: "red" }}>*</strong>
-      </label>
-      <div className="col-12 col-lg-11">
-        <div className="input-group">
-          <input
-            type="text"
-            className="form-control"
-            id="datepicker"
-            name="date"
-            defaultValue={defaultValue}
-            placeholder="Date of transaction"
-          />
-          <div className="input-group-append">
-            <span className="input-group-text fs-xl">
-              <i className="fal fa-calendar-alt"></i>
-            </span>
-          </div>
+    <FormRow title="Date" required>
+      <div className="input-group">
+        <input
+          type="text"
+          className="form-control"
+          id="datepicker"
+          name="date"
+          defaultValue={defaultValue}
+          placeholder="Date of transaction"
+        />
+        <div className="input-group-append">
+          <span className="input-group-text fs-xl">
+            <i className="fal fa-calendar-alt"></i>
+          </span>
         </div>
       </div>
-    </div>
+    </FormRow>
   );
 };
 
