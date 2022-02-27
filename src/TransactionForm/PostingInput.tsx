@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { FunctionComponent, KeyboardEvent } from "react";
 import PostingCandidateList from "./PostingCandidateList";
 
 export interface Candidate {
@@ -8,12 +8,15 @@ export interface Candidate {
 }
 
 export interface Props {
-  readonly account?: string;
-  readonly unitNumber?: string;
-  readonly unitCurrency?: string;
-  readonly candidates?: Array<Candidate>;
+  readonly account: string;
+  readonly unitNumber: string;
+  readonly unitCurrency: string;
+  readonly accountCandidates?: Array<Candidate>;
+  readonly accountCandidateIndex: number;
   readonly index: number;
   readonly onAccountChange?: (value: string) => void;
+  readonly onAccountKeyPress?: (event: KeyboardEvent<HTMLInputElement>) => void;
+  readonly onAccountKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
   readonly onUnitNumberChange?: (value: string) => void;
   readonly onUnitCurrencyChange?: (value: string) => void;
   readonly onAccountCandidateClick?: (value: string) => void;
@@ -25,8 +28,11 @@ const PostingInput: FunctionComponent<Props> = ({
   unitNumber,
   unitCurrency,
   index,
-  candidates,
+  accountCandidates,
+  accountCandidateIndex,
   onAccountChange,
+  onAccountKeyPress,
+  onAccountKeyDown,
   onUnitNumberChange,
   onUnitCurrencyChange,
   onAccountCandidateClick,
@@ -43,12 +49,14 @@ const PostingInput: FunctionComponent<Props> = ({
           name={`postings-${index}-account`}
           value={account}
           onChange={(event) => onAccountChange?.(event.target.value)}
+          onKeyDown={(event) => onAccountKeyDown?.(event)}
+          onKeyPress={(event) => onAccountKeyPress?.(event)}
         />
-        {candidates !== undefined ? (
+        {accountCandidates !== undefined ? (
           <PostingCandidateList
             style={{ position: "absolute", width: "100%" }}
-            activeIndex={0}
-            candidates={candidates.map((item) => ({
+            activeIndex={accountCandidateIndex}
+            candidates={accountCandidates.map((item) => ({
               account: item.account,
               prefix: item.prefix,
               suffix: item.suffix,

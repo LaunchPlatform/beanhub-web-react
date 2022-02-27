@@ -13,6 +13,9 @@ export default {
 
 export const Primary: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    account=""
+    unitNumber=""
+    unitCurrency=""
     index={0}
     onDelete={action("onDelete")}
     onAccountChange={action("onAccountChange")}
@@ -23,6 +26,9 @@ export const Primary: ComponentStory<typeof PostingInput> = () => (
 
 export const WithCandidates: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    account=""
+    unitNumber=""
+    unitCurrency=""
     index={0}
     onDelete={action("onDelete")}
     onAccountChange={action("onAccountChange")}
