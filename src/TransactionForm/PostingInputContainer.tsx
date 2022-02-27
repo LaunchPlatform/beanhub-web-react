@@ -19,8 +19,10 @@ const PostingInputContainer: FunctionComponent<Props> = ({
 }: Props) => {
   const [accountValue, setAccountValue] = useState<string | undefined>(account);
   const [activeCandidateIndex, setActiveCandidateIndex] = useState<number>(0);
+  const [displayAccountCandidates, setDisplayAccountCandidates] =
+    useState<boolean>(false);
   const lowerAccountValue = (accountValue ?? "").trim().toLowerCase();
-  const matchedAccounts: Array<Candidate> =
+  const matchedAccounts: Array<Candidate> | undefined =
     accountValue !== undefined
       ? (accountCandidates ?? [])
           .filter((account) =>
@@ -31,14 +33,19 @@ const PostingInputContainer: FunctionComponent<Props> = ({
             prefix: account.substring(0, accountValue.length),
             suffix: account.substring(accountValue.length, account.length),
           }))
-      : [];
+      : undefined;
   return (
     <PostingInput
       account={accountValue}
       index={activeCandidateIndex}
-      candidates={matchedAccounts}
+      candidates={displayAccountCandidates ? matchedAccounts : undefined}
       onAccountChange={(value) => {
         setAccountValue(value);
+        setDisplayAccountCandidates(true);
+      }}
+      onAccountCandidateClick={(value) => {
+        setAccountValue(value);
+        setDisplayAccountCandidates(false);
       }}
     />
   );
