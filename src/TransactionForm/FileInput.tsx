@@ -1,5 +1,4 @@
 import React, { FunctionComponent } from "react";
-import logo from "./logo.svg";
 
 export interface Props {}
 
