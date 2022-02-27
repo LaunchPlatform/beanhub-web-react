@@ -14,7 +14,10 @@ const PostingCandidate: FunctionComponent<Props> = ({
   <a
     className="list-group-item list-group-item-action"
     href="#"
-    onClick={onClick}
+    onClick={(event) => {
+      onClick?.();
+      event.preventDefault();
+    }}
   >
     <strong>{prefix}</strong>
     {suffix}
