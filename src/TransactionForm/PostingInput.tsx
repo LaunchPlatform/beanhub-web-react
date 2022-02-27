@@ -150,7 +150,7 @@ const PostingInput: FunctionComponent<Props> = ({
       <div className="input-group-append">
         <button
           type="button"
-          className="btn btn-outline-default delete-button"
+          className="btn btn-outline-default"
           onClick={onDelete}
         >
           <i className="fal fa-trash-alt"></i>

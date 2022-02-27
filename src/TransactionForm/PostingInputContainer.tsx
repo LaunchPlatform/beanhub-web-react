@@ -83,6 +83,10 @@ const makeAutoCompleteProps = (
           delta = 1;
           break;
         }
+        case "Escape": {
+          setDisplayCandidates(false);
+          break;
+        }
       }
       if (delta !== 0) {
         const size = matchedValues.length;
