@@ -42,8 +42,10 @@ workflows:
   version: 2
   builds:
     jobs:
-      - build
-
+      - build:
+          filters:
+            tags:
+              only: /^.*/
 jobs:
   build:
     executor: medium_js
