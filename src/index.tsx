@@ -2,7 +2,11 @@ import React from "react";
 import ReactDOM from "react-dom";
 import Form, { Props } from "./TransactionForm/Form";
 
-export const renderTransactionForm = (element: HTMLElement, props: Props) => {
+// TODO: maybe there's a better way to expose it?
+(window as any).renderTransactionForm = (
+  element: HTMLElement,
+  props: Props
+) => {
   ReactDOM.render(
     <React.StrictMode>
       <Form {...props} />
