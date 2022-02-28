@@ -1,0 +1,63 @@
+version: 2.1
+
+executors:
+  medium_js:
+    docker:
+      - image: circleci/node:16.9.1
+    working_directory: ~/project
+    environment:
+      YARN_CACHE_FOLDER: ~/yarn_cache
+      CIRCLE_PIPELINE_NUMBER: << pipeline.number >>
+
+commands:
+  add_yarn_binaries_to_path:
+    steps:
+      - run:
+          name: Add yarn binaries path to $PATH
+          command: echo 'export PATH=~/.yarn/bin:$PATH' >> $BASH_ENV
+
+  restore_yarn_cache:
+    parameters:
+      platform:
+        type: string
+    steps:
+      - restore_cache:
+          keys:
+          - cache-yarn-<< parameters.platform >>-{{ checksum "package.json" }}
+
+  save_yarn_cache:
+    parameters:
+      platform:
+        type: string
+      cache_path:
+        type: string
+        default:  ~/yarn_cache
+    steps:
+      - save_cache:
+          paths:
+            - -<< parameters.cache_path >>
+          key: cache-yarn-<< parameters.platform >>-{{ checksum "package.json" }}
+
+workflows:
+  version: 2
+  builds:
+    jobs:
+      - build
+
+jobs:
+  build:
+    executor: medium_js
+    steps:
+      - checkout
+      - add_yarn_binaries_to_path
+      - restore_yarn_cache:
+          platform: linux
+      - run:
+          name: Run build
+          command: |
+            yarn
+            yarn build
+      - save_yarn_cache:
+          platform: linux
+      - store_artifacts:
+          path: build/
