@@ -68,7 +68,7 @@ const PostingListContainer: FunctionComponent<Props> = ({
               return;
             }
             setPostingsState(
-              postingsState.filter((item) => item.key != posting.key)
+              postingsState.filter((item) => item.key !== posting.key)
             );
           }}
         />

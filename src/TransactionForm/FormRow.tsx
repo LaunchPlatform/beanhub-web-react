@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, PropsWithChildren } from "react";
+import React, { FunctionComponent, PropsWithChildren } from "react";
 
 export type Props = PropsWithChildren<{
   readonly title: string;

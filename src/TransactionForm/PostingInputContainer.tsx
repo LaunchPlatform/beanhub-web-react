@@ -30,7 +30,7 @@ interface AutoCompleteProps {
   readonly onCandidateClick: (value: string) => void;
 }
 
-const makeAutoCompleteProps = (
+const useAutoComplete = (
   inputValue: string,
   candidateValues: Array<string>
 ): AutoCompleteProps => {
@@ -56,7 +56,7 @@ const makeAutoCompleteProps = (
               ),
             } as Candidate)
         ),
-    [value, candidateValues]
+    [lowerTrimedValue, candidateValues]
   );
   const onChange = useCallback((value) => {
     setValue(value);
@@ -95,7 +95,7 @@ const makeAutoCompleteProps = (
         event.preventDefault();
       }
     },
-    [value, candidateValues, matchedValues, candidateIndex]
+    [value, matchedValues, candidateIndex, displayCandidates]
   );
   const onKeyPress = useCallback(
     (event) => {
@@ -110,7 +110,7 @@ const makeAutoCompleteProps = (
         }
       }
     },
-    [value, candidateValues, matchedValues, candidateIndex]
+    [matchedValues, candidateIndex]
   );
   const onCandidateClick = useCallback((value) => {
     setValue(value);
@@ -147,11 +147,8 @@ const PostingInputContainer: FunctionComponent<Props> = ({
     unitNumber ?? ""
   );
 
-  const accountProps = makeAutoCompleteProps(account ?? "", accounts);
-  const unitCurrencyProps = makeAutoCompleteProps(
-    unitCurrency ?? "",
-    currencies
-  );
+  const accountProps = useAutoComplete(account ?? "", accounts);
+  const unitCurrencyProps = useAutoComplete(unitCurrency ?? "", currencies);
 
   return (
     <PostingInput
