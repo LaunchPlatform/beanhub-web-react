@@ -66,10 +66,8 @@ jobs:
           command: |
             mkdir dist
             tag="${CIRCLE_TAG:-$CIRCLE_SHA1}"
-            name="beanhub-web-react-${tag}-${CIRCLE_PIPELINE_NUMBER}"
+            name="beanhub-web-react-${tag}"
             mv build/static/js/main.*.js "dist/${name}.js"
             mv build/static/js/main.*.js.map "dist/${name}.js.map"
       - store_artifacts:
           path: dist/
-    environment:
-      CIRCLE_PIPELINE_NUMBER: << pipeline.number >>
