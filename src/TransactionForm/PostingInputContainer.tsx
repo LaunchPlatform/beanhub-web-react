@@ -95,7 +95,7 @@ const useAutoComplete = (
         event.preventDefault();
       }
     },
-    [value, matchedValues, candidateIndex, displayCandidates]
+    [matchedValues, candidateIndex, displayCandidates]
   );
   const onKeyPress = useCallback(
     (event) => {
