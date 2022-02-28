@@ -85,7 +85,7 @@ const PostingInput: FunctionComponent<Props> = ({
         />
         {accountCandidates !== undefined ? (
           <PostingCandidateList
-            style={{ position: "absolute", width: "100%" }}
+            style={{ position: "absolute", width: "100%", zIndex: 1 }}
             activeIndex={accountCandidateIndex ?? 0}
             candidates={accountCandidates.map(
               (item) =>
@@ -133,7 +133,7 @@ const PostingInput: FunctionComponent<Props> = ({
         />
         {unitCurrencyCandidates !== undefined ? (
           <PostingCandidateList
-            style={{ position: "absolute", width: "100%" }}
+            style={{ position: "absolute", width: "100%", zIndex: 1 }}
             activeIndex={unitCurrencyCandidateIndex ?? 0}
             candidates={unitCurrencyCandidates.map(
               (item) =>
