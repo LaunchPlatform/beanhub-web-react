@@ -59,5 +59,15 @@ jobs:
             yarn build
       - save_yarn_cache:
           platform: linux
+      - run:
+          name: Make dist
+          command: |
+            mkdir dist
+            tag="${CIRCLE_TAG:-$CIRCLE_SHA1}"
+            name="${tag}-${CIRCLE_PIPELINE_NUMBER}"
+            mv build/static/js/main.*.js "dist/${name}.js"
+            mv build/static/js/main.*.js.map "dist/${name}.js.map"
       - store_artifacts:
-          path: build/
+          path: dist/
+    environment:
+      CIRCLE_PIPELINE_NUMBER: << pipeline.number >>
