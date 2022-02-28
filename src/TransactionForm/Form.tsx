@@ -11,6 +11,7 @@ export interface Props {
   readonly initialDate?: string;
   readonly initialNarration?: string;
   readonly initialPostings?: Array<PostingRecord>;
+  readonly hiddenFields?: Record<string, string>;
   readonly files: Array<string>;
   readonly accounts: Array<string>;
   readonly currencies: Array<string>;
@@ -22,6 +23,7 @@ const Form: FunctionComponent<Props> = ({
   initialDate,
   initialNarration,
   initialPostings,
+  hiddenFields,
   files,
   accounts,
   currencies,
@@ -35,6 +37,11 @@ const Form: FunctionComponent<Props> = ({
       accounts={accounts}
       currencies={currencies}
     />
+    {hiddenFields !== undefined
+      ? Object.entries(hiddenFields).map(([key, value]) => (
+          <input type="hidden" name={key} value={value} />
+        ))
+      : null}
     <SubmitButton title="Create" />
   </form>
 );
