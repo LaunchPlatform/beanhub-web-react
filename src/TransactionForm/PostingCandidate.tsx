@@ -19,7 +19,7 @@ const PostingCandidate: FunctionComponent<Props> = ({
     className={`list-group-item list-group-item-action${
       active ?? false ? " active" : ""
     }`}
-    href="#"
+    href="/"
     onMouseDown={(event) => {
       // We need to prevent mouse down triggering blur for
       // the account input first, so that click gets a call first

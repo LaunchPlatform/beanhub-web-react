@@ -58,6 +58,9 @@ const PostingListContainer: FunctionComponent<Props> = ({
                 ...newPostings,
                 {
                   key: uuid(),
+                  account: "",
+                  unitNumber: "",
+                  unitCurrency: "",
                 } as PostingRecordState,
               ];
             }
