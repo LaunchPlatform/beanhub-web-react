@@ -63,3 +63,91 @@ export const WithCurrencyCandidates: ComponentStory<typeof PostingInput> =
       ]}
     />
   );
+
+export const AccountError: ComponentStory<typeof PostingInput> = () => (
+  <PostingInput
+    account=""
+    unitNumber=""
+    unitCurrency=""
+    index={0}
+    accountError="Account required"
+    onDelete={action("onDelete")}
+    onAccountChange={action("onAccountChange")}
+    onUnitNumberChange={action("onUnitNumberChange")}
+    onUnitCurrencyChange={action("onUnitCurrencyChange")}
+  />
+);
+
+export const NumberError: ComponentStory<typeof PostingInput> = () => (
+  <PostingInput
+    account=""
+    unitNumber=""
+    unitCurrency=""
+    index={0}
+    numberError="Number required"
+    onDelete={action("onDelete")}
+    onAccountChange={action("onAccountChange")}
+    onUnitNumberChange={action("onUnitNumberChange")}
+    onUnitCurrencyChange={action("onUnitCurrencyChange")}
+  />
+);
+
+export const CurrencyError: ComponentStory<typeof PostingInput> = () => (
+  <PostingInput
+    account=""
+    unitNumber=""
+    unitCurrency=""
+    index={0}
+    currencyError="Currency required"
+    onDelete={action("onDelete")}
+    onAccountChange={action("onAccountChange")}
+    onUnitNumberChange={action("onUnitNumberChange")}
+    onUnitCurrencyChange={action("onUnitCurrencyChange")}
+  />
+);
+
+export const AccountNumberError: ComponentStory<typeof PostingInput> = () => (
+  <PostingInput
+    account=""
+    unitNumber=""
+    unitCurrency=""
+    index={0}
+    accountError="Account required"
+    numberError="Number required"
+    onDelete={action("onDelete")}
+    onAccountChange={action("onAccountChange")}
+    onUnitNumberChange={action("onUnitNumberChange")}
+    onUnitCurrencyChange={action("onUnitCurrencyChange")}
+  />
+);
+
+export const NumberCurrencyError: ComponentStory<typeof PostingInput> = () => (
+  <PostingInput
+    account=""
+    unitNumber=""
+    unitCurrency=""
+    index={0}
+    numberError="Number required"
+    currencyError="Currency required"
+    onDelete={action("onDelete")}
+    onAccountChange={action("onAccountChange")}
+    onUnitNumberChange={action("onUnitNumberChange")}
+    onUnitCurrencyChange={action("onUnitCurrencyChange")}
+  />
+);
+
+export const AllError: ComponentStory<typeof PostingInput> = () => (
+  <PostingInput
+    account=""
+    unitNumber=""
+    unitCurrency=""
+    index={0}
+    accountError="Account required"
+    numberError="Number required"
+    currencyError="Currency required"
+    onDelete={action("onDelete")}
+    onAccountChange={action("onAccountChange")}
+    onUnitNumberChange={action("onUnitNumberChange")}
+    onUnitCurrencyChange={action("onUnitCurrencyChange")}
+  />
+);
