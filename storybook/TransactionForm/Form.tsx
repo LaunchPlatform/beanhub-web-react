@@ -40,6 +40,20 @@ export const Primary: ComponentStory<typeof Form> = () => (
   <Form files={files} accounts={accounts} currencies={currencies} />
 );
 
+export const InitialValues: ComponentStory<typeof Form> = () => (
+  <Form
+    files={files}
+    initialNarration="This "
+    initialDate="2022-03-02"
+    initialPostings={[
+      { account: "Assets", unitNumber: "-12.34", unitCurrency: "USD" },
+      { account: "Expenses", unitNumber: "12.34", unitCurrency: "USD" },
+    ]}
+    accounts={accounts}
+    currencies={currencies}
+  />
+);
+
 export const Errors: ComponentStory<typeof Form> = () => (
   <Form
     files={files}
