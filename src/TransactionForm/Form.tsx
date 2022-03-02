@@ -10,7 +10,9 @@ export interface Props {
   readonly action?: string;
   readonly method?: string;
   readonly initialDate?: string;
+  readonly dateError?: string;
   readonly initialNarration?: string;
+  readonly narrationError?: string;
   readonly initialPostings?: Array<PostingRecord>;
   readonly hiddenFields?: Record<string, string>;
   readonly files: Array<string>;
@@ -23,7 +25,9 @@ const Form: FunctionComponent<Props> = ({
   action,
   method,
   initialDate,
+  dateError,
   initialNarration,
+  narrationError,
   initialPostings,
   hiddenFields,
   files,
@@ -33,8 +37,8 @@ const Form: FunctionComponent<Props> = ({
 }: Props) => (
   <form action={action} method={method ?? "POST"}>
     <FileInput files={files} />
-    <DateInput defaultValue={initialDate} />
-    <NarrationInput defaultValue={initialNarration} />
+    <DateInput defaultValue={initialDate} error={dateError} />
+    <NarrationInput defaultValue={initialNarration} error={narrationError} />
     <PostingListContainer
       initialPostings={initialPostings}
       accounts={accounts}

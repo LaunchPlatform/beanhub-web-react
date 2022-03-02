@@ -33,8 +33,24 @@ const PostingListContainer: FunctionComponent<Props> = ({
   accounts,
   currencies,
 }: Props) => {
+  let filledInitialPostings = initialPostings;
+  if (filledInitialPostings !== undefined && filledInitialPostings.length < 2) {
+    // Fill up to 2 postings if it's not already
+    const toFillCount = 2 - filledInitialPostings.length;
+    for (let i = 0; i < toFillCount; i++) {
+      filledInitialPostings = [
+        ...filledInitialPostings,
+        {
+          key: uuid(),
+          account: "",
+          unitNumber: "",
+          unitCurrency: "",
+        } as PostingRecordState,
+      ];
+    }
+  }
   const [postingsState, setPostingsState] = useState<Array<PostingRecordState>>(
-    (initialPostings ?? [{}, {}]).map(
+    (filledInitialPostings ?? [{}, {}]).map(
       (posting) =>
         ({
           key: uuid(),

@@ -43,6 +43,9 @@ export const Primary: ComponentStory<typeof Form> = () => (
 export const Errors: ComponentStory<typeof Form> = () => (
   <Form
     files={files}
+    dateError="Bad date format"
+    narrationError="Narration required"
+    initialPostings={[{ accountError: "Bad account" }]}
     accounts={accounts}
     currencies={currencies}
     errors={["Account number not balanced", "Currency is not supported"]}
