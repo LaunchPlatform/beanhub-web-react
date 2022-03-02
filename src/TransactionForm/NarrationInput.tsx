@@ -3,17 +3,26 @@ import FormRow from "./FormRow";
 
 export interface Props {
   readonly defaultValue?: string;
+  readonly error?: string;
 }
 
-const NarrationInput: FunctionComponent<Props> = ({ defaultValue }: Props) => (
+const NarrationInput: FunctionComponent<Props> = ({
+  defaultValue,
+  error,
+}: Props) => (
   <FormRow title="Narration" required>
-    <input
-      type="text"
-      className="form-control"
-      placeholder="Narration of the transaction"
-      name="narration"
-      defaultValue={defaultValue}
-    />
+    <div className="input-group">
+      <input
+        type="text"
+        className={"form-control" + (error !== undefined ? " is-invalid" : "")}
+        placeholder="Narration of the transaction"
+        name="narration"
+        defaultValue={defaultValue}
+      />
+      {error !== undefined ? (
+        <div className="invalid-feedback">{error}</div>
+      ) : null}
+    </div>
   </FormRow>
 );
 export default NarrationInput;

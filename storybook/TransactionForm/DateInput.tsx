@@ -12,3 +12,7 @@ export default {
 export const Primary: ComponentStory<typeof DateInput> = () => (
   <DateInput defaultValue="2022-02-26" />
 );
+
+export const Error: ComponentStory<typeof DateInput> = () => (
+  <DateInput defaultValue="2022-02-26" error="Invalid date" />
+);

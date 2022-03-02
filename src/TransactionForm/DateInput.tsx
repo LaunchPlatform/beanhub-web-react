@@ -8,9 +8,13 @@ const controls = {
 
 export interface Props {
   readonly defaultValue?: string;
+  readonly error?: string;
 }
 
-const DateInput: FunctionComponent<Props> = ({ defaultValue }: Props) => {
+const DateInput: FunctionComponent<Props> = ({
+  defaultValue,
+  error,
+}: Props) => {
   useEffect(() => {
     $("#datepicker").datepicker({
       format: "yyyy-mm-dd",
@@ -24,7 +28,9 @@ const DateInput: FunctionComponent<Props> = ({ defaultValue }: Props) => {
       <div className="input-group">
         <input
           type="text"
-          className="form-control"
+          className={
+            "form-control" + (error !== undefined ? " is-invalid" : "")
+          }
           id="datepicker"
           name="date"
           defaultValue={defaultValue}
@@ -35,6 +41,9 @@ const DateInput: FunctionComponent<Props> = ({ defaultValue }: Props) => {
             <i className="fal fa-calendar-alt"></i>
           </span>
         </div>
+        {error !== undefined ? (
+          <div className="invalid-feedback">{error}</div>
+        ) : null}
       </div>
     </FormRow>
   );

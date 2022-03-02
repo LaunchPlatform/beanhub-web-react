@@ -12,3 +12,7 @@ export default {
 export const Primary: ComponentStory<typeof NarrationInput> = () => (
   <NarrationInput />
 );
+
+export const Error: ComponentStory<typeof NarrationInput> = () => (
+  <NarrationInput error="Required" />
+);
