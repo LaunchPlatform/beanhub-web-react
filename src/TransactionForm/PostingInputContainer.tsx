@@ -11,8 +11,11 @@ import PostingInput from "./PostingInput";
 export interface Props {
   readonly index: number;
   readonly account?: string;
+  readonly accountError?: string;
   readonly unitNumber?: string;
+  readonly unitNumberError?: string;
   readonly unitCurrency?: string;
+  readonly unitCurrencyError?: string;
   readonly accounts: Array<string>;
   readonly currencies: Array<string>;
   readonly onAccountChange?: (value: string) => void;
@@ -135,8 +138,11 @@ const useAutoComplete = (
 
 const PostingInputContainer: FunctionComponent<Props> = ({
   account,
+  accountError,
   unitNumber,
+  unitCurrencyError,
   unitCurrency,
+  unitNumberError,
   accounts,
   currencies,
   index,
@@ -156,6 +162,7 @@ const PostingInputContainer: FunctionComponent<Props> = ({
       onDelete={onDelete}
       // Account value
       account={accountProps.value}
+      accountError={accountError}
       accountCandidates={accountProps.candidates}
       accountCandidateIndex={accountProps.candidateIndex}
       onAccountChange={(value) => {

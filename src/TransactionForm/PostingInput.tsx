@@ -11,14 +11,14 @@ export interface Props {
   readonly account: string;
   readonly accountCandidates?: Array<Candidate>;
   readonly accountCandidateIndex?: number;
+  readonly accountError?: string;
   readonly unitNumber: string;
+  readonly unitNumberError?: string;
   readonly unitCurrency: string;
   readonly unitCurrencyCandidates?: Array<Candidate>;
   readonly unitCurrencyCandidateIndex?: number;
+  readonly unitCurrencyError?: string;
   readonly index: number;
-  readonly accountError?: string;
-  readonly numberError?: string;
-  readonly currencyError?: string;
   readonly onAccountChange?: (value: string) => void;
   readonly onAccountKeyPress?: (event: KeyboardEvent<HTMLInputElement>) => void;
   readonly onAccountKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
@@ -41,14 +41,14 @@ const PostingInput: FunctionComponent<Props> = ({
   account,
   accountCandidates,
   accountCandidateIndex,
+  accountError,
   unitNumber,
+  unitNumberError,
   unitCurrency,
   unitCurrencyCandidates,
   unitCurrencyCandidateIndex,
+  unitCurrencyError,
   index,
-  accountError,
-  numberError,
-  currencyError,
   onAccountChange,
   onAccountKeyPress,
   onAccountKeyDown,
@@ -117,7 +117,7 @@ const PostingInput: FunctionComponent<Props> = ({
         type="number"
         aria-label="Unit Number"
         className={
-          "form-control" + (numberError !== undefined ? " is-invalid" : "")
+          "form-control" + (unitNumberError !== undefined ? " is-invalid" : "")
         }
         placeholder="12.34"
         name={`postings-${index}-number`}
@@ -125,7 +125,7 @@ const PostingInput: FunctionComponent<Props> = ({
         onChange={(event) => onUnitNumberChange?.(event.target.value)}
         style={{
           marginLeft: -1,
-          ...(numberError !== undefined
+          ...(unitNumberError !== undefined
             ? {
                 zIndex: 1,
                 position: "relative",
@@ -141,7 +141,8 @@ const PostingInput: FunctionComponent<Props> = ({
           type="text"
           aria-label="Unit Currency"
           className={
-            "form-control" + (currencyError !== undefined ? " is-invalid" : "")
+            "form-control" +
+            (unitCurrencyError !== undefined ? " is-invalid" : "")
           }
           placeholder="USD"
           name={`postings-${index}-currency`}
@@ -155,7 +156,7 @@ const PostingInput: FunctionComponent<Props> = ({
             borderBottomLeftRadius: 0,
             borderTopRightRadius: 0,
             borderBottomRightRadius: 0,
-            ...(currencyError !== undefined
+            ...(unitCurrencyError !== undefined
               ? {
                   zIndex: 1,
                   position: "relative",
@@ -188,11 +189,11 @@ const PostingInput: FunctionComponent<Props> = ({
           <i className="fal fa-trash-alt"></i>
         </button>
       </div>
-      {[accountError, numberError, currencyError].some(
+      {[accountError, unitNumberError, unitCurrencyError].some(
         (value) => value !== undefined
       ) ? (
         <div className="invalid-feedback">
-          {[accountError, numberError, currencyError]
+          {[accountError, unitNumberError, unitCurrencyError]
             .filter((value) => value !== undefined)
             .join(", ")}
         </div>
