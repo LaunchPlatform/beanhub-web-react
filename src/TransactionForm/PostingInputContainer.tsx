@@ -19,6 +19,8 @@ export interface Props {
   readonly accounts: Array<string>;
   readonly currencies: Array<string>;
   readonly onAccountChange?: (value: string) => void;
+  readonly onUnitNumberChange?: (value: string) => void;
+  readonly onUnitCurrencyChange?: (value: string) => void;
   readonly onDelete?: () => void;
 }
 
@@ -35,7 +37,8 @@ interface AutoCompleteProps {
 
 const useAutoComplete = (
   inputValue: string,
-  candidateValues: Array<string>
+  candidateValues: Array<string>,
+  onValueChange?: (value: string) => void
 ): AutoCompleteProps => {
   const [value, setValue] = useState<string>(inputValue ?? "");
   const [candidateIndex, setCandidateIndex] = useState<number>(0);
@@ -64,6 +67,7 @@ const useAutoComplete = (
   const onChange = useCallback((value) => {
     setValue(value);
     setDisplayCandidates(true);
+    onValueChange?.(value);
   }, []);
   const onKeyDown = useCallback(
     (event) => {
@@ -105,21 +109,27 @@ const useAutoComplete = (
       switch (event.key) {
         case "Enter":
         case " ": {
-          setValue(matchedValues[candidateIndex].value);
+          const newValue = matchedValues[candidateIndex].value;
+          setValue(newValue);
           setDisplayCandidates(false);
           setCandidateIndex(0);
           event.preventDefault();
+          onValueChange?.(newValue);
           break;
         }
       }
     },
-    [matchedValues, candidateIndex]
+    [matchedValues, candidateIndex, onValueChange]
   );
-  const onCandidateClick = useCallback((value) => {
-    setValue(value);
-    setDisplayCandidates(false);
-    setCandidateIndex(0);
-  }, []);
+  const onCandidateClick = useCallback(
+    (value) => {
+      setValue(value);
+      setDisplayCandidates(false);
+      setCandidateIndex(0);
+      onValueChange?.(value);
+    },
+    [onValueChange]
+  );
   const onBlur = useCallback(() => {
     setDisplayCandidates(false);
     setCandidateIndex(0);
@@ -147,14 +157,24 @@ const PostingInputContainer: FunctionComponent<Props> = ({
   currencies,
   index,
   onAccountChange,
+  onUnitNumberChange,
+  onUnitCurrencyChange,
   onDelete,
 }: Props) => {
   const [unitNumberValue, setUnitNumberValue] = useState<string>(
     unitNumber ?? ""
   );
 
-  const accountProps = useAutoComplete(account ?? "", accounts);
-  const unitCurrencyProps = useAutoComplete(unitCurrency ?? "", currencies);
+  const accountProps = useAutoComplete(
+    account ?? "",
+    accounts,
+    onAccountChange
+  );
+  const unitCurrencyProps = useAutoComplete(
+    unitCurrency ?? "",
+    currencies,
+    onUnitCurrencyChange
+  );
 
   return (
     <PostingInput
@@ -165,10 +185,7 @@ const PostingInputContainer: FunctionComponent<Props> = ({
       accountError={accountError}
       accountCandidates={accountProps.candidates}
       accountCandidateIndex={accountProps.candidateIndex}
-      onAccountChange={(value) => {
-        onAccountChange?.(value);
-        accountProps.onChange(value);
-      }}
+      onAccountChange={accountProps.onChange}
       onAccountKeyDown={accountProps.onKeyDown}
       onAccountKeyPress={accountProps.onKeyPress}
       onAccountCandidateClick={accountProps.onCandidateClick}
@@ -176,7 +193,10 @@ const PostingInputContainer: FunctionComponent<Props> = ({
       // Unit number
       unitNumber={unitNumberValue}
       unitNumberError={unitNumberError}
-      onUnitNumberChange={setUnitNumberValue}
+      onUnitNumberChange={(value) => {
+        onUnitNumberChange?.(value);
+        setUnitNumberValue(value);
+      }}
       // Unit currency
       unitCurrency={unitCurrencyProps.value}
       unitCurrencyCandidates={unitCurrencyProps.candidates}

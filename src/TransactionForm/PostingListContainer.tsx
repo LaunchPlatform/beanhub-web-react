@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useState, useEffect } from "react";
 import { v4 as uuid } from "uuid";
 import FormRow from "./FormRow";
 import PostingInputContainer from "./PostingInputContainer";
@@ -49,20 +49,34 @@ const PostingListContainer: FunctionComponent<Props> = ({
       ];
     }
   }
-  const [postingsState, setPostingsState] = useState<Array<PostingRecordState>>(
-    (filledInitialPostings ?? [{}, {}]).map(
-      (posting) =>
-        ({
-          key: uuid(),
-          account: posting.account ?? "",
-          accountError: posting.accountError,
-          unitNumber: posting.unitNumber ?? "",
-          unitNumberError: posting.unitNumberError,
-          unitCurrency: posting.unitCurrency ?? "",
-          unitCurrencyError: posting.unitCurrencyError,
-        } as PostingRecordState)
-    )
+  let initialState = (filledInitialPostings ?? [{}, {}]).map(
+    (posting) =>
+      ({
+        key: uuid(),
+        account: posting.account ?? "",
+        accountError: posting.accountError,
+        unitNumber: posting.unitNumber ?? "",
+        unitNumberError: posting.unitNumberError,
+        unitCurrency: posting.unitCurrency ?? "",
+        unitCurrencyError: posting.unitCurrencyError,
+      } as PostingRecordState)
   );
+  if (window.history.state?.postings !== undefined) {
+    initialState = window.history.state.postings;
+  }
+  useEffect(() => {
+    if (window.history.state?.postings === undefined) {
+      window.history.replaceState(
+        {
+          ...window.history.state,
+          postings: initialState,
+        },
+        ""
+      );
+    }
+  }, []);
+  const [postingsState, setPostingsState] =
+    useState<Array<PostingRecordState>>(initialState);
   return (
     <FormRow title="Postings" required>
       {postingsState.map((posting, index) => (
@@ -96,13 +110,58 @@ const PostingListContainer: FunctionComponent<Props> = ({
               ];
             }
             setPostingsState(newPostings);
+            window.history.replaceState(
+              {
+                ...window.history.state,
+                postings: newPostings,
+              },
+              ""
+            );
+          }}
+          onUnitNumberChange={(unitNumber) => {
+            let newPostings = [...postingsState];
+            newPostings[index] = {
+              ...newPostings[index],
+              unitNumber,
+            };
+            setPostingsState(newPostings);
+            window.history.replaceState(
+              {
+                ...window.history.state,
+                postings: newPostings,
+              },
+              ""
+            );
+          }}
+          onUnitCurrencyChange={(unitCurrency) => {
+            let newPostings = [...postingsState];
+            newPostings[index] = {
+              ...newPostings[index],
+              unitCurrency,
+            };
+            setPostingsState(newPostings);
+            window.history.replaceState(
+              {
+                ...window.history.state,
+                postings: newPostings,
+              },
+              ""
+            );
           }}
           onDelete={() => {
             if (postingsState.length <= 2) {
               return;
             }
-            setPostingsState(
-              postingsState.filter((item) => item.key !== posting.key)
+            const newPostings = postingsState.filter(
+              (item) => item.key !== posting.key
+            );
+            setPostingsState(newPostings);
+            window.history.replaceState(
+              {
+                ...window.history.state,
+                postings: newPostings,
+              },
+              ""
             );
           }}
         />
