@@ -175,11 +175,13 @@ const PostingInputContainer: FunctionComponent<Props> = ({
       onAccountBlur={accountProps.onBlur}
       // Unit number
       unitNumber={unitNumberValue}
+      unitNumberError={unitNumberError}
       onUnitNumberChange={setUnitNumberValue}
       // Unit currency
       unitCurrency={unitCurrencyProps.value}
       unitCurrencyCandidates={unitCurrencyProps.candidates}
       unitCurrencyCandidateIndex={unitCurrencyProps.candidateIndex}
+      unitCurrencyError={unitCurrencyError}
       onUnitCurrencyChange={unitCurrencyProps.onChange}
       onUnitCurrencyKeyDown={unitCurrencyProps.onKeyDown}
       onUnitCurrencyKeyPress={unitCurrencyProps.onKeyPress}
