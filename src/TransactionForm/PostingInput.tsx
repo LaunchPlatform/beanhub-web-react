@@ -62,10 +62,16 @@ const PostingInput: FunctionComponent<Props> = ({
   onUnitCurrencyCandidateClick,
   onDelete,
 }: Props) => {
+  const isInvalid = [accountError, unitNumberError, unitCurrencyError].some(
+    (value) => value !== undefined
+  );
   return (
     <div className="input-group">
       <div
-        className="form-control-wrapper position-relative"
+        className={
+          "form-control-wrapper position-relative" +
+          (isInvalid ? " is-invalid" : "")
+        }
         style={{ flex: 2 }}
       >
         <input
@@ -189,9 +195,7 @@ const PostingInput: FunctionComponent<Props> = ({
           <i className="fal fa-trash-alt"></i>
         </button>
       </div>
-      {[accountError, unitNumberError, unitCurrencyError].some(
-        (value) => value !== undefined
-      ) ? (
+      {isInvalid ? (
         <div className="invalid-feedback">
           {[accountError, unitNumberError, unitCurrencyError]
             .filter((value) => value !== undefined)

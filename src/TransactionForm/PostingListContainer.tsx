@@ -5,15 +5,21 @@ import FormRow from "./FormRow";
 
 export interface PostingRecord {
   readonly account?: string;
+  readonly accountError?: string;
   readonly unitNumber?: string;
+  readonly unitNumberError?: string;
   readonly unitCurrency?: string;
+  readonly unitCurrencyError?: string;
 }
 
 interface PostingRecordState {
   readonly key: string;
   readonly account: string;
+  readonly accountError?: string;
   readonly unitNumber: string;
+  readonly unitNumberError?: string;
   readonly unitCurrency: string;
+  readonly unitCurrencyError?: string;
 }
 
 export interface Props {
@@ -33,8 +39,11 @@ const PostingListContainer: FunctionComponent<Props> = ({
         ({
           key: uuid(),
           account: posting.account ?? "",
+          accountError: posting.accountError,
           unitNumber: posting.unitNumber ?? "",
+          unitNumberError: posting.unitNumberError,
           unitCurrency: posting.unitCurrency ?? "",
+          unitCurrencyError: posting.unitCurrencyError,
         } as PostingRecordState)
     )
   );
@@ -44,6 +53,12 @@ const PostingListContainer: FunctionComponent<Props> = ({
         <PostingInputContainer
           key={posting.key}
           index={index}
+          account={posting.account}
+          accountError={posting.accountError}
+          unitNumber={posting.unitNumber}
+          unitNumberError={posting.unitNumberError}
+          unitCurrency={posting.unitCurrency}
+          unitCurrencyError={posting.unitCurrencyError}
           accounts={accounts}
           currencies={currencies}
           onAccountChange={(account) => {
