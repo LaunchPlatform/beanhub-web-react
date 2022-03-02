@@ -39,3 +39,12 @@ export default {
 export const Primary: ComponentStory<typeof Form> = () => (
   <Form files={files} accounts={accounts} currencies={currencies} />
 );
+
+export const Errors: ComponentStory<typeof Form> = () => (
+  <Form
+    files={files}
+    accounts={accounts}
+    currencies={currencies}
+    errors={["Account number not balanced", "Currency is not supported"]}
+  />
+);

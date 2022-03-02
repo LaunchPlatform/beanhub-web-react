@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from "react";
 import DateInput from "./DateInput";
+import ErrorRow from "./ErrorRow";
 import FileInput from "./FileInput";
 import NarrationInput from "./NarrationInput";
 import PostingListContainer, { PostingRecord } from "./PostingListContainer";
@@ -15,6 +16,7 @@ export interface Props {
   readonly files: Array<string>;
   readonly accounts: Array<string>;
   readonly currencies: Array<string>;
+  readonly errors?: Array<string>;
 }
 
 const Form: FunctionComponent<Props> = ({
@@ -27,6 +29,7 @@ const Form: FunctionComponent<Props> = ({
   files,
   accounts,
   currencies,
+  errors,
 }: Props) => (
   <form action={action} method={method ?? "POST"}>
     <FileInput files={files} />
@@ -42,6 +45,9 @@ const Form: FunctionComponent<Props> = ({
           <input type="hidden" name={key} value={value} />
         ))
       : null}
+    {(errors ?? []).map((error, index) => (
+      <ErrorRow key={index} message={error} />
+    ))}
     <SubmitButton title="Create" />
   </form>
 );
