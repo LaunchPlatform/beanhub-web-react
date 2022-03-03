@@ -1,23 +1,45 @@
-import React, { FunctionComponent, useEffect } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import FormRow from "./FormRow";
+import { v4 as uuid } from "uuid";
+import Select, { GroupBase, Props as SelectProps } from "react-select";
 
 export interface Props {
   readonly files: Array<string>;
+  readonly initialFile?: string;
+  readonly onChange?: () => void;
 }
 
-const FileInput: FunctionComponent<Props> = ({ files }: Props) => {
-  useEffect(() => {
-    $(".select2").select2();
-  }, []);
+interface Option {
+  readonly value: string;
+  readonly label: string;
+}
+
+function CustomSelect<
+  IsMulti extends boolean = false,
+  Group extends GroupBase<Option> = GroupBase<Option>
+>(props: SelectProps<Option, IsMulti, Group>) {
+  return (
+    <Select {...props} theme={(theme) => ({ ...theme, borderRadius: 0 })} />
+  );
+}
+
+const FileInput: FunctionComponent<Props> = ({
+  files,
+  initialFile,
+  onChange,
+}: Props) => {
   return (
     <FormRow title="File" required>
-      <select className="select2 form-control w-100" name="file">
-        {files.map((filename) => (
-          <option value={filename} key={filename}>
-            {filename}
-          </option>
-        ))}
-      </select>
+      <CustomSelect
+        name="file"
+        options={files.map((file) => ({ value: file, label: file }))}
+        defaultValue={
+          initialFile !== undefined
+            ? { value: initialFile, label: initialFile }
+            : undefined
+        }
+        onChange={onChange}
+      />
     </FormRow>
   );
 };
