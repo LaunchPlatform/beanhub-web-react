@@ -64,11 +64,14 @@ const useAutoComplete = (
         ),
     [lowerTrimedValue, candidateValues]
   );
-  const onChange = useCallback((value) => {
-    setValue(value);
-    setDisplayCandidates(true);
-    onValueChange?.(value);
-  }, []);
+  const onChange = useCallback(
+    (value) => {
+      setValue(value);
+      setDisplayCandidates(true);
+      onValueChange?.(value);
+    },
+    [onValueChange]
+  );
   const onKeyDown = useCallback(
     (event) => {
       if (!displayCandidates) {

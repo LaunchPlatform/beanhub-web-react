@@ -74,6 +74,7 @@ const PostingListContainer: FunctionComponent<Props> = ({
         ""
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const [postingsState, setPostingsState] =
     useState<Array<PostingRecordState>>(initialState);

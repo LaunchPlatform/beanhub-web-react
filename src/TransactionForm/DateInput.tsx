@@ -18,6 +18,7 @@ const DateInput: FunctionComponent<Props> = ({
   error,
   onChange,
 }: Props) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [dateId, _] = useState<string>(() => uuid());
   useEffect(() => {
     const datePicker = $("#" + dateId)
@@ -33,6 +34,7 @@ const DateInput: FunctionComponent<Props> = ({
     return () => {
       datePicker.datepicker("destroy");
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <FormRow title="Date" required>
