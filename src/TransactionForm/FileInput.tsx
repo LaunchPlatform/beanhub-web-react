@@ -6,6 +6,7 @@ import Select, { GroupBase, Props as SelectProps } from "react-select";
 export interface Props {
   readonly files: Array<string>;
   readonly initialFile?: string;
+  readonly error?: string;
   readonly onChange?: () => void;
 }
 
@@ -26,17 +27,21 @@ function CustomSelect<
 const FileInput: FunctionComponent<Props> = ({
   files,
   initialFile,
+  error,
   onChange,
 }: Props) => {
+  const borderColor = error !== undefined ? "#fd3995" : "#E5E5E5";
   return (
     <FormRow title="File" required>
       <CustomSelect
         name="file"
+        className={error !== undefined ? "is-invalid" : ""}
         styles={{
           option: (provided, state) => ({
             ...provided,
             "&:hover": {
               backgroundColor: "#eeeeee",
+              color: "black",
             },
             backgroundColor: state.isSelected ? "#886ab5" : "white",
           }),
@@ -44,9 +49,15 @@ const FileInput: FunctionComponent<Props> = ({
             ...provided,
             borderRadius: "4px",
             borderWidth: "1px",
-            borderColor: state.isFocused ? "#886ab5" : "#E5E5E5",
+            borderColor:
+              state.isFocused && error === undefined ? "#886ab5" : borderColor,
             boxShadow: undefined,
             "&:hover": undefined,
+            ...(state.isFocused && error !== undefined
+              ? {
+                  boxShadow: "0 0 0 0.2rem rgba(253, 57, 149, 0.25)",
+                }
+              : undefined),
           }),
         }}
         options={files.map((file) => ({ value: file, label: file }))}
@@ -57,6 +68,9 @@ const FileInput: FunctionComponent<Props> = ({
         }
         onChange={onChange}
       />
+      {error !== undefined ? (
+        <div className="invalid-feedback">{error}</div>
+      ) : null}
     </FormRow>
   );
 };

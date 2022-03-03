@@ -19,3 +19,10 @@ export const InitialValue: ComponentStory<typeof FileInput> = () => (
     initialFile="books/2021.bean"
   />
 );
+
+export const Error: ComponentStory<typeof FileInput> = () => (
+  <FileInput
+    files={["main.bean", "books/2021.bean", "books/2022.bean"]}
+    error="Required"
+  />
+);
