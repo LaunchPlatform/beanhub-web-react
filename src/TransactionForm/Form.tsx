@@ -34,25 +34,61 @@ const Form: FunctionComponent<Props> = ({
   accounts,
   currencies,
   errors,
-}: Props) => (
-  <form action={action} method={method ?? "POST"}>
-    <FileInput files={files} />
-    <DateInput defaultValue={initialDate} error={dateError} />
-    <NarrationInput defaultValue={initialNarration} error={narrationError} />
-    <PostingListContainer
-      initialPostings={initialPostings}
-      accounts={accounts}
-      currencies={currencies}
-    />
-    {hiddenFields !== undefined
-      ? Object.entries(hiddenFields).map(([key, value]) => (
-          <input type="hidden" name={key} value={value} />
-        ))
-      : null}
-    {(errors ?? []).map((error, index) => (
-      <ErrorRow key={index} message={error} />
-    ))}
-    <SubmitButton title="Create" />
-  </form>
-);
+}: Props) => {
+  let initialDateValue = initialDate;
+  let initialNarrationValue = initialNarration;
+  if (window.history.state?.date !== undefined) {
+    initialDateValue = window.history.state?.date;
+  }
+  if (window.history.state?.narration !== undefined) {
+    initialNarrationValue = window.history.state?.narration;
+  }
+
+  return (
+    <form action={action} method={method ?? "POST"}>
+      <FileInput files={files} />
+      <DateInput
+        defaultValue={initialDateValue}
+        error={dateError}
+        onChange={(value) => {
+          console.log("!!!!!!!! change", value);
+          window.history.replaceState(
+            {
+              ...window.history.state,
+              date: value,
+            },
+            ""
+          );
+        }}
+      />
+      <NarrationInput
+        defaultValue={initialNarrationValue}
+        error={narrationError}
+        onChange={(value) => {
+          window.history.replaceState(
+            {
+              ...window.history.state,
+              narration: value,
+            },
+            ""
+          );
+        }}
+      />
+      <PostingListContainer
+        initialPostings={initialPostings}
+        accounts={accounts}
+        currencies={currencies}
+      />
+      {hiddenFields !== undefined
+        ? Object.entries(hiddenFields).map(([key, value]) => (
+            <input type="hidden" name={key} value={value} />
+          ))
+        : null}
+      {(errors ?? []).map((error, index) => (
+        <ErrorRow key={index} message={error} />
+      ))}
+      <SubmitButton title="Create" />
+    </form>
+  );
+};
 export default Form;

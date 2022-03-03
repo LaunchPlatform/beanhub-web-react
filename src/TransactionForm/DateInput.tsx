@@ -1,5 +1,6 @@
-import React, { FunctionComponent, useEffect } from "react";
+import React, { FunctionComponent, useState, useEffect } from "react";
 import FormRow from "./FormRow";
+import { v4 as uuid } from "uuid";
 
 const controls = {
   leftArrow: '<i class="fal fa-angle-left" style="font-size: 1.25rem"></i>',
@@ -9,19 +10,29 @@ const controls = {
 export interface Props {
   readonly defaultValue?: string;
   readonly error?: string;
+  readonly onChange?: (value: string) => void;
 }
 
 const DateInput: FunctionComponent<Props> = ({
   defaultValue,
   error,
+  onChange,
 }: Props) => {
+  const [dateId, _] = useState<string>(() => uuid());
   useEffect(() => {
-    $("#datepicker").datepicker({
-      format: "yyyy-mm-dd",
-      todayHighlight: true,
-      orientation: "bottom left",
-      templates: controls,
-    });
+    const datePicker = $("#" + dateId)
+      .datepicker({
+        format: "yyyy-mm-dd",
+        todayHighlight: true,
+        orientation: "bottom left",
+        templates: controls,
+      })
+      .on("changeDate", (event: any) => {
+        onChange?.(event.target.value);
+      });
+    return () => {
+      datePicker.datepicker("destroy");
+    };
   }, []);
   return (
     <FormRow title="Date" required>
@@ -31,10 +42,11 @@ const DateInput: FunctionComponent<Props> = ({
           className={
             "form-control" + (error !== undefined ? " is-invalid" : "")
           }
-          id="datepicker"
+          id={dateId}
           name="date"
           defaultValue={defaultValue}
           placeholder="Date of transaction"
+          onChange={(event) => onChange?.(event.target.value)}
         />
         <div className="input-group-append">
           <span className="input-group-text fs-xl">
