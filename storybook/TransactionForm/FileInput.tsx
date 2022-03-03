@@ -12,3 +12,10 @@ export default {
 export const Primary: ComponentStory<typeof FileInput> = () => (
   <FileInput files={["main.bean", "books/2021.bean", "books/2022.bean"]} />
 );
+
+export const InitialValue: ComponentStory<typeof FileInput> = () => (
+  <FileInput
+    files={["main.bean", "books/2021.bean", "books/2022.bean"]}
+    initialFile="books/2021.bean"
+  />
+);

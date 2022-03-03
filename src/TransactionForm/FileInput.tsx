@@ -32,6 +32,23 @@ const FileInput: FunctionComponent<Props> = ({
     <FormRow title="File" required>
       <CustomSelect
         name="file"
+        styles={{
+          option: (provided, state) => ({
+            ...provided,
+            "&:hover": {
+              backgroundColor: "#eeeeee",
+            },
+            backgroundColor: state.isSelected ? "#886ab5" : "white",
+          }),
+          control: (provided, state) => ({
+            ...provided,
+            borderRadius: "4px",
+            borderWidth: "1px",
+            borderColor: state.isFocused ? "#886ab5" : "#E5E5E5",
+            boxShadow: undefined,
+            "&:hover": undefined,
+          }),
+        }}
         options={files.map((file) => ({ value: file, label: file }))}
         defaultValue={
           initialFile !== undefined
