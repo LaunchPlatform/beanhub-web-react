@@ -1,13 +1,12 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
-import FormRow from "./FormRow";
-import { v4 as uuid } from "uuid";
+import React, { FunctionComponent } from "react";
 import Select, { GroupBase, Props as SelectProps } from "react-select";
+import FormRow from "./FormRow";
 
 export interface Props {
   readonly files: Array<string>;
   readonly initialFile?: string;
   readonly error?: string;
-  readonly onChange?: () => void;
+  readonly onChange?: (value: string) => void;
 }
 
 interface Option {
@@ -66,7 +65,9 @@ const FileInput: FunctionComponent<Props> = ({
             ? { value: initialFile, label: initialFile }
             : undefined
         }
-        onChange={onChange}
+        onChange={(option) => {
+          onChange?.((option as any).value);
+        }}
       />
       {error !== undefined ? (
         <div className="invalid-feedback">{error}</div>

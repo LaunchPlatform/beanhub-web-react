@@ -9,6 +9,8 @@ import SubmitButton from "./SubmitButton";
 export interface Props {
   readonly action?: string;
   readonly method?: string;
+  readonly initialFile?: string;
+  readonly fileError?: string;
   readonly initialDate?: string;
   readonly dateError?: string;
   readonly initialNarration?: string;
@@ -24,6 +26,8 @@ export interface Props {
 const Form: FunctionComponent<Props> = ({
   action,
   method,
+  initialFile,
+  fileError,
   initialDate,
   dateError,
   initialNarration,
@@ -35,8 +39,12 @@ const Form: FunctionComponent<Props> = ({
   currencies,
   errors,
 }: Props) => {
+  let initialFileValue = initialFile;
   let initialDateValue = initialDate;
   let initialNarrationValue = initialNarration;
+  if (window.history.state?.file !== undefined) {
+    initialFileValue = window.history.state?.file;
+  }
   if (window.history.state?.date !== undefined) {
     initialDateValue = window.history.state?.date;
   }
@@ -46,12 +54,24 @@ const Form: FunctionComponent<Props> = ({
 
   return (
     <form action={action} method={method ?? "POST"}>
-      <FileInput files={files} />
+      <FileInput
+        files={files}
+        initialFile={initialFileValue}
+        error={fileError}
+        onChange={(value) => {
+          window.history.replaceState(
+            {
+              ...window.history.state,
+              file: value,
+            },
+            ""
+          );
+        }}
+      />
       <DateInput
         defaultValue={initialDateValue}
         error={dateError}
         onChange={(value) => {
-          console.log("!!!!!!!! change", value);
           window.history.replaceState(
             {
               ...window.history.state,
