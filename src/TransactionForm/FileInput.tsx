@@ -58,6 +58,9 @@ const FileInput: FunctionComponent<Props> = ({
                 }
               : undefined),
           }),
+          menu: (provided, state) => {
+            return { ...provided, zIndex: 5 };
+          },
         }}
         options={files.map((file) => ({ value: file, label: file }))}
         defaultValue={

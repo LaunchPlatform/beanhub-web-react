@@ -6,6 +6,10 @@ import Form from "../../src/TransactionForm/Form";
 
 const files: Array<string> = [
   "main.bean",
+  "accounts.bean",
+  "plugins.bean",
+  "prices.bean",
+  "others.bean",
   "books/2021.bean",
   "books/2022.bean",
 ];
