@@ -6,7 +6,8 @@ export type Props = PropsWithChildren<{
 
 const ErrorRow: FunctionComponent<Props> = ({ message }: Props) => (
   <div className="form-group row">
-    <div className="col-12 offset-lg-1 col-lg-11 is-invalid">
+    <div className="col-12 offset-lg-1 col-lg-11">
+      <div className="is-invalid"></div>
       <div className="invalid-feedback">{message}</div>
     </div>
   </div>
