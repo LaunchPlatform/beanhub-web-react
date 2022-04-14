@@ -21,7 +21,8 @@ export interface Props {
   readonly hiddenFields?: Record<string, string>;
   readonly files: Array<string>;
   readonly accounts: Array<string>;
-  readonly currencies: Array<string>;
+  readonly accountCurrencies: Record<string, Array<string>>;
+  readonly defaultCurrency: string;
   readonly errors?: Array<string>;
 }
 
@@ -40,7 +41,8 @@ const Form: FunctionComponent<Props> = ({
   hiddenFields,
   files,
   accounts,
-  currencies,
+  accountCurrencies,
+  defaultCurrency,
   errors,
 }: Props) => {
   let initialFileValue = initialFile;
@@ -125,7 +127,8 @@ const Form: FunctionComponent<Props> = ({
       <PostingListContainer
         initialPostings={initialPostings}
         accounts={accounts}
-        currencies={currencies}
+        accountCurrencies={accountCurrencies}
+        defaultCurrency={defaultCurrency}
       />
       {hiddenFields !== undefined
         ? Object.entries(hiddenFields).map(([key, value]) => (

@@ -25,13 +25,15 @@ interface PostingRecordState {
 export interface Props {
   readonly initialPostings?: Array<PostingRecord>;
   readonly accounts: Array<string>;
-  readonly currencies: Array<string>;
+  readonly accountCurrencies: Record<string, Array<string>>;
+  readonly defaultCurrency: string;
 }
 
 const PostingListContainer: FunctionComponent<Props> = ({
   initialPostings,
   accounts,
-  currencies,
+  accountCurrencies,
+  defaultCurrency,
 }: Props) => {
   let filledInitialPostings = initialPostings;
   if (filledInitialPostings !== undefined && filledInitialPostings.length < 2) {
@@ -91,7 +93,9 @@ const PostingListContainer: FunctionComponent<Props> = ({
           unitCurrency={posting.unitCurrency}
           unitCurrencyError={posting.unitCurrencyError}
           accounts={accounts}
-          currencies={currencies}
+          currencies={
+            accountCurrencies[posting.account.trim()] ?? [defaultCurrency]
+          }
           onAccountChange={(account) => {
             let newPostings = [...postingsState];
             newPostings[index] = {

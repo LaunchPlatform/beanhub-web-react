@@ -24,16 +24,11 @@ const accounts: Array<string> = [
   "Equity:CommonStock",
 ];
 
-const currencies: Array<string> = [
-  "USD",
-  "UYU",
-  "UZS",
-  "BTC",
-  "EUR",
-  "TVD",
-  "TWD",
-  "TZS",
-];
+const accountCurrencies: Record<string, Array<string>> = {
+  Assets: ["USD", "UYU", "UZS", "BTC", "EUR", "TVD", "TWD", "TZS"],
+  "Assets:Bank": ["TWD"],
+  "Assets:Cash": ["BTC"],
+};
 
 export default {
   title: "Form",
@@ -41,7 +36,12 @@ export default {
 } as ComponentMeta<typeof Form>;
 
 export const Primary: ComponentStory<typeof Form> = () => (
-  <Form files={files} accounts={accounts} currencies={currencies} />
+  <Form
+    files={files}
+    accounts={accounts}
+    accountCurrencies={accountCurrencies}
+    defaultCurrency="USD"
+  />
 );
 
 export const InitialValues: ComponentStory<typeof Form> = () => (
@@ -55,7 +55,8 @@ export const InitialValues: ComponentStory<typeof Form> = () => (
       { account: "Expenses", unitNumber: "12.34", unitCurrency: "USD" },
     ]}
     accounts={accounts}
-    currencies={currencies}
+    accountCurrencies={accountCurrencies}
+    defaultCurrency="USD"
   />
 );
 
@@ -67,7 +68,8 @@ export const Errors: ComponentStory<typeof Form> = () => (
     narrationError="Narration required"
     initialPostings={[{ accountError: "Bad account" }]}
     accounts={accounts}
-    currencies={currencies}
+    accountCurrencies={accountCurrencies}
+    defaultCurrency="USD"
     errors={["Account number not balanced", "Currency is not supported"]}
   />
 );
