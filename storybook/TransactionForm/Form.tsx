@@ -48,6 +48,7 @@ export const InitialValues: ComponentStory<typeof Form> = () => (
   <Form
     files={files}
     initialNarration="This "
+    initialPayee="Jane Doe"
     initialDate="2022-03-02"
     initialPostings={[
       { account: "Assets", unitNumber: "-12.34", unitCurrency: "USD" },
@@ -62,6 +63,7 @@ export const Errors: ComponentStory<typeof Form> = () => (
   <Form
     files={files}
     dateError="Bad date format"
+    payeeError="Bad payee value"
     narrationError="Narration required"
     initialPostings={[{ accountError: "Bad account" }]}
     accounts={accounts}

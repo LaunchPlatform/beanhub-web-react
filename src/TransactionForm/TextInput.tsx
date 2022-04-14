@@ -2,23 +2,31 @@ import React, { FunctionComponent } from "react";
 import FormRow from "./FormRow";
 
 export interface Props {
+  readonly label: string;
   readonly defaultValue?: string;
   readonly error?: string;
+  readonly name?: string;
+  readonly placeholder?: string;
+  readonly required?: boolean;
   readonly onChange?: (value: string) => void;
 }
 
-const NarrationInput: FunctionComponent<Props> = ({
+const TextInput: FunctionComponent<Props> = ({
   defaultValue,
   error,
+  label,
+  name,
+  placeholder,
+  required,
   onChange,
 }: Props) => (
-  <FormRow title="Narration" required>
+  <FormRow title={label} required={required ?? false}>
     <div className="input-group">
       <input
         type="text"
         className={"form-control" + (error !== undefined ? " is-invalid" : "")}
-        placeholder="Narration of the transaction"
-        name="narration"
+        placeholder={placeholder}
+        name={name}
         defaultValue={defaultValue}
         onChange={(event) => onChange?.(event.target.value)}
       />
@@ -28,4 +36,4 @@ const NarrationInput: FunctionComponent<Props> = ({
     </div>
   </FormRow>
 );
-export default NarrationInput;
+export default TextInput;

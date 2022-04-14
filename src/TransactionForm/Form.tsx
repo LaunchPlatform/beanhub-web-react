@@ -2,7 +2,7 @@ import React, { FunctionComponent } from "react";
 import DateInput from "./DateInput";
 import ErrorRow from "./ErrorRow";
 import FileInput from "./FileInput";
-import NarrationInput from "./NarrationInput";
+import TextInput from "./TextInput";
 import PostingListContainer, { PostingRecord } from "./PostingListContainer";
 import SubmitButton from "./SubmitButton";
 
@@ -13,6 +13,8 @@ export interface Props {
   readonly fileError?: string;
   readonly initialDate?: string;
   readonly dateError?: string;
+  readonly initialPayee?: string;
+  readonly payeeError?: string;
   readonly initialNarration?: string;
   readonly narrationError?: string;
   readonly initialPostings?: Array<PostingRecord>;
@@ -30,6 +32,8 @@ const Form: FunctionComponent<Props> = ({
   fileError,
   initialDate,
   dateError,
+  initialPayee,
+  payeeError,
   initialNarration,
   narrationError,
   initialPostings,
@@ -42,6 +46,7 @@ const Form: FunctionComponent<Props> = ({
   let initialFileValue = initialFile;
   let initialDateValue = initialDate;
   let initialNarrationValue = initialNarration;
+  let initialPayeeValue = initialPayee;
   if (window.history.state?.file !== undefined) {
     initialFileValue = window.history.state?.file;
   }
@@ -50,6 +55,9 @@ const Form: FunctionComponent<Props> = ({
   }
   if (window.history.state?.narration !== undefined) {
     initialNarrationValue = window.history.state?.narration;
+  }
+  if (window.history.state?.payee !== undefined) {
+    initialPayeeValue = window.history.state?.payee;
   }
 
   return (
@@ -81,9 +89,29 @@ const Form: FunctionComponent<Props> = ({
           );
         }}
       />
-      <NarrationInput
+      <TextInput
+        label="Payee"
+        name="payee"
+        placeholder="Payee of the transaction"
+        defaultValue={initialPayeeValue}
+        error={payeeError}
+        onChange={(value) => {
+          window.history.replaceState(
+            {
+              ...window.history.state,
+              payee: value,
+            },
+            ""
+          );
+        }}
+      />
+      <TextInput
+        label="Narration"
+        name="narration"
+        placeholder="Narration of the transaction"
         defaultValue={initialNarrationValue}
         error={narrationError}
+        required
         onChange={(value) => {
           window.history.replaceState(
             {
