@@ -154,8 +154,8 @@ const PostingInput: FunctionComponent<Props> = ({
           name={`postings-${index}-currency`}
           value={unitCurrency}
           onChange={(event) => onUnitCurrencyChange?.(event.target.value)}
-          onKeyPress={(event) => onUnitCurrencyKeyDown?.(event)}
-          onKeyDown={(event) => onUnitCurrencyKeyPress?.(event)}
+          onKeyPress={(event) => onUnitCurrencyKeyPress?.(event)}
+          onKeyDown={(event) => onUnitCurrencyKeyDown?.(event)}
           onBlur={() => onUnitCurrencyBlur?.()}
           style={{
             borderTopLeftRadius: 0,

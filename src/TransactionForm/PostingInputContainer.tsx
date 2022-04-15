@@ -16,9 +16,11 @@ export interface Props {
   readonly unitNumberError?: string;
   readonly unitCurrency?: string;
   readonly unitCurrencyError?: string;
+  readonly unitCurrencyUpdateCounter?: number;
   readonly accounts: Array<string>;
   readonly currencies: Array<string>;
   readonly onAccountChange?: (value: string) => void;
+  readonly onAccountBlur?: () => void;
   readonly onUnitNumberChange?: (value: string) => void;
   readonly onUnitCurrencyChange?: (value: string) => void;
   readonly onDelete?: () => void;
@@ -38,11 +40,21 @@ interface AutoCompleteProps {
 const useAutoComplete = (
   inputValue: string,
   candidateValues: Array<string>,
+  updateCounter?: number,
   onValueChange?: (value: string) => void
 ): AutoCompleteProps => {
   const [value, setValue] = useState<string>(inputValue ?? "");
+  const [updateCounterValue, setUpdateCounterValue] = useState<number>(
+    updateCounter ?? 0
+  );
   const [candidateIndex, setCandidateIndex] = useState<number>(0);
   const [displayCandidates, setDisplayCandidates] = useState<boolean>(false);
+
+  if (updateCounterValue !== (updateCounter ?? 0)) {
+    setValue(inputValue);
+    setUpdateCounterValue(updateCounter ?? 0);
+    setDisplayCandidates(false);
+  }
 
   const lowerTrimedValue = value.trim().toLowerCase();
   const matchedValues: Array<Candidate> = useMemo(
@@ -155,11 +167,13 @@ const PostingInputContainer: FunctionComponent<Props> = ({
   unitNumber,
   unitCurrencyError,
   unitCurrency,
+  unitCurrencyUpdateCounter,
   unitNumberError,
   accounts,
   currencies,
   index,
   onAccountChange,
+  onAccountBlur,
   onUnitNumberChange,
   onUnitCurrencyChange,
   onDelete,
@@ -171,11 +185,13 @@ const PostingInputContainer: FunctionComponent<Props> = ({
   const accountProps = useAutoComplete(
     account ?? "",
     accounts,
+    0,
     onAccountChange
   );
   const unitCurrencyProps = useAutoComplete(
     unitCurrency ?? "",
     currencies,
+    unitCurrencyUpdateCounter,
     onUnitCurrencyChange
   );
 
@@ -192,7 +208,10 @@ const PostingInputContainer: FunctionComponent<Props> = ({
       onAccountKeyDown={accountProps.onKeyDown}
       onAccountKeyPress={accountProps.onKeyPress}
       onAccountCandidateClick={accountProps.onCandidateClick}
-      onAccountBlur={accountProps.onBlur}
+      onAccountBlur={() => {
+        accountProps.onBlur();
+        onAccountBlur?.();
+      }}
       // Unit number
       unitNumber={unitNumberValue}
       unitNumberError={unitNumberError}

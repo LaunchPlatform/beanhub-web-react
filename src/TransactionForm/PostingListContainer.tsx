@@ -19,6 +19,7 @@ interface PostingRecordState {
   readonly unitNumber: string;
   readonly unitNumberError?: string;
   readonly unitCurrency: string;
+  readonly unitCurrencyUpdateCounter?: number;
   readonly unitCurrencyError?: string;
 }
 
@@ -91,6 +92,7 @@ const PostingListContainer: FunctionComponent<Props> = ({
           unitNumber={posting.unitNumber}
           unitNumberError={posting.unitNumberError}
           unitCurrency={posting.unitCurrency}
+          unitCurrencyUpdateCounter={posting.unitCurrencyUpdateCounter}
           unitCurrencyError={posting.unitCurrencyError}
           accounts={accounts}
           currencies={
@@ -114,6 +116,31 @@ const PostingListContainer: FunctionComponent<Props> = ({
                 } as PostingRecordState,
               ];
             }
+            setPostingsState(newPostings);
+            window.history.replaceState(
+              {
+                ...window.history.state,
+                postings: newPostings,
+              },
+              ""
+            );
+          }}
+          onAccountBlur={() => {
+            const currencies =
+              accountCurrencies[postingsState[index].account.trim()];
+            if (currencies === undefined || currencies.length !== 1) {
+              return;
+            }
+            if (postingsState[index].unitCurrency.trim().length != 0) {
+              return;
+            }
+            let newPostings = [...postingsState];
+            newPostings[index] = {
+              ...newPostings[index],
+              unitCurrency: currencies[0],
+              unitCurrencyUpdateCounter:
+                (newPostings[index].unitCurrencyUpdateCounter ?? 0) + 1,
+            };
             setPostingsState(newPostings);
             window.history.replaceState(
               {
