@@ -131,7 +131,7 @@ const PostingListContainer: FunctionComponent<Props> = ({
             if (currencies === undefined || currencies.length !== 1) {
               return;
             }
-            if (postingsState[index].unitCurrency.trim().length != 0) {
+            if (postingsState[index].unitCurrency.trim().length !== 0) {
               return;
             }
             let newPostings = [...postingsState];
