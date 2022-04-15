@@ -12,7 +12,13 @@ const accounts: Array<string> = [
   "Equity:CommonStock",
 ];
 
-const currencies: Array<string> = [
+const accountCurrencies: Record<string, Array<string>> = {
+  Assets: ["USD", "BTC", "EUR", "TWD"],
+  "Assets:Bank": ["TWD"],
+  "Assets:Cash": ["BTC"],
+};
+
+const defaultCurrencies: Array<string> = [
   "USD",
   "UYU",
   "UZS",
@@ -29,7 +35,11 @@ export default {
 } as ComponentMeta<typeof PostingListContainer>;
 
 export const Primary: ComponentStory<typeof PostingListContainer> = () => (
-  <PostingListContainer accounts={accounts} currencies={currencies} />
+  <PostingListContainer
+    accounts={accounts}
+    accountCurrencies={accountCurrencies}
+    defaultCurrencies={defaultCurrencies}
+  />
 );
 
 export const InitialValues: ComponentStory<typeof PostingListContainer> =
@@ -40,7 +50,8 @@ export const InitialValues: ComponentStory<typeof PostingListContainer> =
         { account: "Expenses", unitNumber: "12.34", unitCurrency: "USD" },
       ]}
       accounts={accounts}
-      currencies={currencies}
+      accountCurrencies={accountCurrencies}
+      defaultCurrencies={defaultCurrencies}
     />
   );
 
@@ -56,6 +67,7 @@ export const Error: ComponentStory<typeof PostingListContainer> = () => (
       { account: "Expenses", unitNumber: "12.34", unitCurrency: "USD" },
     ]}
     accounts={accounts}
-    currencies={currencies}
+    accountCurrencies={accountCurrencies}
+    defaultCurrencies={defaultCurrencies}
   />
 );

@@ -76,6 +76,9 @@ const useAutoComplete = (
         ),
     [lowerTrimedValue, candidateValues]
   );
+  if (matchedValues.length === 0 && displayCandidates) {
+    setDisplayCandidates(false);
+  }
   const onChange = useCallback(
     (value) => {
       setValue(value);

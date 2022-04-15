@@ -22,7 +22,7 @@ export interface Props {
   readonly files: Array<string>;
   readonly accounts: Array<string>;
   readonly accountCurrencies: Record<string, Array<string>>;
-  readonly defaultCurrency: string;
+  readonly defaultCurrencies: Array<string>;
   readonly errors?: Array<string>;
 }
 
@@ -42,7 +42,7 @@ const Form: FunctionComponent<Props> = ({
   files,
   accounts,
   accountCurrencies,
-  defaultCurrency,
+  defaultCurrencies,
   errors,
 }: Props) => {
   let initialFileValue = initialFile;
@@ -128,7 +128,7 @@ const Form: FunctionComponent<Props> = ({
         initialPostings={initialPostings}
         accounts={accounts}
         accountCurrencies={accountCurrencies}
-        defaultCurrency={defaultCurrency}
+        defaultCurrencies={defaultCurrencies}
       />
       {hiddenFields !== undefined
         ? Object.entries(hiddenFields).map(([key, value]) => (
