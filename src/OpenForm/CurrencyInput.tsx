@@ -7,6 +7,7 @@ export interface Props {
   readonly currencies: Array<string>;
   readonly initialValues?: Array<string>;
   readonly error?: string;
+  readonly required?: boolean;
   readonly onChange?: (value: string) => void;
 }
 
@@ -31,11 +32,12 @@ const CurrencyInput: FunctionComponent<Props> = ({
   currencies,
   initialValues,
   error,
+  required,
   onChange,
 }: Props) => {
   const borderColor = error !== undefined ? "#fd3995" : "#E5E5E5";
   return (
-    <FormRow title="Currencies" required>
+    <FormRow title="Currencies" required={required}>
       <CustomSelect
         name="currencies"
         className={error !== undefined ? "is-invalid" : ""}

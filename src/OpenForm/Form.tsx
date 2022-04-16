@@ -4,6 +4,7 @@ import ErrorRow from "../Shared/ErrorRow";
 import FileInput from "../Shared/FileInput";
 import TextInput from "../Shared/TextInput";
 import SubmitButton from "../Shared/SubmitButton";
+import CurrencyInput from "./CurrencyInput";
 
 export interface Props {
   readonly action?: string;
@@ -14,10 +15,11 @@ export interface Props {
   readonly dateError?: string;
   readonly initialAccount?: string;
   readonly accountError?: string;
-  readonly initialNarration?: string;
-  readonly narrationError?: string;
+  readonly initialCurrencies?: Array<string>;
+  readonly currenciesError?: string;
   readonly hiddenFields?: Record<string, string>;
   readonly files: Array<string>;
+  readonly currencies: Array<string>;
   readonly errors?: Array<string>;
 }
 
@@ -30,15 +32,16 @@ const Form: FunctionComponent<Props> = ({
   dateError,
   initialAccount,
   accountError,
-  initialNarration,
-  narrationError,
+  initialCurrencies,
+  currenciesError,
   hiddenFields,
   files,
+  currencies,
   errors,
 }: Props) => {
   let initialFileValue = initialFile;
   let initialDateValue = initialDate;
-  let initialNarrationValue = initialNarration;
+  let initialCurrenciesValue = initialCurrencies;
   let initialAccountValue = initialAccount;
   if (window.history.state?.file !== undefined) {
     initialFileValue = window.history.state?.file;
@@ -46,8 +49,8 @@ const Form: FunctionComponent<Props> = ({
   if (window.history.state?.date !== undefined) {
     initialDateValue = window.history.state?.date;
   }
-  if (window.history.state?.narration !== undefined) {
-    initialNarrationValue = window.history.state?.narration;
+  if (window.history.state?.currencies !== undefined) {
+    initialCurrenciesValue = window.history.state?.currencies;
   }
   if (window.history.state?.payee !== undefined) {
     initialAccountValue = window.history.state?.payee;
@@ -98,6 +101,11 @@ const Form: FunctionComponent<Props> = ({
             ""
           );
         }}
+      />
+      <CurrencyInput
+        currencies={currencies}
+        initialValues={initialCurrenciesValue}
+        error={currenciesError}
       />
       {hiddenFields !== undefined
         ? Object.entries(hiddenFields).map(([key, value]) => (
