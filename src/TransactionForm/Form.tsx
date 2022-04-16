@@ -1,10 +1,10 @@
 import React, { FunctionComponent } from "react";
-import DateInput from "./DateInput";
-import ErrorRow from "./ErrorRow";
-import FileInput from "./FileInput";
-import TextInput from "./TextInput";
+import DateInput from "../Shared/DateInput";
+import ErrorRow from "../Shared/ErrorRow";
+import FileInput from "../Shared/FileInput";
+import TextInput from "../Shared/TextInput";
 import PostingListContainer, { PostingRecord } from "./PostingListContainer";
-import SubmitButton from "./SubmitButton";
+import SubmitButton from "../Shared/SubmitButton";
 
 export interface Props {
   readonly action?: string;
