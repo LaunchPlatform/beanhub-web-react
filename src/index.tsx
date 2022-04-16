@@ -1,15 +1,30 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Form, { Props } from "./TransactionForm/Form";
+import TransactionForm, {
+  Props as TransactionFormProps,
+} from "./TransactionForm/Form";
+import OpenForm, { Props as OpenFormProps } from "./OpenForm/Form";
 
 // TODO: maybe there's a better way to expose it?
 (window as any).renderTransactionForm = (
   element: HTMLElement,
-  props: Props
+  props: TransactionFormProps
 ) => {
   ReactDOM.render(
     <React.StrictMode>
-      <Form {...props} />
+      <TransactionForm {...props} />
+    </React.StrictMode>,
+    element
+  );
+};
+
+(window as any).renderOpenForm = (
+  element: HTMLElement,
+  props: OpenFormProps
+) => {
+  ReactDOM.render(
+    <React.StrictMode>
+      <OpenForm {...props} />
     </React.StrictMode>,
     element
   );
