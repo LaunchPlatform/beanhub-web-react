@@ -42,7 +42,7 @@ const defaultCurrencies: Array<string> = [
 ];
 
 export default {
-  title: "Form",
+  title: "TransactionForm/Form",
   component: Form,
 } as ComponentMeta<typeof Form>;
 

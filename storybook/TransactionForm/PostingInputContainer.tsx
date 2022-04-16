@@ -27,7 +27,7 @@ const currencies: Array<string> = [
 ];
 
 export default {
-  title: "PostingInputContainer",
+  title: "TransactionForm/PostingInputContainer",
   component: PostingInputContainer,
   argTypes: { onDelete: { action: "clicked" } },
 } as ComponentMeta<typeof PostingInputContainer>;

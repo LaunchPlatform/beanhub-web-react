@@ -2,10 +2,10 @@ import React from "react";
 
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
-import FileInput from "../../src/TransactionForm/FileInput";
+import FileInput from "../../src/Shared/FileInput";
 
 export default {
-  title: "FileInput",
+  title: "Shared/FileInput",
   component: FileInput,
 } as ComponentMeta<typeof FileInput>;
 

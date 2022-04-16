@@ -2,10 +2,10 @@ import React from "react";
 
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
-import ErrorRow from "../../src/TransactionForm/ErrorRow";
+import ErrorRow from "../../src/Shared/ErrorRow";
 
 export default {
-  title: "ErrorRow",
+  title: "Shared/ErrorRow",
   component: ErrorRow,
 } as ComponentMeta<typeof ErrorRow>;
 

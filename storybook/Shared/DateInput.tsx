@@ -2,10 +2,10 @@ import React from "react";
 
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
-import DateInput from "../../src/TransactionForm/DateInput";
+import DateInput from "../../src/Shared/DateInput";
 
 export default {
-  title: "DateInput",
+  title: "Shared/DateInput",
   component: DateInput,
 } as ComponentMeta<typeof DateInput>;
 

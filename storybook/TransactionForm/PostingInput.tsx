@@ -6,7 +6,7 @@ import { action } from "@storybook/addon-actions";
 import PostingInput from "../../src/TransactionForm/PostingInput";
 
 export default {
-  title: "PostingInput",
+  title: "TransactionForm/PostingInput",
   component: PostingInput,
   argTypes: { onDelete: { action: "clicked" } },
 } as ComponentMeta<typeof PostingInput>;

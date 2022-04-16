@@ -3,7 +3,6 @@ import DateInput from "../Shared/DateInput";
 import ErrorRow from "../Shared/ErrorRow";
 import FileInput from "../Shared/FileInput";
 import TextInput from "../Shared/TextInput";
-import PostingListContainer, { PostingRecord } from "./PostingListContainer";
 import SubmitButton from "../Shared/SubmitButton";
 
 export interface Props {
@@ -17,7 +16,6 @@ export interface Props {
   readonly payeeError?: string;
   readonly initialNarration?: string;
   readonly narrationError?: string;
-  readonly initialPostings?: Array<PostingRecord>;
   readonly hiddenFields?: Record<string, string>;
   readonly files: Array<string>;
   readonly accounts: Array<string>;
@@ -37,7 +35,6 @@ const Form: FunctionComponent<Props> = ({
   payeeError,
   initialNarration,
   narrationError,
-  initialPostings,
   hiddenFields,
   files,
   accounts,
@@ -124,12 +121,6 @@ const Form: FunctionComponent<Props> = ({
           );
         }}
       />
-      <PostingListContainer
-        initialPostings={initialPostings}
-        accounts={accounts}
-        accountCurrencies={accountCurrencies}
-        defaultCurrencies={defaultCurrencies}
-      />
       {hiddenFields !== undefined
         ? Object.entries(hiddenFields).map(([key, value]) => (
             <input type="hidden" name={key} value={value} />
@@ -138,7 +129,7 @@ const Form: FunctionComponent<Props> = ({
       {(errors ?? []).map((error, index) => (
         <ErrorRow key={index} message={error} />
       ))}
-      <SubmitButton title="Add" />
+      <SubmitButton title="Create" />
     </form>
   );
 };
