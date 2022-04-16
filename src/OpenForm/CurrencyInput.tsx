@@ -39,7 +39,7 @@ const CurrencyInput: FunctionComponent<Props> = ({
   return (
     <FormRow title="Currencies" required={required}>
       <CustomSelect
-        name="currencies"
+        name="currency"
         className={error !== undefined ? "is-invalid" : ""}
         isMulti
         styles={{
