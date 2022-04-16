@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState, useEffect } from "react";
 import { v4 as uuid } from "uuid";
-import FormRow from "./FormRow";
+import FormRow from "../Shared/FormRow";
 import PostingInputContainer from "./PostingInputContainer";
 
 export interface PostingRecord {

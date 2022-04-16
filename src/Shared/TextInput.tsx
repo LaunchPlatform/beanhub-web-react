@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import FormRow from "./FormRow";
+import FormRow from "../Shared/FormRow";
 
 export interface Props {
   readonly label: string;
