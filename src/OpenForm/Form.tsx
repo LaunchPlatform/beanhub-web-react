@@ -12,15 +12,12 @@ export interface Props {
   readonly fileError?: string;
   readonly initialDate?: string;
   readonly dateError?: string;
-  readonly initialPayee?: string;
-  readonly payeeError?: string;
+  readonly initialAccount?: string;
+  readonly accountError?: string;
   readonly initialNarration?: string;
   readonly narrationError?: string;
   readonly hiddenFields?: Record<string, string>;
   readonly files: Array<string>;
-  readonly accounts: Array<string>;
-  readonly accountCurrencies: Record<string, Array<string>>;
-  readonly defaultCurrencies: Array<string>;
   readonly errors?: Array<string>;
 }
 
@@ -31,21 +28,18 @@ const Form: FunctionComponent<Props> = ({
   fileError,
   initialDate,
   dateError,
-  initialPayee,
-  payeeError,
+  initialAccount,
+  accountError,
   initialNarration,
   narrationError,
   hiddenFields,
   files,
-  accounts,
-  accountCurrencies,
-  defaultCurrencies,
   errors,
 }: Props) => {
   let initialFileValue = initialFile;
   let initialDateValue = initialDate;
   let initialNarrationValue = initialNarration;
-  let initialPayeeValue = initialPayee;
+  let initialAccountValue = initialAccount;
   if (window.history.state?.file !== undefined) {
     initialFileValue = window.history.state?.file;
   }
@@ -56,7 +50,7 @@ const Form: FunctionComponent<Props> = ({
     initialNarrationValue = window.history.state?.narration;
   }
   if (window.history.state?.payee !== undefined) {
-    initialPayeeValue = window.history.state?.payee;
+    initialAccountValue = window.history.state?.payee;
   }
 
   return (
@@ -89,33 +83,17 @@ const Form: FunctionComponent<Props> = ({
         }}
       />
       <TextInput
-        label="Payee"
-        name="payee"
-        placeholder="Payee of the transaction"
-        defaultValue={initialPayeeValue}
-        error={payeeError}
-        onChange={(value) => {
-          window.history.replaceState(
-            {
-              ...window.history.state,
-              payee: value,
-            },
-            ""
-          );
-        }}
-      />
-      <TextInput
-        label="Narration"
-        name="narration"
-        placeholder="Narration of the transaction"
-        defaultValue={initialNarrationValue}
-        error={narrationError}
+        label="Account"
+        name="account"
+        placeholder="Name of account"
+        defaultValue={initialAccountValue}
+        error={accountError}
         required
         onChange={(value) => {
           window.history.replaceState(
             {
               ...window.history.state,
-              narration: value,
+              account: value,
             },
             ""
           );
@@ -129,7 +107,7 @@ const Form: FunctionComponent<Props> = ({
       {(errors ?? []).map((error, index) => (
         <ErrorRow key={index} message={error} />
       ))}
-      <SubmitButton title="Create" />
+      <SubmitButton title="Add" />
     </form>
   );
 };
