@@ -8,7 +8,7 @@ export interface Props {
   readonly initialValues?: Array<string>;
   readonly error?: string;
   readonly required?: boolean;
-  readonly onChange?: (value: string) => void;
+  readonly onChange?: (values: Array<string>) => void;
 }
 
 interface Option {
@@ -75,8 +75,8 @@ const CurrencyInput: FunctionComponent<Props> = ({
             ? initialValues.map((value) => ({ value, label: value }))
             : undefined
         }
-        onChange={(option) => {
-          onChange?.((option as any).value);
+        onChange={(options) => {
+          onChange?.((options as Array<any>).map((option) => option.value));
         }}
       />
       {error !== undefined ? (

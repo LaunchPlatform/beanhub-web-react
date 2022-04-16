@@ -52,8 +52,8 @@ const Form: FunctionComponent<Props> = ({
   if (window.history.state?.currencies !== undefined) {
     initialCurrenciesValue = window.history.state?.currencies;
   }
-  if (window.history.state?.payee !== undefined) {
-    initialAccountValue = window.history.state?.payee;
+  if (window.history.state?.account !== undefined) {
+    initialAccountValue = window.history.state?.account;
   }
 
   return (
@@ -106,6 +106,15 @@ const Form: FunctionComponent<Props> = ({
         currencies={currencies}
         initialValues={initialCurrenciesValue}
         error={currenciesError}
+        onChange={(values) => {
+          window.history.replaceState(
+            {
+              ...window.history.state,
+              currencies: values,
+            },
+            ""
+          );
+        }}
       />
       {hiddenFields !== undefined
         ? Object.entries(hiddenFields).map(([key, value]) => (
