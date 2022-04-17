@@ -2,7 +2,6 @@ import React, { FunctionComponent } from "react";
 import DateInput from "../Shared/DateInput";
 import ErrorRow from "../Shared/ErrorRow";
 import Selection from "../Shared/Selection";
-import TextInput from "../Shared/TextInput";
 import SubmitButton from "../Shared/SubmitButton";
 
 export interface Props {
