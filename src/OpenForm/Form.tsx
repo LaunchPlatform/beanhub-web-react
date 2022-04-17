@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import DateInput from "../Shared/DateInput";
 import ErrorRow from "../Shared/ErrorRow";
-import FileInput from "../Shared/FileInput";
+import SelectionInput from "../Shared/Selection";
 import TextInput from "../Shared/TextInput";
 import SubmitButton from "../Shared/SubmitButton";
 import CurrencyInput from "./CurrencyInput";
@@ -58,9 +58,11 @@ const Form: FunctionComponent<Props> = ({
 
   return (
     <form action={action} method={method ?? "POST"}>
-      <FileInput
-        files={files}
-        initialFile={initialFileValue}
+      <SelectionInput
+        title="File"
+        name="file"
+        values={files}
+        initialValue={initialFileValue}
         error={fileError}
         onChange={(value) => {
           window.history.replaceState(

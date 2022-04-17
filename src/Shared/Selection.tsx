@@ -3,8 +3,10 @@ import Select, { GroupBase, Props as SelectProps } from "react-select";
 import FormRow from "./FormRow";
 
 export interface Props {
-  readonly files: Array<string>;
-  readonly initialFile?: string;
+  readonly title: string;
+  readonly name: string;
+  readonly values: Array<string>;
+  readonly initialValue?: string;
   readonly error?: string;
   readonly onChange?: (value: string) => void;
 }
@@ -23,17 +25,19 @@ function CustomSelect<
   );
 }
 
-const FileInput: FunctionComponent<Props> = ({
-  files,
-  initialFile,
+const SelectionInput: FunctionComponent<Props> = ({
+  values,
+  initialValue,
+  title,
+  name,
   error,
   onChange,
 }: Props) => {
   const borderColor = error !== undefined ? "#fd3995" : "#E5E5E5";
   return (
-    <FormRow title="File" required>
+    <FormRow title={title} required>
       <CustomSelect
-        name="file"
+        name={name}
         className={error !== undefined ? "is-invalid" : ""}
         styles={{
           option: (provided, state) => ({
@@ -62,10 +66,10 @@ const FileInput: FunctionComponent<Props> = ({
             return { ...provided, zIndex: 5 };
           },
         }}
-        options={files.map((file) => ({ value: file, label: file }))}
+        options={values.map((value) => ({ value, label: value }))}
         defaultValue={
-          initialFile !== undefined
-            ? { value: initialFile, label: initialFile }
+          initialValue !== undefined
+            ? { value: initialValue, label: initialValue }
             : undefined
         }
         onChange={(option) => {
@@ -78,4 +82,4 @@ const FileInput: FunctionComponent<Props> = ({
     </FormRow>
   );
 };
-export default FileInput;
+export default SelectionInput;

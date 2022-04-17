@@ -1,9 +1,8 @@
 import React, { FunctionComponent } from "react";
 import DateInput from "../Shared/DateInput";
 import ErrorRow from "../Shared/ErrorRow";
-import SelectionInput from "../Shared/Selection";
+import Selection from "../Shared/Selection";
 import TextInput from "../Shared/TextInput";
-import PostingListContainer, { PostingRecord } from "./PostingListContainer";
 import SubmitButton from "../Shared/SubmitButton";
 
 export interface Props {
@@ -13,16 +12,11 @@ export interface Props {
   readonly fileError?: string;
   readonly initialDate?: string;
   readonly dateError?: string;
-  readonly initialPayee?: string;
-  readonly payeeError?: string;
-  readonly initialNarration?: string;
-  readonly narrationError?: string;
-  readonly initialPostings?: Array<PostingRecord>;
+  readonly initialAccount?: string;
+  readonly accountError?: string;
   readonly hiddenFields?: Record<string, string>;
   readonly files: Array<string>;
   readonly accounts: Array<string>;
-  readonly accountCurrencies: Record<string, Array<string>>;
-  readonly defaultCurrencies: Array<string>;
   readonly errors?: Array<string>;
 }
 
@@ -33,38 +27,29 @@ const Form: FunctionComponent<Props> = ({
   fileError,
   initialDate,
   dateError,
-  initialPayee,
-  payeeError,
-  initialNarration,
-  narrationError,
-  initialPostings,
+  initialAccount,
+  accountError,
   hiddenFields,
   files,
   accounts,
-  accountCurrencies,
-  defaultCurrencies,
   errors,
 }: Props) => {
   let initialFileValue = initialFile;
   let initialDateValue = initialDate;
-  let initialNarrationValue = initialNarration;
-  let initialPayeeValue = initialPayee;
+  let initialAccountValue = initialAccount;
   if (window.history.state?.file !== undefined) {
     initialFileValue = window.history.state?.file;
   }
   if (window.history.state?.date !== undefined) {
     initialDateValue = window.history.state?.date;
   }
-  if (window.history.state?.narration !== undefined) {
-    initialNarrationValue = window.history.state?.narration;
-  }
-  if (window.history.state?.payee !== undefined) {
-    initialPayeeValue = window.history.state?.payee;
+  if (window.history.state?.account !== undefined) {
+    initialAccountValue = window.history.state?.account;
   }
 
   return (
     <form action={action} method={method ?? "POST"}>
-      <SelectionInput
+      <Selection
         title="File"
         name="file"
         values={files}
@@ -93,44 +78,21 @@ const Form: FunctionComponent<Props> = ({
           );
         }}
       />
-      <TextInput
-        label="Payee"
-        name="payee"
-        placeholder="Payee of the transaction"
-        defaultValue={initialPayeeValue}
-        error={payeeError}
+      <Selection
+        title="Account"
+        name="account"
+        values={accounts}
+        initialValue={initialAccountValue}
+        error={accountError}
         onChange={(value) => {
           window.history.replaceState(
             {
               ...window.history.state,
-              payee: value,
+              account: value,
             },
             ""
           );
         }}
-      />
-      <TextInput
-        label="Narration"
-        name="narration"
-        placeholder="Narration of the transaction"
-        defaultValue={initialNarrationValue}
-        error={narrationError}
-        required
-        onChange={(value) => {
-          window.history.replaceState(
-            {
-              ...window.history.state,
-              narration: value,
-            },
-            ""
-          );
-        }}
-      />
-      <PostingListContainer
-        initialPostings={initialPostings}
-        accounts={accounts}
-        accountCurrencies={accountCurrencies}
-        defaultCurrencies={defaultCurrencies}
       />
       {hiddenFields !== undefined
         ? Object.entries(hiddenFields).map(([key, value]) => (
