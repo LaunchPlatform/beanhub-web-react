@@ -5,6 +5,9 @@ import TransactionForm, {
 } from "./TransactionForm/Form";
 import OpenForm, { Props as OpenFormProps } from "./OpenForm/Form";
 import CloseForm, { Props as CloseFormProps } from "./CloseForm/Form";
+import CommodityForm, {
+  Props as CommodityFormProps,
+} from "./CommodityForm/Form";
 
 // TODO: maybe there's a better way to expose it?
 (window as any).renderTransactionForm = (
@@ -38,6 +41,18 @@ import CloseForm, { Props as CloseFormProps } from "./CloseForm/Form";
   ReactDOM.render(
     <React.StrictMode>
       <CloseForm {...props} />
+    </React.StrictMode>,
+    element
+  );
+};
+
+(window as any).renderCommodityForm = (
+  element: HTMLElement,
+  props: CommodityFormProps
+) => {
+  ReactDOM.render(
+    <React.StrictMode>
+      <CommodityForm {...props} />
     </React.StrictMode>,
     element
   );
