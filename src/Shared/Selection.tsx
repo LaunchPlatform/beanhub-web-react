@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from "react";
 import Select, { GroupBase, Props as SelectProps } from "react-select";
+import CreatableSelect from "react-select/creatable";
 import FormRow from "./FormRow";
 
 export interface Props {
@@ -8,6 +9,8 @@ export interface Props {
   readonly values: Array<string>;
   readonly initialValue?: string;
   readonly error?: string;
+  readonly required?: boolean;
+  readonly creatable?: boolean;
   readonly onChange?: (value: string) => void;
 }
 
@@ -19,7 +22,17 @@ interface Option {
 function CustomSelect<
   IsMulti extends boolean = false,
   Group extends GroupBase<Option> = GroupBase<Option>
->(props: SelectProps<Option, IsMulti, Group>) {
+>(
+  props: SelectProps<Option, IsMulti, Group> & { readonly creatable?: boolean }
+) {
+  if (props.creatable) {
+    return (
+      <CreatableSelect
+        {...props}
+        theme={(theme) => ({ ...theme, borderRadius: 0 })}
+      />
+    );
+  }
   return (
     <Select {...props} theme={(theme) => ({ ...theme, borderRadius: 0 })} />
   );
@@ -31,13 +44,16 @@ const SelectionInput: FunctionComponent<Props> = ({
   title,
   name,
   error,
+  required,
+  creatable,
   onChange,
 }: Props) => {
   const borderColor = error !== undefined ? "#fd3995" : "#E5E5E5";
   return (
-    <FormRow title={title} required>
+    <FormRow title={title} required={required}>
       <CustomSelect
         name={name}
+        creatable={creatable}
         className={error !== undefined ? "is-invalid" : ""}
         styles={{
           option: (provided, state) => ({

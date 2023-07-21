@@ -6,7 +6,6 @@ import { action } from "@storybook/addon-actions";
 import PostingCandidateList from "../../src/TransactionForm/PostingCandidateList";
 
 export default {
-  title: "TransactionForm/PostingCandidateList",
   component: PostingCandidateList,
 } as ComponentMeta<typeof PostingCandidateList>;
 

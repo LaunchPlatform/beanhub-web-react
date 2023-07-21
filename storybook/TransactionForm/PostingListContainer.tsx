@@ -30,7 +30,6 @@ const defaultCurrencies: Array<string> = [
 ];
 
 export default {
-  title: "TransactionForm/PostingListContainer",
   component: PostingListContainer,
 } as ComponentMeta<typeof PostingListContainer>;
 

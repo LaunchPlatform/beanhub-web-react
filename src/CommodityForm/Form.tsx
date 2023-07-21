@@ -53,6 +53,7 @@ const Form: FunctionComponent<Props> = ({
         values={files}
         initialValue={initialFileValue}
         error={fileError}
+        required
         onChange={(value) => {
           window.history.replaceState(
             {
@@ -66,6 +67,7 @@ const Form: FunctionComponent<Props> = ({
       <DateInput
         defaultValue={initialDateValue}
         error={dateError}
+        required
         onChange={(value) => {
           window.history.replaceState(
             {

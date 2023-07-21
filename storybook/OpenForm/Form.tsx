@@ -26,7 +26,6 @@ const currencies: Array<string> = [
 ];
 
 export default {
-  title: "OpenForm/Form",
   component: Form,
 } as ComponentMeta<typeof Form>;
 

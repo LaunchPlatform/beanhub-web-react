@@ -5,7 +5,6 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import ErrorRow from "../../src/Shared/ErrorRow";
 
 export default {
-  title: "Shared/ErrorRow",
   component: ErrorRow,
 } as ComponentMeta<typeof ErrorRow>;
 

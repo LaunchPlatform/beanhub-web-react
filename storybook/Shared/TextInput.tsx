@@ -5,7 +5,6 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import TextInput from "../../src/Shared/TextInput";
 
 export default {
-  title: "Shared/TextInput",
   component: TextInput,
 } as ComponentMeta<typeof TextInput>;
 

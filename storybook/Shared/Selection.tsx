@@ -5,7 +5,6 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import Selection from "../../src/Shared/Selection";
 
 export default {
-  title: "Shared/Selection",
   component: Selection,
 } as ComponentMeta<typeof Selection>;
 
