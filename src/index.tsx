@@ -1,13 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import TransactionForm, {
-  Props as TransactionFormProps,
-} from "./TransactionForm/Form";
-import OpenForm, { Props as OpenFormProps } from "./OpenForm/Form";
 import CloseForm, { Props as CloseFormProps } from "./CloseForm/Form";
 import CommodityForm, {
   Props as CommodityFormProps,
 } from "./CommodityForm/Form";
+import CustomForm, { Props as CustomFormProps } from "./CustomForm/Form";
+import OpenForm, { Props as OpenFormProps } from "./OpenForm/Form";
+import TransactionForm, {
+  Props as TransactionFormProps,
+} from "./TransactionForm/Form";
 
 // TODO: maybe there's a better way to expose it?
 (window as any).renderTransactionForm = (
@@ -53,6 +54,18 @@ import CommodityForm, {
   ReactDOM.render(
     <React.StrictMode>
       <CommodityForm {...props} />
+    </React.StrictMode>,
+    element
+  );
+};
+
+(window as any).renderCustomForm = (
+  element: HTMLElement,
+  props: CustomFormProps
+) => {
+  ReactDOM.render(
+    <React.StrictMode>
+      <CustomForm {...props} />
     </React.StrictMode>,
     element
   );
