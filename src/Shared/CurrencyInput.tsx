@@ -71,19 +71,18 @@ const CurrencyInput: FunctionComponent<Props> = ({
 }: Props) => {
   const borderColor = error !== undefined ? "#fd3995" : "#E5E5E5";
   const SelectComponent = multiple ? MultiCustomSelect : SingleCustomSelect;
-  let defaultValue:
-    | { value: string; label: string }
-    | Array<{ value: string; label: string }>;
+  let defaultValue: Option | Array<Option> | undefined;
   if (multiple) {
     defaultValue =
       initialValue !== undefined
-        ? initialValue.map((value) => ({ value, label: value }))
+        ? (initialValue as Array<string>).map((value) => ({
+            value,
+            label: value,
+          }))
         : undefined;
   } else {
-    defaultValue =
-      initialValue !== undefined
-        ? { value: initialValue, label: initialValue }
-        : undefined;
+    const value: string | undefined = initialValue as string;
+    defaultValue = value !== undefined ? { value, label: value } : undefined;
   }
   return (
     <FormRow title={label ?? "Currencies"} required={required}>
