@@ -5,7 +5,6 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import DateInput from "../../src/Shared/DateInput";
 
 export default {
-  title: "Shared/DateInput",
   component: DateInput,
 } as ComponentMeta<typeof DateInput>;
 

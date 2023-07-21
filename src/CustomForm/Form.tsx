@@ -99,7 +99,7 @@ const FormField: FunctionComponent<FieldProps> = ({
           name={field.name}
           currencies={currencies}
           // TODO: support multiple values
-          initialValues={[initialValue]}
+          initialValues={initialValue}
           error={field.error}
           onChange={(value) => {
             window.history.replaceState(

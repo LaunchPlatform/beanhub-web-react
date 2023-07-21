@@ -36,7 +36,6 @@ const currencies: Array<string> = [
 ];
 
 export default {
-  title: "CustomForm/Form",
   component: Form,
 } as ComponentMeta<typeof Form>;
 

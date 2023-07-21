@@ -25,7 +25,6 @@ const accounts: Array<string> = [
 ];
 
 export default {
-  title: "CommodityForm/Form",
   component: Form,
 } as ComponentMeta<typeof Form>;
 
