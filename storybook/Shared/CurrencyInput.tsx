@@ -83,3 +83,7 @@ export const SingleCreatableError: ComponentStory<typeof CurrencyInput> =
       creatable
     />
   );
+
+export const Required: ComponentStory<typeof CurrencyInput> = () => (
+  <CurrencyInput currencies={["USD", "BTC", "TWD"]} required />
+);
