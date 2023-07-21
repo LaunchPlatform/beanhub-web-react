@@ -95,3 +95,23 @@ export const Error: ComponentStory<typeof Form> = () => (
     fields={fields.map((field) => ({ ...field, error: "Required" }))}
   />
 );
+
+const defaultValues = {
+  date: "2023-07-21",
+  file: "books/2022.bean",
+  currency: ["USD", "BTC"],
+  str: "My txn",
+  int: "123",
+};
+
+export const DefaultValues: ComponentStory<typeof Form> = () => (
+  <Form
+    files={files}
+    currencies={currencies}
+    accounts={accounts}
+    fields={fields.map((field) => ({
+      ...field,
+      default: defaultValues[field.name],
+    }))}
+  />
+);
