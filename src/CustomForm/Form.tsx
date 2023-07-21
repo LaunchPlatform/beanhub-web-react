@@ -53,6 +53,7 @@ export interface Props {
   readonly currencies: Array<string>;
   readonly accounts: Array<string>;
   readonly errors?: Array<string>;
+  readonly submit?: string;
 }
 
 interface FieldProps {
@@ -209,6 +210,7 @@ const Form: FunctionComponent<Props> = ({
   currencies,
   accounts,
   errors,
+  submit,
 }: Props) => {
   return (
     <form action={action} method={method ?? "POST"}>
@@ -229,7 +231,7 @@ const Form: FunctionComponent<Props> = ({
       {(errors ?? []).map((error, index) => (
         <ErrorRow key={index} message={error} />
       ))}
-      <SubmitButton title="Add" />
+      <SubmitButton title={submit ?? "Submit"} />
     </form>
   );
 };
