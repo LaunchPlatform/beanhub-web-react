@@ -2,7 +2,7 @@ import React from "react";
 
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
-import Form, { FieldType } from "../../src/CustomForm/Form";
+import Form, { Field, FieldType } from "../../src/CustomForm/Form";
 
 const files: Array<string> = [
   "main.bean",
@@ -35,6 +35,36 @@ const currencies: Array<string> = [
   "TZS",
 ];
 
+const fields: Array<Field> = [
+  {
+    name: "date",
+    displayName: "The Date",
+    type: FieldType.date,
+  },
+  {
+    name: "file",
+    displayName: "The File",
+    type: FieldType.file,
+  },
+  {
+    name: "currency",
+    displayName: "The Currency",
+    type: FieldType.currency,
+    multiple: true,
+    creatable: true,
+  },
+  {
+    name: "str",
+    displayName: "The String",
+    type: FieldType.str,
+  },
+  {
+    name: "int",
+    displayName: "The Integer",
+    type: FieldType.int,
+  },
+];
+
 export default {
   component: Form,
 } as ComponentMeta<typeof Form>;
@@ -44,34 +74,24 @@ export const Primary: ComponentStory<typeof Form> = () => (
     files={files}
     currencies={currencies}
     accounts={accounts}
-    fields={[
-      {
-        name: "date",
-        displayName: "The Date",
-        type: FieldType.date,
-      },
-      {
-        name: "file",
-        displayName: "The File",
-        type: FieldType.file,
-      },
-      {
-        name: "currency",
-        displayName: "The Currency",
-        type: FieldType.currency,
-        multiple: true,
-        creatable: true,
-      },
-      {
-        name: "str",
-        displayName: "The String",
-        type: FieldType.str,
-      },
-      {
-        name: "int",
-        displayName: "The Integer",
-        type: FieldType.int,
-      },
-    ]}
+    fields={fields}
+  />
+);
+
+export const Required: ComponentStory<typeof Form> = () => (
+  <Form
+    files={files}
+    currencies={currencies}
+    accounts={accounts}
+    fields={fields.map((field) => ({ ...field, required: true }))}
+  />
+);
+
+export const Error: ComponentStory<typeof Form> = () => (
+  <Form
+    files={files}
+    currencies={currencies}
+    accounts={accounts}
+    fields={fields.map((field) => ({ ...field, error: "Required" }))}
   />
 );

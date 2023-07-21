@@ -8,6 +8,7 @@ export interface Props {
   readonly values: Array<string>;
   readonly initialValue?: string;
   readonly error?: string;
+  readonly required?: boolean;
   readonly onChange?: (value: string) => void;
 }
 
@@ -31,11 +32,12 @@ const SelectionInput: FunctionComponent<Props> = ({
   title,
   name,
   error,
+  required,
   onChange,
 }: Props) => {
   const borderColor = error !== undefined ? "#fd3995" : "#E5E5E5";
   return (
-    <FormRow title={title} required>
+    <FormRow title={title} required={required}>
       <CustomSelect
         name={name}
         className={error !== undefined ? "is-invalid" : ""}

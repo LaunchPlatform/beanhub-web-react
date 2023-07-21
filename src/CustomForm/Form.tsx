@@ -74,6 +74,7 @@ const FormField: FunctionComponent<FieldProps> = ({
           placeholder={displayName}
           defaultValue={initialValue as string}
           error={field.error}
+          required={field.required}
           onChange={(value) => {
             window.history.replaceState(
               {
@@ -93,6 +94,7 @@ const FormField: FunctionComponent<FieldProps> = ({
           placeholder={displayName}
           defaultValue={initialValue as string}
           error={field.error}
+          required={field.required}
           onChange={(value) => {
             window.history.replaceState(
               {
@@ -114,6 +116,7 @@ const FormField: FunctionComponent<FieldProps> = ({
           error={field.error}
           multiple={field.multiple}
           creatable={field.creatable}
+          required={field.required}
           onChange={(value) => {
             window.history.replaceState(
               {
@@ -133,6 +136,7 @@ const FormField: FunctionComponent<FieldProps> = ({
           values={files}
           initialValue={initialValue as string}
           error={field.error}
+          required={field.required}
           onChange={(value) => {
             window.history.replaceState(
               {

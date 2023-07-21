@@ -13,6 +13,7 @@ export interface Props {
   readonly defaultValue?: string;
   readonly placeholder?: string;
   readonly error?: string;
+  readonly required?: boolean;
   readonly onChange?: (value: string) => void;
 }
 
@@ -21,6 +22,7 @@ const DateInput: FunctionComponent<Props> = ({
   label,
   defaultValue,
   error,
+  required,
   placeholder,
   onChange,
 }: Props) => {
@@ -43,7 +45,7 @@ const DateInput: FunctionComponent<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <FormRow title={label ?? "Date"} required>
+    <FormRow title={label ?? "Date"} required={required}>
       <div className="input-group">
         <input
           type="text"
