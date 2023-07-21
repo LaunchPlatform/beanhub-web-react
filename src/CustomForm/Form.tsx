@@ -54,6 +54,7 @@ const FormField: FunctionComponent<FieldProps> = ({
   const displayName = field.displayName ?? field.name;
   switch (field.type) {
     case FieldType.str:
+    case FieldType.int:
       return (
         <TextInput
           label={displayName}
@@ -150,6 +151,7 @@ const Form: FunctionComponent<Props> = ({
     <form action={action} method={method ?? "POST"}>
       {fields.map((field) => (
         <FormField
+          key={field.name}
           field={field}
           currencies={currencies}
           files={files}

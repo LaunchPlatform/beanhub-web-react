@@ -51,6 +51,26 @@ export const Primary: ComponentStory<typeof Form> = () => (
         displayName: "The Date",
         type: FieldType.date,
       },
+      {
+        name: "file",
+        displayName: "The File",
+        type: FieldType.file,
+      },
+      {
+        name: "currency",
+        displayName: "The Currency",
+        type: FieldType.currency,
+      },
+      {
+        name: "str",
+        displayName: "The String",
+        type: FieldType.str,
+      },
+      {
+        name: "int",
+        displayName: "The Integer",
+        type: FieldType.int,
+      },
     ]}
   />
 );
