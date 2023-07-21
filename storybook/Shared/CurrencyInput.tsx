@@ -49,3 +49,37 @@ export const MultipleCreatableError: ComponentStory<typeof CurrencyInput> =
       creatable
     />
   );
+
+export const Single: ComponentStory<typeof CurrencyInput> = () => (
+  <CurrencyInput currencies={["USD", "BTC", "TWD"]} />
+);
+
+export const SingleInitialValue: ComponentStory<typeof CurrencyInput> = () => (
+  <CurrencyInput currencies={["USD", "BTC", "TWD"]} initialValue={"BTC"} />
+);
+
+export const SingleError: ComponentStory<typeof CurrencyInput> = () => (
+  <CurrencyInput currencies={["USD", "BTC", "TWD"]} error="Required" />
+);
+
+export const SingleCreatable: ComponentStory<typeof CurrencyInput> = () => (
+  <CurrencyInput currencies={["USD", "BTC", "TWD"]} creatable />
+);
+
+export const SingleCreatableInitialValue: ComponentStory<typeof CurrencyInput> =
+  () => (
+    <CurrencyInput
+      currencies={["USD", "BTC", "TWD"]}
+      initialValue={"BTC"}
+      creatable
+    />
+  );
+
+export const SingleCreatableError: ComponentStory<typeof CurrencyInput> =
+  () => (
+    <CurrencyInput
+      currencies={["USD", "BTC", "TWD"]}
+      error="Required"
+      creatable
+    />
+  );
