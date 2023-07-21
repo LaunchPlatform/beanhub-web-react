@@ -105,8 +105,10 @@ const Form: FunctionComponent<Props> = ({
         }}
       />
       <CurrencyInput
+        multiple
+        creatable
         currencies={currencies}
-        initialValues={initialCurrenciesValue}
+        initialValue={initialCurrenciesValue}
         error={currenciesError}
         onChange={(values) => {
           window.history.replaceState(
