@@ -65,9 +65,9 @@ const fields: Array<Field> = [
     type: FieldType.str,
   },
   {
-    name: "int",
-    displayName: "The Integer",
-    type: FieldType.int,
+    name: "number",
+    displayName: "The Number",
+    type: FieldType.number,
   },
 ];
 
@@ -107,7 +107,7 @@ const defaultValues = {
   file: "books/2022.bean",
   currency: ["USD", "BTC"],
   str: "My txn",
-  int: "123",
+  number: "123.45",
 };
 
 export const DefaultValues: ComponentStory<typeof Form> = () => (

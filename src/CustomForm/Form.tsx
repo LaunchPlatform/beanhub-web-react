@@ -6,10 +6,11 @@ import Selection from "../Shared/Selection";
 import TextInput from "../Shared/TextInput";
 import SubmitButton from "../Shared/SubmitButton";
 import CurrencyInput from "../Shared/CurrencyInput";
+import NumberInput from "../Shared/NumberInput";
 
 export enum FieldType {
   str = "str",
-  int = "int",
+  number = "number",
   file = "file",
   date = "date",
   currency = "currency",
@@ -74,9 +75,28 @@ const FormField: FunctionComponent<FieldProps> = ({
   const displayName = field.displayName ?? field.name;
   switch (field.type) {
     case FieldType.str:
-    case FieldType.int:
       return (
         <TextInput
+          label={displayName}
+          name={field.name}
+          placeholder={displayName}
+          defaultValue={initialValue as string}
+          error={field.error}
+          required={field.required}
+          onChange={(value) => {
+            window.history.replaceState(
+              {
+                ...window.history.state,
+                [field.name]: value,
+              },
+              ""
+            );
+          }}
+        />
+      );
+    case FieldType.number:
+      return (
+        <NumberInput
           label={displayName}
           name={field.name}
           placeholder={displayName}

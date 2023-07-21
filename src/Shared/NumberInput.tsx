@@ -26,7 +26,7 @@ const NumberInput: FunctionComponent<Props> = ({
     <div className="input-group">
       <input
         type="number"
-        step={integer ?? false ? "1" : undefined}
+        step={integer ?? false ? "1" : "any"}
         className={"form-control" + (error !== undefined ? " is-invalid" : "")}
         placeholder={placeholder}
         name={name}
