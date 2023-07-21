@@ -2,6 +2,7 @@ import React, { FunctionComponent } from "react";
 import DateInput from "../Shared/DateInput";
 import ErrorRow from "../Shared/ErrorRow";
 import SelectionInput from "../Shared/Selection";
+import Selection from "../Shared/Selection";
 import TextInput from "../Shared/TextInput";
 import SubmitButton from "../Shared/SubmitButton";
 import CurrencyInput from "../Shared/CurrencyInput";
@@ -23,7 +24,7 @@ export interface BaseField {
 }
 
 export interface OtherField extends BaseField {
-  readonly type: Exclude<FieldType, FieldType.currency>;
+  readonly type: Exclude<FieldType, FieldType.currency | FieldType.account>;
   readonly default?: string;
 }
 
@@ -34,7 +35,13 @@ export interface CurrencyField extends BaseField {
   readonly default?: string | Array<string>;
 }
 
-export type Field = OtherField | CurrencyField;
+export interface AccountField extends BaseField {
+  readonly type: FieldType.account;
+  readonly creatable?: boolean;
+  readonly default?: string;
+}
+
+export type Field = OtherField | CurrencyField | AccountField;
 
 export interface Props {
   readonly action?: string;
@@ -58,6 +65,7 @@ const FormField: FunctionComponent<FieldProps> = ({
   field,
   currencies,
   files,
+  accounts,
 }: FieldProps) => {
   let initialValue = field.default;
   if (window.history.state?.[field.name] !== undefined) {
@@ -149,7 +157,26 @@ const FormField: FunctionComponent<FieldProps> = ({
         />
       );
     case FieldType.account:
-      return null;
+      return (
+        <Selection
+          title={displayName}
+          name={field.name}
+          values={accounts}
+          initialValue={initialValue as string}
+          error={field.error}
+          required={field.required}
+          creatable={field.creatable}
+          onChange={(value) => {
+            window.history.replaceState(
+              {
+                ...window.history.state,
+                [field.name]: value,
+              },
+              ""
+            );
+          }}
+        />
+      );
   }
 };
 

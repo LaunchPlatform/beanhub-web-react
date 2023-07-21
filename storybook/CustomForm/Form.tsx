@@ -54,6 +54,12 @@ const fields: Array<Field> = [
     creatable: true,
   },
   {
+    name: "account",
+    displayName: "The Account",
+    type: FieldType.account,
+    creatable: true,
+  },
+  {
     name: "str",
     displayName: "The String",
     type: FieldType.str,
