@@ -59,6 +59,8 @@ export const Primary: ComponentStory<typeof Form> = () => (
         name: "currency",
         displayName: "The Currency",
         type: FieldType.currency,
+        multiple: true,
+        creatable: true,
       },
       {
         name: "str",

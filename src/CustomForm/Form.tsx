@@ -15,14 +15,26 @@ export enum FieldType {
   account = "account",
 }
 
-export interface Field {
-  readonly type: FieldType;
+export interface BaseField {
   readonly name: string;
-  readonly default?: string;
   readonly required?: boolean;
   readonly displayName?: string;
   readonly error?: string;
 }
+
+export interface OtherField extends BaseField {
+  readonly type: Exclude<FieldType, FieldType.currency>;
+  readonly default?: string;
+}
+
+export interface CurrencyField extends BaseField {
+  readonly type: FieldType.currency;
+  readonly multiple?: boolean;
+  readonly creatable?: boolean;
+  readonly default?: string | Array<string>;
+}
+
+export type Field = OtherField | CurrencyField;
 
 export interface Props {
   readonly action?: string;
@@ -60,7 +72,7 @@ const FormField: FunctionComponent<FieldProps> = ({
           label={displayName}
           name={field.name}
           placeholder={displayName}
-          defaultValue={initialValue}
+          defaultValue={initialValue as string}
           error={field.error}
           onChange={(value) => {
             window.history.replaceState(
@@ -79,7 +91,7 @@ const FormField: FunctionComponent<FieldProps> = ({
           label={displayName}
           name={field.name}
           placeholder={displayName}
-          defaultValue={initialValue}
+          defaultValue={initialValue as string}
           error={field.error}
           onChange={(value) => {
             window.history.replaceState(
@@ -98,9 +110,10 @@ const FormField: FunctionComponent<FieldProps> = ({
           label={displayName}
           name={field.name}
           currencies={currencies}
-          // TODO: support multiple values
-          initialValues={initialValue}
+          initialValue={initialValue}
           error={field.error}
+          multiple={field.multiple}
+          creatable={field.creatable}
           onChange={(value) => {
             window.history.replaceState(
               {
@@ -118,7 +131,7 @@ const FormField: FunctionComponent<FieldProps> = ({
           title={displayName}
           name={field.name}
           values={files}
-          initialValue={initialValue}
+          initialValue={initialValue as string}
           error={field.error}
           onChange={(value) => {
             window.history.replaceState(
@@ -134,7 +147,6 @@ const FormField: FunctionComponent<FieldProps> = ({
     case FieldType.account:
       return null;
   }
-  throw Error(`Unknown form field type ${field.type}`);
 };
 
 const Form: FunctionComponent<Props> = ({
