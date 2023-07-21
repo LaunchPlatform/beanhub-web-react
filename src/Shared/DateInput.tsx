@@ -8,14 +8,20 @@ const controls = {
 };
 
 export interface Props {
+  readonly name?: string;
+  readonly label?: string;
   readonly defaultValue?: string;
+  readonly placeholder?: string;
   readonly error?: string;
   readonly onChange?: (value: string) => void;
 }
 
 const DateInput: FunctionComponent<Props> = ({
+  name,
+  label,
   defaultValue,
   error,
+  placeholder,
   onChange,
 }: Props) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -37,7 +43,7 @@ const DateInput: FunctionComponent<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <FormRow title="Date" required>
+    <FormRow title={label ?? "Date"} required>
       <div className="input-group">
         <input
           type="text"
@@ -45,9 +51,9 @@ const DateInput: FunctionComponent<Props> = ({
             "form-control" + (error !== undefined ? " is-invalid" : "")
           }
           id={dateId}
-          name="date"
+          name={name ?? "date"}
           defaultValue={defaultValue}
-          placeholder="Date of transaction"
+          placeholder={placeholder ?? "Date of transaction"}
           onChange={(event) => onChange?.(event.target.value)}
         />
         <div className="input-group-append">

@@ -2,7 +2,7 @@ import React from "react";
 
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
-import CurrencyInput from "../../src/OpenForm/CurrencyInput";
+import CurrencyInput from "../../src/Shared/CurrencyInput";
 
 export default {
   title: "OpenForm/CurrencyInput",

@@ -4,7 +4,7 @@ import ErrorRow from "../Shared/ErrorRow";
 import SelectionInput from "../Shared/Selection";
 import TextInput from "../Shared/TextInput";
 import SubmitButton from "../Shared/SubmitButton";
-import CurrencyInput from "./CurrencyInput";
+import CurrencyInput from "../Shared/CurrencyInput";
 
 export interface Props {
   readonly action?: string;

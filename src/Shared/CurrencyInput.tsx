@@ -1,9 +1,11 @@
 import React, { FunctionComponent } from "react";
 import { GroupBase, Props as SelectProps } from "react-select";
 import CreatableSelect from "react-select/creatable";
-import FormRow from "../Shared/FormRow";
+import FormRow from "./FormRow";
 
 export interface Props {
+  readonly name?: string;
+  readonly label?: string;
   readonly currencies: Array<string>;
   readonly initialValues?: Array<string>;
   readonly error?: string;
@@ -29,6 +31,8 @@ function CustomSelect<
 }
 
 const CurrencyInput: FunctionComponent<Props> = ({
+  name,
+  label,
   currencies,
   initialValues,
   error,
@@ -37,9 +41,9 @@ const CurrencyInput: FunctionComponent<Props> = ({
 }: Props) => {
   const borderColor = error !== undefined ? "#fd3995" : "#E5E5E5";
   return (
-    <FormRow title="Currencies" required={required}>
+    <FormRow title={label ?? "Currencies"} required={required}>
       <CustomSelect
-        name="currency"
+        name={name ?? "currency"}
         className={error !== undefined ? "is-invalid" : ""}
         isMulti
         styles={{
