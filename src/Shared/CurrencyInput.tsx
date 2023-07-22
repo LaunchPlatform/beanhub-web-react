@@ -1,5 +1,10 @@
 import React, { FunctionComponent } from "react";
-import Select, { GroupBase, Props as SelectProps } from "react-select";
+import Select, {
+  GroupBase,
+  MultiValue,
+  Props as SelectProps,
+  SingleValue,
+} from "react-select";
 import CreatableSelect from "react-select/creatable";
 import FormRow from "./FormRow";
 
@@ -12,7 +17,7 @@ export interface Props {
   readonly required?: boolean;
   readonly multiple?: boolean;
   readonly creatable?: boolean;
-  readonly onChange?: (values: Array<string>) => void;
+  readonly onChange?: (values: Array<string> | string) => void;
 }
 
 interface Option {
@@ -121,7 +126,11 @@ const CurrencyInput: FunctionComponent<Props> = ({
         options={currencies.map((file) => ({ value: file, label: file }))}
         defaultValue={defaultValue}
         onChange={(options) => {
-          onChange?.((options as Array<any>).map((option) => option.value));
+          onChange?.(
+            multiple
+              ? (options as MultiValue<Option>).map((option) => option.value)
+              : (options as SingleValue<Option>)!.value
+          );
         }}
       />
       {error !== undefined ? (
