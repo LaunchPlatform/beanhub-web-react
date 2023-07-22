@@ -25,7 +25,10 @@ export interface BaseField {
 }
 
 export interface OtherField extends BaseField {
-  readonly type: Exclude<FieldType, FieldType.currency | FieldType.account>;
+  readonly type: Exclude<
+    FieldType,
+    FieldType.file | FieldType.currency | FieldType.account
+  >;
   readonly default?: string;
 }
 
@@ -36,13 +39,19 @@ export interface CurrencyField extends BaseField {
   readonly default?: string | Array<string>;
 }
 
+export interface FileField extends BaseField {
+  readonly type: FieldType.file;
+  readonly creatable?: boolean;
+  readonly default?: string;
+}
+
 export interface AccountField extends BaseField {
   readonly type: FieldType.account;
   readonly creatable?: boolean;
   readonly default?: string;
 }
 
-export type Field = OtherField | CurrencyField | AccountField;
+export type Field = OtherField | CurrencyField | FileField | AccountField;
 
 export interface Props {
   readonly action?: string;
@@ -166,6 +175,7 @@ const FormField: FunctionComponent<FieldProps> = ({
           initialValue={initialValue as string}
           error={field.error}
           required={field.required}
+          creatable={field.creatable}
           onChange={(value) => {
             window.history.replaceState(
               {

@@ -51,13 +51,11 @@ const fields: Array<Field> = [
     displayName: "The Currency",
     type: FieldType.currency,
     multiple: true,
-    creatable: true,
   },
   {
     name: "account",
     displayName: "The Account",
     type: FieldType.account,
-    creatable: true,
   },
   {
     name: "str",
@@ -118,6 +116,22 @@ export const DefaultValues: ComponentStory<typeof Form> = () => (
     fields={fields.map((field) => ({
       ...field,
       default: defaultValues[field.name],
+    }))}
+  />
+);
+
+export const Creatable: ComponentStory<typeof Form> = () => (
+  <Form
+    files={files}
+    currencies={currencies}
+    accounts={accounts}
+    fields={fields.map((field) => ({
+      ...field,
+      ...([FieldType.file, FieldType.account, FieldType.currency].includes(
+        field.type
+      )
+        ? { creatable: true }
+        : {}),
     }))}
   />
 );
