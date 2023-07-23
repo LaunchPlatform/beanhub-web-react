@@ -61,6 +61,7 @@ export interface Props {
   readonly files: Array<string>;
   readonly currencies: Array<string>;
   readonly accounts: Array<string>;
+  readonly defaultDate: string;
   readonly errors?: Array<string>;
   readonly submit?: string;
 }
@@ -70,6 +71,7 @@ interface FieldProps {
   readonly files: Array<string>;
   readonly currencies: Array<string>;
   readonly accounts: Array<string>;
+  readonly defaultDate: string;
 }
 
 const FormField: FunctionComponent<FieldProps> = ({
@@ -77,6 +79,7 @@ const FormField: FunctionComponent<FieldProps> = ({
   currencies,
   files,
   accounts,
+  defaultDate,
 }: FieldProps) => {
   let initialValue = field.default;
   if (window.history.state?.[field.name] !== undefined) {
@@ -125,6 +128,9 @@ const FormField: FunctionComponent<FieldProps> = ({
         />
       );
     case FieldType.date:
+      if (initialValue === undefined) {
+        initialValue = defaultDate;
+      }
       return (
         <DateInput
           label={displayName}
@@ -219,6 +225,7 @@ const Form: FunctionComponent<Props> = ({
   files,
   currencies,
   accounts,
+  defaultDate,
   errors,
   submit,
 }: Props) => {
@@ -231,6 +238,7 @@ const Form: FunctionComponent<Props> = ({
           currencies={currencies}
           files={files}
           accounts={accounts}
+          defaultDate={defaultDate}
         />
       ))}
       {hiddenFields !== undefined

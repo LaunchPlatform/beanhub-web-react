@@ -35,6 +35,8 @@ const currencies: Array<string> = [
   "TZS",
 ];
 
+const today = "2023-07-22";
+
 const fields: Array<Field> = [
   {
     name: "date",
@@ -79,6 +81,7 @@ export const Primary: ComponentStory<typeof Form> = () => (
     currencies={currencies}
     accounts={accounts}
     fields={fields}
+    defaultDate={today}
   />
 );
 
@@ -88,6 +91,7 @@ export const Required: ComponentStory<typeof Form> = () => (
     currencies={currencies}
     accounts={accounts}
     fields={fields.map((field) => ({ ...field, required: true }))}
+    defaultDate={today}
   />
 );
 
@@ -97,6 +101,7 @@ export const Error: ComponentStory<typeof Form> = () => (
     currencies={currencies}
     accounts={accounts}
     fields={fields.map((field) => ({ ...field, error: "Required" }))}
+    defaultDate={today}
   />
 );
 
@@ -117,6 +122,7 @@ export const DefaultValues: ComponentStory<typeof Form> = () => (
       ...field,
       default: defaultValues[field.name],
     }))}
+    defaultDate={today}
   />
 );
 
@@ -133,5 +139,6 @@ export const Creatable: ComponentStory<typeof Form> = () => (
         ? { creatable: true }
         : {}),
     }))}
+    defaultDate={today}
   />
 );
