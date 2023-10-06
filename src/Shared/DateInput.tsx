@@ -9,11 +9,6 @@ import FormRow from "./FormRow";
 import { v4 as uuid } from "uuid";
 import ThemeContext from "../Theme/context";
 
-const controls = {
-  leftArrow: '<i class="fal fa-angle-left" style="font-size: 1.25rem"></i>',
-  rightArrow: '<i class="fal fa-angle-right" style="font-size: 1.25rem"></i>',
-};
-
 export interface Props {
   readonly name?: string;
   readonly label?: string;
@@ -42,13 +37,17 @@ const DateInput: FunctionComponent<Props> = ({
 }: Props) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [dateId, _] = useState<string>(() => uuid());
+  const theme = useContext(ThemeContext);
   useEffect(() => {
     const datePicker = $("#" + dateId)
       .datepicker({
         format: "yyyy-mm-dd",
         todayHighlight: true,
         orientation: "bottom left",
-        templates: controls,
+        templates: {
+          leftArrow: `<i class="${theme.iconPrefix} fa-angle-left" style="font-size: 1.25rem"></i>`,
+          rightArrow: `<i class="${theme.iconPrefix} fa-angle-right" style="font-size: 1.25rem"></i>`,
+        },
       })
       .on("changeDate", (event: any) => {
         onChange?.(event.target.value);
@@ -58,7 +57,6 @@ const DateInput: FunctionComponent<Props> = ({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const theme = useContext(ThemeContext);
   return (
     <FormRow title={label ?? "Date"} required={required}>
       <div className="input-group">
