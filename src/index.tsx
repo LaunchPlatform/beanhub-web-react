@@ -9,6 +9,8 @@ import OpenForm, { Props as OpenFormProps } from "./OpenForm/Form";
 import TransactionForm, {
   Props as TransactionFormProps,
 } from "./TransactionForm/Form";
+import ThemeContext from "./Theme/context";
+import { ThemeConfig, defaulThemeConfig } from "./Theme/types";
 
 // TODO: maybe there's a better way to expose it?
 (window as any).renderTransactionForm = (
@@ -61,11 +63,14 @@ import TransactionForm, {
 
 (window as any).renderCustomForm = (
   element: HTMLElement,
-  props: CustomFormProps
+  props: CustomFormProps,
+  theme?: ThemeConfig
 ) => {
   ReactDOM.render(
     <React.StrictMode>
-      <CustomForm {...props} />
+      <ThemeContext.Provider value={theme ?? defaulThemeConfig}>
+        <CustomForm {...props} />
+      </ThemeContext.Provider>
     </React.StrictMode>,
     element
   );
