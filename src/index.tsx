@@ -68,7 +68,7 @@ import { ThemeConfig, defaulThemeConfig } from "./Theme/types";
 ) => {
   ReactDOM.render(
     <React.StrictMode>
-      <ThemeContext.Provider value={theme ?? defaulThemeConfig}>
+      <ThemeContext.Provider value={{ ...defaulThemeConfig, ...(theme ?? {}) }}>
         <CustomForm {...props} />
       </ThemeContext.Provider>
     </React.StrictMode>,
