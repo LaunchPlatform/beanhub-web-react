@@ -1,6 +1,13 @@
-import React, { FunctionComponent, useState, useEffect } from "react";
+import React, {
+  FunctionComponent,
+  useState,
+  useEffect,
+  useContext,
+  PropsWithChildren,
+} from "react";
 import FormRow from "./FormRow";
 import { v4 as uuid } from "uuid";
+import ThemeContext from "../Theme/context";
 
 const controls = {
   leftArrow: '<i class="fal fa-angle-left" style="font-size: 1.25rem"></i>',
@@ -16,6 +23,13 @@ export interface Props {
   readonly required?: boolean;
   readonly onChange?: (value: string) => void;
 }
+
+const WrapInputGroupAppend: FunctionComponent<
+  PropsWithChildren<{
+    wrap: boolean;
+  }>
+> = ({ wrap, children }) =>
+  wrap ? <div className="input-group-append">{children}</div> : <>{children}</>;
 
 const DateInput: FunctionComponent<Props> = ({
   name,
@@ -44,6 +58,7 @@ const DateInput: FunctionComponent<Props> = ({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const theme = useContext(ThemeContext);
   return (
     <FormRow title={label ?? "Date"} required={required}>
       <div className="input-group">
@@ -58,11 +73,11 @@ const DateInput: FunctionComponent<Props> = ({
           placeholder={placeholder ?? "Date of transaction"}
           onChange={(event) => onChange?.(event.target.value)}
         />
-        <div className="input-group-append">
+        <WrapInputGroupAppend wrap={!theme.originalBs5InputAppend}>
           <span className="input-group-text fs-xl">
-            <i className="fal fa-calendar-alt"></i>
+            <i className={`${theme.iconPrefix} ${theme.calendarIcon}`}></i>
           </span>
-        </div>
+        </WrapInputGroupAppend>
         {error !== undefined ? (
           <div className="invalid-feedback">{error}</div>
         ) : null}
