@@ -5,13 +5,13 @@ import CommodityForm, {
   Props as CommodityFormProps,
 } from "./CommodityForm/Form";
 import CustomForm, { Props as CustomFormProps } from "./CustomForm/Form";
-import OpenForm, { Props as OpenFormProps } from "./OpenForm/Form";
 import NoteForm, { Props as NoteFormProps } from "./NoteForm/Form";
+import OpenForm, { Props as OpenFormProps } from "./OpenForm/Form";
+import ThemeContext from "./Theme/context";
+import { ThemeConfig, defaulThemeConfig } from "./Theme/types";
 import TransactionForm, {
   Props as TransactionFormProps,
 } from "./TransactionForm/Form";
-import ThemeContext from "./Theme/context";
-import { ThemeConfig, defaulThemeConfig } from "./Theme/types";
 
 // TODO: maybe there's a better way to expose it?
 (window as any).renderTransactionForm = (
