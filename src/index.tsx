@@ -6,6 +6,7 @@ import CommodityForm, {
 } from "./CommodityForm/Form";
 import CustomForm, { Props as CustomFormProps } from "./CustomForm/Form";
 import OpenForm, { Props as OpenFormProps } from "./OpenForm/Form";
+import NoteForm, { Props as NoteFormProps } from "./NoteForm/Form";
 import TransactionForm, {
   Props as TransactionFormProps,
 } from "./TransactionForm/Form";
@@ -56,6 +57,18 @@ import { ThemeConfig, defaulThemeConfig } from "./Theme/types";
   ReactDOM.render(
     <React.StrictMode>
       <CommodityForm {...props} />
+    </React.StrictMode>,
+    element
+  );
+};
+
+(window as any).renderNoteForm = (
+  element: HTMLElement,
+  props: NoteFormProps
+) => {
+  ReactDOM.render(
+    <React.StrictMode>
+      <NoteForm {...props} />
     </React.StrictMode>,
     element
   );
