@@ -67,13 +67,14 @@ jobs:
             mkdir dist
             tag="${CIRCLE_TAG:-$CIRCLE_SHA1}"
             newname="beanhub-web-react-${tag}.js"
-            filename=$(basename  build/static/js/main.*.js)
-            mv $filename "dist/${newname}"
-            mv $filename.map "dist/${newname}.map"
-            mv $filename.LICENSE.txt "dist/${newname}.LICENSE.txt"
+            srcfile=$(ls build/static/js/main.*.js)
+            filename=$(basename ${srcfile})
+            mv ${srcfile} "dist/${newname}"
+            mv ${srcfile}.map "dist/${newname}.map"
+            mv ${srcfile}.LICENSE.txt "dist/${newname}.LICENSE.txt"
 
-            sed -i "s/${filename}/${name}.js/g" "dist/${newname}"
-            sed -i "s/${filename}/${name}.js/g" "dist/${newname}.map"
-            sed -i "s/${filename}/${name}.js/g" "dist/${newname}.LICENSE.txt"
+            sed -i "s/${filename}/${newname}/g" "dist/${newname}"
+            sed -i "s/${filename}/${newname}/g" "dist/${newname}.map"
+            sed -i "s/${filename}/${newname}/g" "dist/${newname}.LICENSE.txt"
       - store_artifacts:
           path: dist/
