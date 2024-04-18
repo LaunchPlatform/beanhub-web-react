@@ -63,6 +63,7 @@ const fields: Array<Field> = [
     name: "str",
     displayName: "The String",
     type: FieldType.str,
+    placeholder: "Custom place holder here",
   },
   {
     name: "number",

@@ -21,6 +21,7 @@ export interface BaseField {
   readonly name: string;
   readonly required?: boolean;
   readonly displayName?: string;
+  readonly placeholder?: string;
   readonly error?: string;
 }
 
@@ -86,13 +87,14 @@ const FormField: FunctionComponent<FieldProps> = ({
     initialValue = window.history.state?.[field.name];
   }
   const displayName = field.displayName ?? field.name;
+  const placeholder = field.placeholder ?? displayName;
   switch (field.type) {
     case FieldType.str:
       return (
         <TextInput
           label={displayName}
           name={field.name}
-          placeholder={displayName}
+          placeholder={placeholder}
           defaultValue={initialValue as string}
           error={field.error}
           required={field.required}
@@ -112,7 +114,7 @@ const FormField: FunctionComponent<FieldProps> = ({
         <NumberInput
           label={displayName}
           name={field.name}
-          placeholder={displayName}
+          placeholder={placeholder}
           defaultValue={initialValue as string}
           error={field.error}
           required={field.required}
@@ -135,7 +137,7 @@ const FormField: FunctionComponent<FieldProps> = ({
         <DateInput
           label={displayName}
           name={field.name}
-          placeholder={displayName}
+          placeholder={placeholder}
           defaultValue={initialValue as string}
           error={field.error}
           required={field.required}
