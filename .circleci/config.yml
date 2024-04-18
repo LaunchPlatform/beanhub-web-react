@@ -69,6 +69,8 @@ jobs:
             newname="beanhub-web-react-${tag}.js"
             srcfile=$(ls build/static/js/main.*.js)
             filename=$(basename ${srcfile})
+            # TODO: ideally there should be a better way to build making it
+            #       just js lib so that we don't need to do these
             mv ${srcfile} "dist/${newname}"
             mv ${srcfile}.map "dist/${newname}.map"
             mv ${srcfile}.LICENSE.txt "dist/${newname}.LICENSE.txt"
