@@ -3,7 +3,9 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 
-import PostingInput from "../../src/TransactionForm/PostingInput";
+import PostingInput, {
+  PriceMode,
+} from "../../src/TransactionForm/PostingInput";
 
 export default {
   component: PostingInput,
@@ -23,45 +25,42 @@ export const Primary: ComponentStory<typeof PostingInput> = () => (
   />
 );
 
-export const WithAccountCandidates: ComponentStory<typeof PostingInput> =
-  () => (
-    <PostingInput
-      account=""
-      unitNumber=""
-      unitCurrency=""
-      index={0}
-      onDelete={action("onDelete")}
-      onAccountChange={action("onAccountChange")}
-      onUnitNumberChange={action("onUnitNumberChange")}
-      onUnitCurrencyChange={action("onUnitCurrencyChange")}
-      onAccountCandidateClick={action("onAccountCandidateClick")}
-      accountCandidates={[
-        { value: "Assets", prefix: "Assets", suffix: "" },
-        { value: "Assets:Bank", prefix: "Assets", suffix: ":Bank" },
-        { value: "Assets:Cash", prefix: "Assets", suffix: ":Cash" },
-      ]}
-    />
-  );
+export const WithAccountCandidates: ComponentStory<typeof PostingInput> = () => (
+  <PostingInput
+    account=""
+    unitNumber=""
+    unitCurrency=""
+    index={0}
+    onDelete={action("onDelete")}
+    onAccountChange={action("onAccountChange")}
+    onUnitNumberChange={action("onUnitNumberChange")}
+    onUnitCurrencyChange={action("onUnitCurrencyChange")}
+    onAccountCandidateClick={action("onAccountCandidateClick")}
+    accountCandidates={[
+      { value: "Assets", prefix: "Assets", suffix: "" },
+      { value: "Assets:Bank", prefix: "Assets", suffix: ":Bank" },
+      { value: "Assets:Cash", prefix: "Assets", suffix: ":Cash" },
+    ]}
+  />
+);
 
-export const WithCurrencyCandidates: ComponentStory<typeof PostingInput> =
-  () => (
-    <PostingInput
-      account=""
-      unitNumber=""
-      unitCurrency=""
-      index={0}
-      onDelete={action("onDelete")}
-      onAccountChange={action("onAccountChange")}
-      onUnitNumberChange={action("onUnitNumberChange")}
-      onUnitCurrencyChange={action("onUnitCurrencyChange")}
-      onAccountCandidateClick={action("onAccountCandidateClick")}
-      unitCurrencyCandidates={[
-        { value: "Assets", prefix: "Assets", suffix: "" },
-        { value: "Assets:Bank", prefix: "Assets", suffix: ":Bank" },
-        { value: "Assets:Cash", prefix: "Assets", suffix: ":Cash" },
-      ]}
-    />
-  );
+export const WithCurrencyCandidates: ComponentStory<typeof PostingInput> = () => (
+  <PostingInput
+    account=""
+    unitNumber=""
+    unitCurrency=""
+    index={0}
+    onDelete={action("onDelete")}
+    onAccountChange={action("onAccountChange")}
+    onUnitNumberChange={action("onUnitNumberChange")}
+    onUnitCurrencyChange={action("onUnitCurrencyChange")}
+    onAccountCandidateClick={action("onAccountCandidateClick")}
+    unitCurrencyCandidates={[
+      { value: "BTC", prefix: "BTC", suffix: "" },
+      { value: "BTC_CASH", prefix: "BTC", suffix: "_CASH" },
+    ]}
+  />
+);
 
 export const AccountError: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
@@ -148,5 +147,56 @@ export const AllError: ComponentStory<typeof PostingInput> = () => (
     onAccountChange={action("onAccountChange")}
     onUnitNumberChange={action("onUnitNumberChange")}
     onUnitCurrencyChange={action("onUnitCurrencyChange")}
+  />
+);
+
+export const Price: ComponentStory<typeof PostingInput> = () => (
+  <PostingInput
+    account=""
+    unitNumber=""
+    unitCurrency=""
+    index={0}
+    priceMode={PriceMode.PRICE}
+    onDelete={action("onDelete")}
+    onAccountChange={action("onAccountChange")}
+    onUnitNumberChange={action("onUnitNumberChange")}
+    onUnitCurrencyChange={action("onUnitCurrencyChange")}
+    onPriceNumberChange={action("onPriceNumberChange")}
+    onPriceCurrencyChange={action("onPriceCurrencyChange")}
+  />
+);
+
+export const TotalPrice: ComponentStory<typeof PostingInput> = () => (
+  <PostingInput
+    account=""
+    unitNumber=""
+    unitCurrency=""
+    index={0}
+    priceMode={PriceMode.TOTAL_PRICE}
+    onDelete={action("onDelete")}
+    onAccountChange={action("onAccountChange")}
+    onUnitNumberChange={action("onUnitNumberChange")}
+    onUnitCurrencyChange={action("onUnitCurrencyChange")}
+    onPriceNumberChange={action("onPriceNumberChange")}
+    onPriceCurrencyChange={action("onPriceCurrencyChange")}
+  />
+);
+
+export const WithPriceCurrencyCandidates: ComponentStory<typeof PostingInput> = () => (
+  <PostingInput
+    account=""
+    unitNumber=""
+    unitCurrency=""
+    index={0}
+    priceMode={PriceMode.PRICE}
+    onDelete={action("onDelete")}
+    onAccountChange={action("onAccountChange")}
+    onUnitNumberChange={action("onUnitNumberChange")}
+    onUnitCurrencyChange={action("onUnitCurrencyChange")}
+    onAccountCandidateClick={action("onAccountCandidateClick")}
+    priceCurrencyCandidates={[
+      { value: "BTC", prefix: "BTC", suffix: "" },
+      { value: "BTC_CASH", prefix: "BTC", suffix: "_CASH" },
+    ]}
   />
 );

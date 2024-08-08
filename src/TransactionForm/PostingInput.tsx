@@ -25,9 +25,9 @@ export interface Props {
   readonly unitCurrencyCandidateIndex?: number;
   readonly unitCurrencyError?: string;
   readonly priceMode?: PriceMode;
-  readonly priceNumber: string;
+  readonly priceNumber?: string;
   readonly priceNumberError?: string;
-  readonly priceCurrency: string;
+  readonly priceCurrency?: string;
   readonly priceCurrencyCandidates?: Array<Candidate>;
   readonly priceCurrencyCandidateIndex?: number;
   readonly priceCurrencyError?: string;
@@ -273,7 +273,7 @@ const PostingInput: FunctionComponent<Props> = ({
                 (priceCurrencyError !== undefined ? " is-invalid" : "")
               }
               placeholder="USD"
-              name={`postings-${index}-currency`}
+              name={`postings-${index}-price-currency`}
               value={priceCurrency}
               onChange={(event) => onPriceCurrencyChange?.(event.target.value)}
               onKeyPress={(event) => onPriceCurrencyKeyPress?.(event)}
