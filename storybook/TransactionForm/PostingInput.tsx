@@ -182,6 +182,25 @@ export const TotalPrice: ComponentStory<typeof PostingInput> = () => (
   />
 );
 
+export const PriceAllError: ComponentStory<typeof PostingInput> = () => (
+  <PostingInput
+    account=""
+    unitNumber=""
+    unitCurrency=""
+    index={0}
+    priceMode={PriceMode.PRICE}
+    accountError="Account required"
+    unitNumberError="Number required"
+    unitCurrencyError="Currency required"
+    priceNumberError="Number required"
+    priceCurrencyError="Currency required"
+    onDelete={action("onDelete")}
+    onAccountChange={action("onAccountChange")}
+    onUnitNumberChange={action("onUnitNumberChange")}
+    onUnitCurrencyChange={action("onUnitCurrencyChange")}
+  />
+);
+
 export const WithPriceCurrencyCandidates: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
     account=""
