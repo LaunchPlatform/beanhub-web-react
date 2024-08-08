@@ -142,6 +142,9 @@ const PostingListContainer: FunctionComponent<Props> = ({
                   account: "",
                   unitNumber: "",
                   unitCurrency: "",
+                  priceMode: PriceMode.INACTIVE,
+                  priceNumber: "",
+                  priceCurrency: "",
                 } as PostingRecordState,
               ];
             }
