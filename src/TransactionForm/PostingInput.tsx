@@ -47,6 +47,7 @@ export interface Props {
   ) => void;
   readonly onUnitCurrencyBlur?: () => void;
   readonly onUnitCurrencyCandidateClick?: (value: string) => void;
+  readonly onPriceButtonClick?: () => void;
   readonly onPriceNumberChange?: (value: string) => void;
   readonly onPriceCurrencyChange?: (value: string) => void;
   readonly onPriceCurrencyKeyPress?: (
@@ -90,6 +91,7 @@ const PostingInput: FunctionComponent<Props> = ({
   onUnitCurrencyKeyDown,
   onUnitCurrencyBlur,
   onUnitCurrencyCandidateClick,
+  onPriceButtonClick,
   onPriceNumberChange,
   onPriceCurrencyChange,
   onPriceCurrencyKeyPress,
@@ -233,7 +235,7 @@ const PostingInput: FunctionComponent<Props> = ({
           title={
             priceModeValue === PriceMode.TOTAL_PRICE ? "Total Price" : "Price"
           }
-          onClick={undefined}
+          onClick={onPriceButtonClick}
         >
           {priceModeValue === PriceMode.TOTAL_PRICE ? "@@" : "@"}
         </button>

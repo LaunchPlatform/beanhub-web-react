@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 import { Candidate } from "./PostingCandidateList";
-import PostingInput from "./PostingInput";
+import PostingInput, { PriceMode } from "./PostingInput";
 
 export interface Props {
   readonly index: number;
@@ -17,12 +17,20 @@ export interface Props {
   readonly unitCurrency?: string;
   readonly unitCurrencyError?: string;
   readonly unitCurrencyUpdateCounter?: number;
+  readonly priceNumber?: string;
+  readonly priceNumberError?: string;
+  readonly priceCurrency?: string;
+  readonly priceCurrencyError?: string;
+  readonly priceCurrencyUpdateCounter?: number;
+  readonly initialPriceMode?: PriceMode;
   readonly accounts: Array<string>;
   readonly currencies: Array<string>;
   readonly onAccountChange?: (value: string) => void;
   readonly onAccountBlur?: () => void;
   readonly onUnitNumberChange?: (value: string) => void;
   readonly onUnitCurrencyChange?: (value: string) => void;
+  readonly onPriceNumberChange?: (value: string) => void;
+  readonly onPriceCurrencyChange?: (value: string) => void;
   readonly onDelete?: () => void;
 }
 
@@ -172,6 +180,12 @@ const PostingInputContainer: FunctionComponent<Props> = ({
   unitCurrency,
   unitCurrencyUpdateCounter,
   unitNumberError,
+  initialPriceMode,
+  priceNumber,
+  priceNumberError,
+  priceCurrency,
+  priceCurrencyError,
+  priceCurrencyUpdateCounter,
   accounts,
   currencies,
   index,
@@ -179,10 +193,18 @@ const PostingInputContainer: FunctionComponent<Props> = ({
   onAccountBlur,
   onUnitNumberChange,
   onUnitCurrencyChange,
+  onPriceNumberChange,
+  onPriceCurrencyChange,
   onDelete,
 }: Props) => {
   const [unitNumberValue, setUnitNumberValue] = useState<string>(
     unitNumber ?? ""
+  );
+  const [priceMode, setPriceMode] = useState<PriceMode>(
+    initialPriceMode ?? PriceMode.INACTIVE
+  );
+  const [priceNumberValue, setPriceNumberValue] = useState<string>(
+    priceNumber ?? ""
   );
 
   const accountProps = useAutoComplete(
@@ -197,7 +219,12 @@ const PostingInputContainer: FunctionComponent<Props> = ({
     unitCurrencyUpdateCounter,
     onUnitCurrencyChange
   );
-
+  const priceCurrencyProps = useAutoComplete(
+    priceCurrency ?? "",
+    currencies,
+    priceCurrencyUpdateCounter,
+    onPriceCurrencyChange
+  );
   return (
     <PostingInput
       index={index}
@@ -232,6 +259,32 @@ const PostingInputContainer: FunctionComponent<Props> = ({
       onUnitCurrencyKeyPress={unitCurrencyProps.onKeyPress}
       onUnitCurrencyCandidateClick={unitCurrencyProps.onCandidateClick}
       onUnitCurrencyBlur={unitCurrencyProps.onBlur}
+      // Price mode
+      priceMode={priceMode}
+      onPriceButtonClick={() => {
+        const options = Object.keys(PriceMode);
+        const index = options.indexOf(PriceMode[priceMode]);
+        const nextModeKey = options[(index + 1) % options.length];
+        const nextMode = PriceMode[nextModeKey as keyof typeof PriceMode];
+        setPriceMode(nextMode);
+      }}
+      // Price number
+      priceNumber={priceNumberValue}
+      priceNumberError={priceNumberError}
+      onPriceNumberChange={(value) => {
+        onPriceNumberChange?.(value);
+        setPriceNumberValue(value);
+      }}
+      // Price currency
+      priceCurrency={priceCurrencyProps.value}
+      priceCurrencyCandidates={priceCurrencyProps.candidates}
+      priceCurrencyCandidateIndex={priceCurrencyProps.candidateIndex}
+      priceCurrencyError={priceCurrencyError}
+      onPriceCurrencyChange={priceCurrencyProps.onChange}
+      onPriceCurrencyKeyDown={priceCurrencyProps.onKeyDown}
+      onPriceCurrencyKeyPress={priceCurrencyProps.onKeyPress}
+      onPriceCurrencyCandidateClick={priceCurrencyProps.onCandidateClick}
+      onPriceCurrencyBlur={priceCurrencyProps.onBlur}
     />
   );
 };
