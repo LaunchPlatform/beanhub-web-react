@@ -23,6 +23,7 @@ export interface Props {
   readonly priceCurrencyError?: string;
   readonly priceCurrencyUpdateCounter?: number;
   readonly initialPriceMode?: PriceMode;
+  readonly priceExpanded?: boolean;
   readonly accounts: Array<string>;
   readonly currencies: Array<string>;
   readonly onAccountChange?: (value: string) => void;
@@ -31,6 +32,7 @@ export interface Props {
   readonly onUnitCurrencyChange?: (value: string) => void;
   readonly onPriceNumberChange?: (value: string) => void;
   readonly onPriceCurrencyChange?: (value: string) => void;
+  readonly onPriceModeChange?: (priceMode: PriceMode) => void;
   readonly onDelete?: () => void;
 }
 
@@ -181,6 +183,7 @@ const PostingInputContainer: FunctionComponent<Props> = ({
   unitCurrencyUpdateCounter,
   unitNumberError,
   initialPriceMode,
+  priceExpanded,
   priceNumber,
   priceNumberError,
   priceCurrency,
@@ -195,6 +198,7 @@ const PostingInputContainer: FunctionComponent<Props> = ({
   onUnitCurrencyChange,
   onPriceNumberChange,
   onPriceCurrencyChange,
+  onPriceModeChange,
   onDelete,
 }: Props) => {
   const [unitNumberValue, setUnitNumberValue] = useState<string>(
@@ -260,15 +264,23 @@ const PostingInputContainer: FunctionComponent<Props> = ({
       onUnitCurrencyCandidateClick={unitCurrencyProps.onCandidateClick}
       onUnitCurrencyBlur={unitCurrencyProps.onBlur}
       // Price mode
-      priceMode={priceMode}
+      priceMode={
+        priceMode === PriceMode.INACTIVE
+          ? priceExpanded
+            ? PriceMode.EXPANDED
+            : priceMode
+          : priceMode
+      }
       onPriceButtonClick={() => {
-        const options = Object.keys(PriceMode).filter((val) =>
-          isNaN(Number(val))
-        );
-        const index = options.indexOf(PriceMode[priceMode]);
-        const nextModeKey = options[(index + 1) % options.length];
-        const nextMode = PriceMode[nextModeKey as keyof typeof PriceMode];
+        const options = [
+          PriceMode.INACTIVE,
+          PriceMode.PRICE,
+          PriceMode.TOTAL_PRICE,
+        ];
+        const index = options.indexOf(priceMode);
+        const nextMode = options[(index + 1) % options.length];
         setPriceMode(nextMode);
+        onPriceModeChange?.(nextMode);
       }}
       // Price number
       priceNumber={priceNumberValue}

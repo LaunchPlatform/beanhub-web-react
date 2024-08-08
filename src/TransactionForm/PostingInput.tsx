@@ -5,6 +5,8 @@ export enum PriceMode {
   INACTIVE,
   PRICE,
   TOTAL_PRICE,
+  // Expanded to fill the space for layout but disabled
+  EXPANDED,
 }
 
 export interface Candidate {
@@ -225,12 +227,15 @@ const PostingInput: FunctionComponent<Props> = ({
           />
         ) : null}
       </div>
+      {/* TODO: Adjust width */}
       <div className="input-group-append">
         <button
           type="button"
           className={
             "btn btn-outline-default" +
-            (priceModeValue !== PriceMode.INACTIVE ? " active" : "")
+            ([PriceMode.PRICE, PriceMode.TOTAL_PRICE].includes(priceModeValue)
+              ? " active"
+              : "")
           }
           title={
             priceModeValue === PriceMode.TOTAL_PRICE ? "Total Price" : "Price"
@@ -253,6 +258,7 @@ const PostingInput: FunctionComponent<Props> = ({
             name={`postings-${index}-price-number`}
             value={priceNumber}
             onChange={(event) => onPriceNumberChange?.(event.target.value)}
+            disabled={priceModeValue === PriceMode.EXPANDED}
             style={{
               marginLeft: -1,
               ...(priceNumberError !== undefined
@@ -277,6 +283,7 @@ const PostingInput: FunctionComponent<Props> = ({
               placeholder="USD"
               name={`postings-${index}-price-currency`}
               value={priceCurrency}
+              disabled={priceModeValue === PriceMode.EXPANDED}
               onChange={(event) => onPriceCurrencyChange?.(event.target.value)}
               onKeyPress={(event) => onPriceCurrencyKeyPress?.(event)}
               onKeyDown={(event) => onPriceCurrencyKeyDown?.(event)}
