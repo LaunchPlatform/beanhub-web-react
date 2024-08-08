@@ -262,7 +262,9 @@ const PostingInputContainer: FunctionComponent<Props> = ({
       // Price mode
       priceMode={priceMode}
       onPriceButtonClick={() => {
-        const options = Object.keys(PriceMode);
+        const options = Object.keys(PriceMode).filter((val) =>
+          isNaN(Number(val))
+        );
         const index = options.indexOf(PriceMode[priceMode]);
         const nextModeKey = options[(index + 1) % options.length];
         const nextMode = PriceMode[nextModeKey as keyof typeof PriceMode];
