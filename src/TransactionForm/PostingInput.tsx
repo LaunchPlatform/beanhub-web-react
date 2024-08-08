@@ -227,10 +227,10 @@ const PostingInput: FunctionComponent<Props> = ({
           />
         ) : null}
       </div>
-      {/* TODO: Adjust width */}
       <div className="input-group-append">
         <button
           type="button"
+          style={{ width: "5em" }}
           className={
             "btn btn-outline-default" +
             ([PriceMode.PRICE, PriceMode.TOTAL_PRICE].includes(priceModeValue)
