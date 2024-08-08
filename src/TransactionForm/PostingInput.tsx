@@ -1,6 +1,12 @@
 import React, { FunctionComponent, KeyboardEvent } from "react";
 import PostingCandidateList from "./PostingCandidateList";
 
+export enum PriceMode {
+  INACTIVE,
+  PRICE,
+  TOTAL_PRICE,
+}
+
 export interface Candidate {
   readonly prefix: string;
   readonly suffix: string;
@@ -18,6 +24,13 @@ export interface Props {
   readonly unitCurrencyCandidates?: Array<Candidate>;
   readonly unitCurrencyCandidateIndex?: number;
   readonly unitCurrencyError?: string;
+  readonly priceMode?: PriceMode;
+  readonly priceNumber: string;
+  readonly priceNumberError?: string;
+  readonly priceCurrency: string;
+  readonly priceCurrencyCandidates?: Array<Candidate>;
+  readonly priceCurrencyCandidateIndex?: number;
+  readonly priceCurrencyError?: string;
   readonly index: number;
   readonly onAccountChange?: (value: string) => void;
   readonly onAccountKeyPress?: (event: KeyboardEvent<HTMLInputElement>) => void;
@@ -34,6 +47,16 @@ export interface Props {
   ) => void;
   readonly onUnitCurrencyBlur?: () => void;
   readonly onUnitCurrencyCandidateClick?: (value: string) => void;
+  readonly onPriceNumberChange?: (value: string) => void;
+  readonly onPriceCurrencyChange?: (value: string) => void;
+  readonly onPriceCurrencyKeyPress?: (
+    event: KeyboardEvent<HTMLInputElement>
+  ) => void;
+  readonly onPriceCurrencyKeyDown?: (
+    event: KeyboardEvent<HTMLInputElement>
+  ) => void;
+  readonly onPriceCurrencyBlur?: () => void;
+  readonly onPriceCurrencyCandidateClick?: (value: string) => void;
   readonly onDelete?: () => void;
 }
 
@@ -48,6 +71,13 @@ const PostingInput: FunctionComponent<Props> = ({
   unitCurrencyCandidates,
   unitCurrencyCandidateIndex,
   unitCurrencyError,
+  priceMode,
+  priceNumber,
+  priceNumberError,
+  priceCurrency,
+  priceCurrencyCandidates,
+  priceCurrencyCandidateIndex,
+  priceCurrencyError,
   index,
   onAccountChange,
   onAccountKeyPress,
@@ -60,11 +90,18 @@ const PostingInput: FunctionComponent<Props> = ({
   onUnitCurrencyKeyDown,
   onUnitCurrencyBlur,
   onUnitCurrencyCandidateClick,
+  onPriceNumberChange,
+  onPriceCurrencyChange,
+  onPriceCurrencyKeyPress,
+  onPriceCurrencyKeyDown,
+  onPriceCurrencyBlur,
+  onPriceCurrencyCandidateClick,
   onDelete,
 }: Props) => {
   const isInvalid = [accountError, unitNumberError, unitCurrencyError].some(
     (value) => value !== undefined
   );
+  const priceModeValue = priceMode ?? PriceMode.INACTIVE;
   return (
     <div className="input-group">
       <div
@@ -186,6 +223,93 @@ const PostingInput: FunctionComponent<Props> = ({
           />
         ) : null}
       </div>
+      <div className="input-group-append">
+        <button
+          type="button"
+          className={
+            "btn btn-outline-default" +
+            (priceModeValue !== PriceMode.INACTIVE ? " active" : "")
+          }
+          title={
+            priceModeValue === PriceMode.TOTAL_PRICE ? "Total Price" : "Price"
+          }
+          onClick={undefined}
+        >
+          {priceModeValue === PriceMode.TOTAL_PRICE ? "@@" : "@"}
+        </button>
+      </div>
+      {priceModeValue !== PriceMode.INACTIVE ? (
+        <>
+          <input
+            type="number"
+            aria-label="Price Number"
+            className={
+              "form-control" +
+              (priceNumberError !== undefined ? " is-invalid" : "")
+            }
+            placeholder="12.34"
+            name={`postings-${index}-price-number`}
+            value={priceNumber}
+            onChange={(event) => onPriceNumberChange?.(event.target.value)}
+            style={{
+              marginLeft: -1,
+              ...(priceNumberError !== undefined
+                ? {
+                    zIndex: 1,
+                    position: "relative",
+                  }
+                : {}),
+            }}
+          />
+          <div
+            className="form-control-wrapper position-relative"
+            style={{ marginLeft: -1, flex: 1 }}
+          >
+            <input
+              type="text"
+              aria-label="Price Currency"
+              className={
+                "form-control" +
+                (priceCurrencyError !== undefined ? " is-invalid" : "")
+              }
+              placeholder="USD"
+              name={`postings-${index}-currency`}
+              value={priceCurrency}
+              onChange={(event) => onPriceCurrencyChange?.(event.target.value)}
+              onKeyPress={(event) => onPriceCurrencyKeyPress?.(event)}
+              onKeyDown={(event) => onPriceCurrencyKeyDown?.(event)}
+              onBlur={() => onPriceCurrencyBlur?.()}
+              style={{
+                borderTopLeftRadius: 0,
+                borderBottomLeftRadius: 0,
+                borderTopRightRadius: 0,
+                borderBottomRightRadius: 0,
+                ...(priceCurrencyError !== undefined
+                  ? {
+                      zIndex: 1,
+                      position: "relative",
+                    }
+                  : {}),
+              }}
+            />
+            {priceCurrencyCandidates !== undefined ? (
+              <PostingCandidateList
+                style={{ position: "absolute", width: "100%", zIndex: 1 }}
+                activeIndex={priceCurrencyCandidateIndex ?? 0}
+                candidates={priceCurrencyCandidates.map(
+                  (item) =>
+                    ({
+                      value: item.value,
+                      prefix: item.prefix,
+                      suffix: item.suffix,
+                    } as Candidate)
+                )}
+                onClick={(value) => onPriceCurrencyCandidateClick?.(value)}
+              />
+            ) : null}
+          </div>
+        </>
+      ) : undefined}
       <div className="input-group-append">
         <button
           type="button"
