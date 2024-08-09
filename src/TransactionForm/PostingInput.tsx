@@ -250,7 +250,7 @@ const PostingInput: FunctionComponent<Props> = ({
           {[PriceMode.PRICE, PriceMode.TOTAL_PRICE].includes(priceModeValue) ? (
             <input
               type="hidden"
-              name={`postings-${index}-price-mode`}
+              name={`postings-${index}-price_mode`}
               value={priceModeValue === PriceMode.TOTAL_PRICE ? "@@" : "@"}
             />
           ) : null}
@@ -262,7 +262,7 @@ const PostingInput: FunctionComponent<Props> = ({
               (priceNumberError !== undefined ? " is-invalid" : "")
             }
             placeholder="12.34"
-            name={`postings-${index}-price-number`}
+            name={`postings-${index}-price_number`}
             value={priceNumber}
             onChange={(event) => onPriceNumberChange?.(event.target.value)}
             disabled={priceModeValue === PriceMode.EXPANDED}
@@ -288,7 +288,7 @@ const PostingInput: FunctionComponent<Props> = ({
                 (priceCurrencyError !== undefined ? " is-invalid" : "")
               }
               placeholder="USD"
-              name={`postings-${index}-price-currency`}
+              name={`postings-${index}-price_currency`}
               value={priceCurrency}
               disabled={priceModeValue === PriceMode.EXPANDED}
               onChange={(event) => onPriceCurrencyChange?.(event.target.value)}
