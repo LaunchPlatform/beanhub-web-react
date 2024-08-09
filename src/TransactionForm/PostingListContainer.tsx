@@ -118,6 +118,7 @@ const PostingListContainer: FunctionComponent<Props> = ({
           priceExpanded={postingsState.some(
             (posting) => posting.priceMode !== PriceMode.INACTIVE
           )}
+          initialPriceMode={posting.priceMode}
           priceNumber={posting.priceNumber}
           priceNumberError={posting.priceNumberError}
           priceCurrency={posting.priceCurrency}

@@ -3,6 +3,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import Form from "../../src/TransactionForm/Form";
+import { PriceMode } from "../../src/TransactionForm/PostingInput";
 
 const files: Array<string> = [
   "main.bean",
@@ -63,6 +64,29 @@ export const InitialValues: ComponentStory<typeof Form> = () => (
     initialPostings={[
       { account: "Assets", unitNumber: "-12.34", unitCurrency: "USD" },
       { account: "Expenses", unitNumber: "12.34", unitCurrency: "USD" },
+    ]}
+    accounts={accounts}
+    accountCurrencies={accountCurrencies}
+    defaultCurrencies={defaultCurrencies}
+  />
+);
+
+export const InitialPriceValues: ComponentStory<typeof Form> = () => (
+  <Form
+    files={files}
+    initialNarration="This "
+    initialPayee="Jane Doe"
+    initialDate="2022-03-02"
+    initialPostings={[
+      { account: "Assets", unitNumber: "-12.34", unitCurrency: "USD" },
+      {
+        account: "Expenses",
+        unitNumber: "12.34",
+        unitCurrency: "USD",
+        priceMode: PriceMode.PRICE.toString() as any,
+        priceNumber: "45.67",
+        priceCurrency: "BTC",
+      },
     ]}
     accounts={accounts}
     accountCurrencies={accountCurrencies}

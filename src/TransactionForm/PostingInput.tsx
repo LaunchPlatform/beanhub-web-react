@@ -106,7 +106,6 @@ const PostingInput: FunctionComponent<Props> = ({
     (value) => value !== undefined
   );
   const priceModeValue = priceMode ?? PriceMode.INACTIVE;
-  console.info("!!!!", priceModeValue.toString());
   return (
     <div className="input-group">
       <div
