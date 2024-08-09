@@ -2,11 +2,11 @@ import React, { FunctionComponent, KeyboardEvent } from "react";
 import PostingCandidateList from "./PostingCandidateList";
 
 export enum PriceMode {
-  INACTIVE,
-  PRICE,
-  TOTAL_PRICE,
+  INACTIVE = "INACTIVE",
+  PRICE = "PRICE",
+  TOTAL_PRICE = "TOTAL_PRICE",
   // Expanded to fill the space for layout but disabled
-  EXPANDED,
+  EXPANDED = "EXPANDED",
 }
 
 export interface Candidate {
@@ -106,6 +106,7 @@ const PostingInput: FunctionComponent<Props> = ({
     (value) => value !== undefined
   );
   const priceModeValue = priceMode ?? PriceMode.INACTIVE;
+  console.info("!!!!", priceModeValue.toString());
   return (
     <div className="input-group">
       <div
@@ -251,7 +252,7 @@ const PostingInput: FunctionComponent<Props> = ({
             <input
               type="hidden"
               name={`postings-${index}-price_mode`}
-              value={priceModeValue === PriceMode.TOTAL_PRICE ? "@@" : "@"}
+              value={priceModeValue}
             />
           ) : null}
           <input
