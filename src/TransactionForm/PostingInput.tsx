@@ -247,6 +247,13 @@ const PostingInput: FunctionComponent<Props> = ({
       </div>
       {priceModeValue !== PriceMode.INACTIVE ? (
         <>
+          {[PriceMode.PRICE, PriceMode.TOTAL_PRICE].includes(priceModeValue) ? (
+            <input
+              type="hidden"
+              name={`postings-${index}-price-mode`}
+              value={priceModeValue === PriceMode.TOTAL_PRICE ? "@@" : "@"}
+            />
+          ) : null}
           <input
             type="number"
             aria-label="Price Number"
