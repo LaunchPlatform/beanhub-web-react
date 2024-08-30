@@ -9,6 +9,7 @@ import SubmitButton from "../Shared/SubmitButton";
 export interface Props {
   readonly action?: string;
   readonly method?: string;
+  readonly submitButtonTitle?: string;
   readonly initialFile?: string;
   readonly fileError?: string;
   readonly initialDate?: string;
@@ -29,6 +30,7 @@ export interface Props {
 const Form: FunctionComponent<Props> = ({
   action,
   method,
+  submitButtonTitle,
   initialFile,
   fileError,
   initialDate,
@@ -142,7 +144,7 @@ const Form: FunctionComponent<Props> = ({
       {(errors ?? []).map((error, index) => (
         <ErrorRow key={index} message={error} />
       ))}
-      <SubmitButton title="Add" />
+      <SubmitButton title={submitButtonTitle ?? "Add"} />
     </form>
   );
 };
