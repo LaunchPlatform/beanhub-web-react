@@ -2,6 +2,7 @@ import React, { FunctionComponent } from "react";
 import Select, { GroupBase, Props as SelectProps } from "react-select";
 import CreatableSelect from "react-select/creatable";
 import FormRow from "./FormRow";
+import { fuzzyMatch } from "../TransactionForm/fuzzyMatch";
 
 export interface Props {
   readonly title: string;
@@ -55,6 +56,13 @@ const SelectionInput: FunctionComponent<Props> = ({
         name={name}
         creatable={creatable}
         className={error !== undefined ? "is-invalid" : ""}
+        filterOption={(options, keyword) => {
+          if (keyword.trim().length === 0) {
+            return true;
+          }
+          const matchedPieces = fuzzyMatch(options.value, keyword);
+          return matchedPieces !== null;
+        }}
         styles={{
           option: (provided, state) => ({
             ...provided,
