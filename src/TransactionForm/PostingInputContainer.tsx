@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { Candidate, MatchedText } from "./PostingCandidateList";
+import { Candidate } from "./PostingCandidateList";
 import PostingInput, { PriceMode } from "./PostingInput";
 import { fuzzyMatch } from "./fuzzyMatch";
 
