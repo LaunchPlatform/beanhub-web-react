@@ -73,7 +73,6 @@ const useAutoComplete = (
       candidateValues
         .map((candidateValue) => {
           const matchedPieces = fuzzyMatch(candidateValue, lowerTrimedValue);
-          console.info("@@@@", matchedPieces);
           if (matchedPieces === null) {
             return null;
           }
