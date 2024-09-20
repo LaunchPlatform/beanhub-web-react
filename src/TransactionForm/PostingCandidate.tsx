@@ -1,16 +1,15 @@
 import React, { FunctionComponent } from "react";
+import { MatchedText } from "./PostingCandidateList";
 
 export interface Props {
-  readonly prefix: string;
-  readonly suffix: string;
+  readonly matchedPieces: Array<MatchedText>;
   readonly active?: boolean;
   readonly first?: boolean;
   readonly onClick?: () => void;
 }
 
 const PostingCandidate: FunctionComponent<Props> = ({
-  prefix,
-  suffix,
+  matchedPieces,
   active,
   first,
   onClick,
@@ -34,8 +33,9 @@ const PostingCandidate: FunctionComponent<Props> = ({
       ...(first ? { borderTopLeftRadius: 0, borderTopRightRadius: 0 } : {}),
     }}
   >
-    <strong>{prefix}</strong>
-    {suffix}
+    {matchedPieces.map((piece) =>
+      piece.matched ? <strong>{piece.text}</strong> : piece.text
+    )}
   </a>
 );
 
