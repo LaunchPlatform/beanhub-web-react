@@ -81,7 +81,10 @@ const useAutoComplete = (
             matchedPieces,
           } as Candidate;
         })
-        .filter((candidate) => candidate !== null),
+        .filter(
+          (candidate: Candidate | null): candidate is Candidate =>
+            candidate !== null
+        ),
     [lowerTrimedValue, candidateValues]
   );
   if (matchedValues.length === 0 && displayCandidates) {
