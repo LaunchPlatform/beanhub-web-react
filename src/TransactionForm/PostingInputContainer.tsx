@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { Candidate, MatchedText } from "./PostingCandidateList";
 import PostingInput, { PriceMode } from "./PostingInput";
-import { longestCommonSubstr } from "./lcs";
+import { fuzzyMatch } from "./fuzzyMatch";
 
 export interface Props {
   readonly index: number;
@@ -48,40 +48,6 @@ interface AutoCompleteProps {
   readonly onCandidateClick: (value: string) => void;
 }
 
-const makeMatchedPieces = (
-  value: string,
-  substr: string
-): Array<MatchedText> => {
-  const pieces: Array<MatchedText> = [];
-  const chars = value.split("");
-  let i = 0;
-  let j = 0;
-  let chunks = [];
-  let matched = false;
-  for (; i < chars.length; ++i) {
-    const char = chars.at(i);
-    if (char?.toLowerCase() === substr.substring(j, j + 1).toLowerCase()) {
-      j += 1;
-      if (chunks.length > 0 && !matched) {
-        pieces.push({ text: chunks.join(""), matched: true });
-        chunks = [];
-      }
-      matched = true;
-    } else {
-      if (chunks.length > 0 && matched) {
-        pieces.push({ text: chunks.join(""), matched: true });
-        chunks = [];
-      }
-      matched = false;
-    }
-    chunks.push(char);
-  }
-  if (chunks.length > 0) {
-    pieces.push({ text: chunks.join(""), matched });
-  }
-  return pieces;
-};
-
 const useAutoComplete = (
   inputValue: string,
   candidateValues: Array<string>,
@@ -106,16 +72,14 @@ const useAutoComplete = (
     () =>
       candidateValues
         .map((candidateValue) => {
-          const substr = longestCommonSubstr(
-            lowerTrimedValue,
-            candidateValue.toLowerCase()
-          );
-          if (substr.length === 0) {
+          const matchedPieces = fuzzyMatch(candidateValue, lowerTrimedValue);
+          console.info("@@@@", matchedPieces);
+          if (matchedPieces === null) {
             return null;
           }
           return {
             value: candidateValue,
-            matchedPieces: makeMatchedPieces(candidateValue, substr),
+            matchedPieces,
           } as Candidate;
         })
         .filter((candidate) => candidate !== null),

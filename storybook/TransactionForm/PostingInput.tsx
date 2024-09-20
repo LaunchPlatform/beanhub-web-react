@@ -6,6 +6,7 @@ import { action } from "@storybook/addon-actions";
 import PostingInput, {
   PriceMode,
 } from "../../src/TransactionForm/PostingInput";
+import { text } from "stream/consumers";
 
 export default {
   component: PostingInput,
@@ -37,9 +38,27 @@ export const WithAccountCandidates: ComponentStory<typeof PostingInput> = () => 
     onUnitCurrencyChange={action("onUnitCurrencyChange")}
     onAccountCandidateClick={action("onAccountCandidateClick")}
     accountCandidates={[
-      { value: "Assets", prefix: "Assets", suffix: "" },
-      { value: "Assets:Bank", prefix: "Assets", suffix: ":Bank" },
-      { value: "Assets:Cash", prefix: "Assets", suffix: ":Cash" },
+      {
+        value: "Assets",
+        matchedPieces: [
+          { text: "Ass", matched: true },
+          { text: "ets", matched: false },
+        ],
+      },
+      {
+        value: "Assets:Bank",
+        matchedPieces: [
+          { text: "Ass", matched: true },
+          { text: "ets", matched: false },
+        ],
+      },
+      {
+        value: "Assets:Cash",
+        matchedPieces: [
+          { text: "Ass", matched: true },
+          { text: "ets", matched: false },
+        ],
+      },
     ]}
   />
 );
@@ -56,8 +75,14 @@ export const WithCurrencyCandidates: ComponentStory<typeof PostingInput> = () =>
     onUnitCurrencyChange={action("onUnitCurrencyChange")}
     onAccountCandidateClick={action("onAccountCandidateClick")}
     unitCurrencyCandidates={[
-      { value: "BTC", prefix: "BTC", suffix: "" },
-      { value: "BTC_CASH", prefix: "BTC", suffix: "_CASH" },
+      { value: "BTC", matchedPieces: [{ text: "BTC", matched: true }] },
+      {
+        value: "BTC_CASH",
+        matchedPieces: [
+          { text: "BTC", matched: true },
+          { text: "_CASH", matched: false },
+        ],
+      },
     ]}
   />
 );
@@ -214,8 +239,14 @@ export const WithPriceCurrencyCandidates: ComponentStory<typeof PostingInput> = 
     onUnitCurrencyChange={action("onUnitCurrencyChange")}
     onAccountCandidateClick={action("onAccountCandidateClick")}
     priceCurrencyCandidates={[
-      { value: "BTC", prefix: "BTC", suffix: "" },
-      { value: "BTC_CASH", prefix: "BTC", suffix: "_CASH" },
+      { value: "BTC", matchedPieces: [{ text: "BTC", matched: true }] },
+      {
+        value: "BTC_CASH",
+        matchedPieces: [
+          { text: "BTC", matched: true },
+          { text: "_CASH", matched: false },
+        ],
+      },
     ]}
   />
 );

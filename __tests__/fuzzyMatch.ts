@@ -81,6 +81,8 @@ describe.each([
       },
     ] as Array<MatchedText>,
   ],
+  ["Assets:Bank", "", null],
+  ["Assets:Bank", "xyz", null],
   ["Assets:Bank", "aaa", null],
 ])(".fuzzyMatch(%s, %s, %s)", (text, keyword, expected) => {
   it(`fuzzyMatch(${JSON.stringify(text)}, ${JSON.stringify(
