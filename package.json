@@ -23,7 +23,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "storybook": "start-storybook -p 8088"
+    "storybook": "start-storybook -p 8088",
+    "jest": "jest"
   },
   "eslintConfig": {
     "extends": [
@@ -45,6 +46,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.17.5",
+    "@babel/preset-typescript": "^7.24.7",
     "@storybook/addon-actions": "^6.4.19",
     "@storybook/addon-toolbars": "^6.4.19",
     "@storybook/react": "^6.4.19",
