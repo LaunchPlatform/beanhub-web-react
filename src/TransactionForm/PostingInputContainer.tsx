@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import { Candidate } from "./PostingCandidateList";
 import PostingInput, { PriceMode } from "./PostingInput";
+import { fuzzyMatch } from "./fuzzyMatch";
 
 export interface Props {
   readonly index: number;
@@ -70,19 +71,19 @@ const useAutoComplete = (
   const matchedValues: Array<Candidate> = useMemo(
     () =>
       candidateValues
-        .filter((candidateValue) =>
-          candidateValue.toLowerCase().startsWith(lowerTrimedValue)
-        )
-        .map(
-          (candidateValue) =>
-            ({
-              value: candidateValue,
-              prefix: candidateValue.substring(0, lowerTrimedValue.length),
-              suffix: candidateValue.substring(
-                lowerTrimedValue.length,
-                candidateValue.length
-              ),
-            } as Candidate)
+        .map((candidateValue) => {
+          const matchedPieces = fuzzyMatch(candidateValue, lowerTrimedValue);
+          if (matchedPieces === null) {
+            return null;
+          }
+          return {
+            value: candidateValue,
+            matchedPieces,
+          } as Candidate;
+        })
+        .filter(
+          (candidate: Candidate | null): candidate is Candidate =>
+            candidate !== null
         ),
     [lowerTrimedValue, candidateValues]
   );

@@ -1,5 +1,5 @@
 import React, { FunctionComponent, KeyboardEvent } from "react";
-import PostingCandidateList from "./PostingCandidateList";
+import PostingCandidateList, { MatchedText } from "./PostingCandidateList";
 
 export enum PriceMode {
   INACTIVE = "INACTIVE",
@@ -10,9 +10,8 @@ export enum PriceMode {
 }
 
 export interface Candidate {
-  readonly prefix: string;
-  readonly suffix: string;
   readonly value: string;
+  readonly matchedPieces: Array<MatchedText>;
 }
 
 export interface Props {
@@ -152,8 +151,7 @@ const PostingInput: FunctionComponent<Props> = ({
               (item) =>
                 ({
                   value: item.value,
-                  prefix: item.prefix,
-                  suffix: item.suffix,
+                  matchedPieces: item.matchedPieces,
                 } as Candidate)
             )}
             onClick={(value) => onAccountCandidateClick?.(value)}
@@ -219,8 +217,7 @@ const PostingInput: FunctionComponent<Props> = ({
               (item) =>
                 ({
                   value: item.value,
-                  prefix: item.prefix,
-                  suffix: item.suffix,
+                  matchedPieces: item.matchedPieces,
                 } as Candidate)
             )}
             onClick={(value) => onUnitCurrencyCandidateClick?.(value)}
@@ -316,8 +313,7 @@ const PostingInput: FunctionComponent<Props> = ({
                   (item) =>
                     ({
                       value: item.value,
-                      prefix: item.prefix,
-                      suffix: item.suffix,
+                      matchedPieces: item.matchedPieces,
                     } as Candidate)
                 )}
                 onClick={(value) => onPriceCurrencyCandidateClick?.(value)}

@@ -1,10 +1,14 @@
 import React, { CSSProperties, FunctionComponent } from "react";
 import PostingCandidate from "./PostingCandidate";
 
+export interface MatchedText {
+  readonly text: string;
+  readonly matched: boolean;
+}
+
 export interface Candidate {
-  readonly prefix: string;
-  readonly suffix: string;
   readonly value: string;
+  readonly matchedPieces: Array<MatchedText>;
 }
 
 export interface Props {
@@ -24,8 +28,7 @@ const PostingCandidateList: FunctionComponent<Props> = ({
     {candidates.map((candidate, index) => (
       <PostingCandidate
         key={candidate.value}
-        prefix={candidate.prefix}
-        suffix={candidate.suffix}
+        matchedPieces={candidate.matchedPieces}
         active={index === activeIndex}
         first={index === 0}
         onClick={() => onClick?.(candidate.value)}
