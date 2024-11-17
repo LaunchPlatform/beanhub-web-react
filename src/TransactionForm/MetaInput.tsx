@@ -58,6 +58,13 @@ const MetaInput: FunctionComponent<Props> = ({
             : {}),
         }}
       />
+      {isInvalid ? (
+        <div className="invalid-feedback">
+          {[keyError, valueError]
+            .filter((value) => value !== undefined)
+            .join(", ")}
+        </div>
+      ) : null}
     </div>
   );
 };
