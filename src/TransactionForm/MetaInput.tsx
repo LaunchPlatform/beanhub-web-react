@@ -1,5 +1,4 @@
-import React, { FunctionComponent, KeyboardEvent } from "react";
-import PostingCandidateList, { MatchedText } from "./PostingCandidateList";
+import React, { FunctionComponent } from "react";
 
 export interface Props {
   readonly key?: string;
@@ -23,26 +22,42 @@ const MetaInput: FunctionComponent<Props> = ({
   const isInvalid = [keyError, valueError].some((value) => value !== undefined);
   return (
     <div className="input-group">
-      <div
+      <input
+        type="text"
+        aria-label="Key"
         className={
-          "form-control-wrapper position-relative" +
-          (isInvalid ? " is-invalid" : "")
+          "form-control" + (keyError !== undefined ? " is-invalid" : "")
         }
-        style={{ flex: 2 }}
-      >
-        <input
-          type="text"
-          aria-label="Key"
-          className={
-            "form-control" + (keyError !== undefined ? " is-invalid" : "")
-          }
-          placeholder="Account"
-          name={`meta-${index}-account`}
-          value={key}
-          onChange={(event) => onKeyChange?.(event.target.value)}
-          style={{}}
-        />
+        placeholder="Key"
+        name={`meta-${index}-key`}
+        value={key}
+        onChange={(event) => onKeyChange?.(event.target.value)}
+        style={{ width: "20em", flexGrow: 0 }}
+      />
+      <div className="input-group-append input-group-prepend">
+        <div className="input-group-text">:</div>
       </div>
+      <input
+        type="number"
+        aria-label="Value"
+        className={
+          "form-control" + (valueError !== undefined ? " is-invalid" : "")
+        }
+        placeholder="Value"
+        name={`meta-${index}-value`}
+        value={value}
+        onChange={(event) => onValueChange?.(event.target.value)}
+        style={{
+          flexGrow: 1,
+          marginLeft: -1,
+          ...(valueError !== undefined
+            ? {
+                zIndex: 1,
+                position: "relative",
+              }
+            : {}),
+        }}
+      />
     </div>
   );
 };
