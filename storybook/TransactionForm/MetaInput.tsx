@@ -12,11 +12,12 @@ export default {
 
 export const Primary: ComponentStory<typeof MetaInput> = () => (
   <MetaInput
-    defaultKey="import-id"
-    defaultValue="MOCK_VALUE"
+    defaultMetaKey="import-id"
+    defaultMetaValue="MOCK_VALUE"
     index={0}
     onKeyChange={action("onKeyChange")}
     onValueChange={action("onValueChange")}
+    onDelete={action("onDelete")}
   />
 );
 
@@ -25,37 +26,41 @@ export const Empty: ComponentStory<typeof MetaInput> = () => (
     index={0}
     onKeyChange={action("onKeyChange")}
     onValueChange={action("onValueChange")}
+    onDelete={action("onDelete")}
   />
 );
 
 export const KeyError: ComponentStory<typeof MetaInput> = () => (
   <MetaInput
     key="import-id"
-    keyError="Invalid key name"
+    metaKeyError="Invalid key name"
     index={0}
     onKeyChange={action("onKeyChange")}
     onValueChange={action("onValueChange")}
+    onDelete={action("onDelete")}
   />
 );
 
 export const ValueError: ComponentStory<typeof MetaInput> = () => (
   <MetaInput
-    defaultKey="import-id"
-    valueError="Invalid value"
+    defaultMetaKey="import-id"
+    metaValueError="Invalid value"
     index={0}
     onKeyChange={action("onKeyChange")}
     onValueChange={action("onValueChange")}
+    onDelete={action("onDelete")}
   />
 );
 
 export const BothError: ComponentStory<typeof MetaInput> = () => (
   <MetaInput
-    defaultKey="import-id"
-    keyError="Invalid key name"
-    defaultValue="MOCK_VALUE"
-    valueError="Invalid value"
+    defaultMetaKey="import-id"
+    metaKeyError="Invalid key name"
+    defaultMetaValue="MOCK_VALUE"
+    metaValueError="Invalid value"
     index={0}
     onKeyChange={action("onKeyChange")}
     onValueChange={action("onValueChange")}
+    onDelete={action("onDelete")}
   />
 );
