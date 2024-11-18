@@ -45,7 +45,9 @@ const MetaListContainer: FunctionComponent<Props> = ({
       ({
         key: uuid(),
         metaKey: item.metaKey,
+        metaKeyError: item.metaKeyError,
         metaValue: item.metaValue,
+        metaValueError: item.metaValueError,
       } as MetaRecordState)
   );
   if (window.history.state?.meta !== undefined) {

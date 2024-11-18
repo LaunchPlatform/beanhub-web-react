@@ -72,7 +72,7 @@ const MetaInput: FunctionComponent<Props> = ({
       </div>
       {isInvalid ? (
         <div className="invalid-feedback">
-          {[metaValueError, metaValueError]
+          {[metaKeyError, metaValueError]
             .filter((value) => value !== undefined)
             .join(", ")}
         </div>

@@ -65,6 +65,17 @@ export const InitialValues: ComponentStory<typeof Form> = () => (
       { account: "Assets", unitNumber: "-12.34", unitCurrency: "USD" },
       { account: "Expenses", unitNumber: "12.34", unitCurrency: "USD" },
     ]}
+    initialMeta={[
+      {
+        metaKey: "import-id",
+        metaValue:
+          "import-data/connect/American Express/My Account/2023.csv:123",
+      },
+      {
+        metaKey: "import-src",
+        metaValue: "import-data/connect/American Express/My Account/2023.csv",
+      },
+    ]}
     accounts={accounts}
     accountCurrencies={accountCurrencies}
     defaultCurrencies={defaultCurrencies}
@@ -101,6 +112,11 @@ export const Errors: ComponentStory<typeof Form> = () => (
     payeeError="Bad payee value"
     narrationError="Narration required"
     initialPostings={[{ accountError: "Bad account" }]}
+    initialMeta={[
+      {
+        metaKeyError: "Invalid key value",
+      },
+    ]}
     accounts={accounts}
     accountCurrencies={accountCurrencies}
     defaultCurrencies={defaultCurrencies}
