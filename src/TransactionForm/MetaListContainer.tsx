@@ -26,7 +26,7 @@ const MetaListContainer: FunctionComponent<Props> = ({
   initialMeta,
 }: Props) => {
   let filledInitialMeta = initialMeta;
-  if (filledInitialMeta !== undefined && filledInitialMeta.length < 2) {
+  if (filledInitialMeta !== undefined && filledInitialMeta.length < 1) {
     // Fill up to one meta if it's not already
     const toFillCount = 1 - filledInitialMeta.length;
     for (let i = 0; i < toFillCount; i++) {
@@ -40,7 +40,7 @@ const MetaListContainer: FunctionComponent<Props> = ({
       ];
     }
   }
-  let initialState = (filledInitialMeta ?? [{}, {}]).map(
+  let initialState = (filledInitialMeta ?? [{}]).map(
     (item) =>
       ({
         key: uuid(),
@@ -56,7 +56,7 @@ const MetaListContainer: FunctionComponent<Props> = ({
       window.history.replaceState(
         {
           ...window.history.state,
-          metas: initialState,
+          meta: initialState,
         },
         ""
       );
@@ -68,14 +68,14 @@ const MetaListContainer: FunctionComponent<Props> = ({
   );
   return (
     <FormRow title="Metadata">
-      {metaState.map((item, index) => (
+      {metaState.map((metaItem, index) => (
         <MetaInputContainer
-          key={item.key}
+          key={metaItem.key}
           index={index}
-          metaKey={item.metaKey}
-          metaKeyError={item.metaKeyError}
-          metaValue={item.metaValue}
-          metaValueError={item.metaValueError}
+          metaKey={metaItem.metaKey}
+          metaKeyError={metaItem.metaKeyError}
+          metaValue={metaItem.metaValue}
+          metaValueError={metaItem.metaValueError}
           onKeyChange={(metaKey) => {
             let newMeta = [...metaState];
             newMeta[index] = {
@@ -108,6 +108,42 @@ const MetaListContainer: FunctionComponent<Props> = ({
               ...newMeta[index],
               metaValue,
             };
+            setMetaState(newMeta);
+            window.history.replaceState(
+              {
+                ...window.history.state,
+                meta: newMeta,
+              },
+              ""
+            );
+          }}
+          onDelete={() => {
+            const itemIndex = metaState.findIndex(
+              (item) => item.key === metaItem.key
+            );
+            let newMeta;
+            // Only one item left, clear it instead
+            if (metaState.length <= 1) {
+              newMeta = [
+                {
+                  key: uuid(),
+                  metaKey: "",
+                  metaValue: "",
+                },
+              ];
+              // Deleting the last item, make it clear content of the last item instead
+            } else if (itemIndex === metaState.length - 1) {
+              newMeta = [
+                ...metaState.slice(0, -1),
+                {
+                  key: uuid(),
+                  metaKey: "",
+                  metaValue: "",
+                },
+              ];
+            } else {
+              newMeta = metaState.filter((item) => item.key !== metaItem.key);
+            }
             setMetaState(newMeta);
             window.history.replaceState(
               {
