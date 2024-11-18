@@ -10,7 +10,7 @@ export interface Props {
   readonly index: number;
   readonly onKeyChange?: (key: string) => void;
   readonly onValueChange?: (key: string) => void;
-  readonly onDelete?: (key: string) => void;
+  readonly onDelete?: () => void;
 }
 
 const MetaInput: FunctionComponent<Props> = ({
