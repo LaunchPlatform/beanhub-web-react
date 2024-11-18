@@ -1,9 +1,9 @@
 import React, { FunctionComponent } from "react";
 
 export interface Props {
-  readonly key?: string;
+  readonly defaultKey?: string;
   readonly keyError?: string;
-  readonly value?: string;
+  readonly defaultValue?: string;
   readonly valueError?: string;
   readonly index: number;
   readonly onKeyChange?: (key: string) => void;
@@ -11,9 +11,9 @@ export interface Props {
 }
 
 const MetaInput: FunctionComponent<Props> = ({
-  key,
+  defaultKey,
   keyError,
-  value,
+  defaultValue,
   valueError,
   index,
   onKeyChange,
@@ -30,7 +30,7 @@ const MetaInput: FunctionComponent<Props> = ({
         }
         placeholder="Key"
         name={`meta-${index}-key`}
-        value={key}
+        defaultValue={defaultKey}
         onChange={(event) => onKeyChange?.(event.target.value)}
         style={{ width: "20em", flexGrow: 0 }}
       />
@@ -38,24 +38,17 @@ const MetaInput: FunctionComponent<Props> = ({
         <div className="input-group-text">:</div>
       </div>
       <input
-        type="number"
+        type="text"
         aria-label="Value"
         className={
           "form-control" + (valueError !== undefined ? " is-invalid" : "")
         }
         placeholder="Value"
         name={`meta-${index}-value`}
-        value={value}
+        defaultValue={defaultValue}
         onChange={(event) => onValueChange?.(event.target.value)}
         style={{
           flexGrow: 1,
-          marginLeft: -1,
-          ...(valueError !== undefined
-            ? {
-                zIndex: 1,
-                position: "relative",
-              }
-            : {}),
         }}
       />
       {isInvalid ? (

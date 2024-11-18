@@ -6,7 +6,6 @@ import { action } from "@storybook/addon-actions";
 import PostingInput, {
   PriceMode,
 } from "../../src/TransactionForm/PostingInput";
-import { text } from "stream/consumers";
 
 export default {
   component: PostingInput,
