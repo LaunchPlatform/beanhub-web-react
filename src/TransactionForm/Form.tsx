@@ -4,6 +4,7 @@ import ErrorRow from "../Shared/ErrorRow";
 import SelectionInput from "../Shared/Selection";
 import TextInput from "../Shared/TextInput";
 import PostingListContainer, { PostingRecord } from "./PostingListContainer";
+import MetaListContainer, { MetaRecord } from "./MetaListContainer";
 import SubmitButton from "../Shared/SubmitButton";
 
 export interface Props {
@@ -19,6 +20,7 @@ export interface Props {
   readonly initialNarration?: string;
   readonly narrationError?: string;
   readonly initialPostings?: Array<PostingRecord>;
+  readonly initialMeta?: Array<MetaRecord>;
   readonly hiddenFields?: Record<string, string>;
   readonly files: Array<string>;
   readonly accounts: Array<string>;
@@ -40,6 +42,7 @@ const Form: FunctionComponent<Props> = ({
   initialNarration,
   narrationError,
   initialPostings,
+  initialMeta,
   hiddenFields,
   files,
   accounts,
@@ -136,6 +139,7 @@ const Form: FunctionComponent<Props> = ({
         accountCurrencies={accountCurrencies}
         defaultCurrencies={defaultCurrencies}
       />
+      <MetaListContainer initialMeta={initialMeta} />
       {hiddenFields !== undefined
         ? Object.entries(hiddenFields).map(([key, value]) => (
             <input type="hidden" name={key} value={value} />
