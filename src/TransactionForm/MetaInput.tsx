@@ -37,7 +37,7 @@ const MetaInput: FunctionComponent<Props> = ({
           "form-control" + (metaKeyError !== undefined ? " is-invalid" : "")
         }
         placeholder="Key"
-        name={`meta-${index}-key`}
+        name={`metadata-${index}-key`}
         value={metaKey}
         defaultValue={defaultMetaKey}
         onChange={(event) => onKeyChange?.(event.target.value)}
@@ -53,7 +53,7 @@ const MetaInput: FunctionComponent<Props> = ({
           "form-control" + (metaValueError !== undefined ? " is-invalid" : "")
         }
         placeholder="Value"
-        name={`meta-${index}-value`}
+        name={`metadata-${index}-value`}
         value={metaValue}
         defaultValue={defaultMetaValue}
         onChange={(event) => onValueChange?.(event.target.value)}
