@@ -1,5 +1,6 @@
-import React, { FunctionComponent, KeyboardEvent } from "react";
+import { FunctionComponent, KeyboardEvent, useContext } from "react";
 import PostingCandidateList, { MatchedText } from "./PostingCandidateList";
+import { InputPrefixContext } from "./context";
 
 export enum PriceMode {
   INACTIVE = "INACTIVE",
@@ -104,6 +105,7 @@ const PostingInput: FunctionComponent<Props> = ({
   const isInvalid = [accountError, unitNumberError, unitCurrencyError].some(
     (value) => value !== undefined
   );
+  const inputPrefix = useContext(InputPrefixContext);
   const priceModeValue = priceMode ?? PriceMode.INACTIVE;
   return (
     <div className="input-group">
@@ -121,7 +123,7 @@ const PostingInput: FunctionComponent<Props> = ({
             "form-control" + (accountError !== undefined ? " is-invalid" : "")
           }
           placeholder="Account"
-          name={`postings-${index}-account`}
+          name={`${inputPrefix}postings-${index}-account`}
           value={account}
           onChange={(event) => onAccountChange?.(event.target.value)}
           onKeyPress={(event) => onAccountKeyPress?.(event)}
@@ -165,7 +167,7 @@ const PostingInput: FunctionComponent<Props> = ({
           "form-control" + (unitNumberError !== undefined ? " is-invalid" : "")
         }
         placeholder="12.34"
-        name={`postings-${index}-number`}
+        name={`${inputPrefix}postings-${index}-number`}
         value={unitNumber}
         onChange={(event) => onUnitNumberChange?.(event.target.value)}
         style={{
@@ -190,7 +192,7 @@ const PostingInput: FunctionComponent<Props> = ({
             (unitCurrencyError !== undefined ? " is-invalid" : "")
           }
           placeholder="USD"
-          name={`postings-${index}-currency`}
+          name={`${inputPrefix}postings-${index}-currency`}
           value={unitCurrency}
           onChange={(event) => onUnitCurrencyChange?.(event.target.value)}
           onKeyPress={(event) => onUnitCurrencyKeyPress?.(event)}
@@ -247,7 +249,7 @@ const PostingInput: FunctionComponent<Props> = ({
           {[PriceMode.PRICE, PriceMode.TOTAL_PRICE].includes(priceModeValue) ? (
             <input
               type="hidden"
-              name={`postings-${index}-price_mode`}
+              name={`${inputPrefix}postings-${index}-price_mode`}
               value={priceModeValue}
             />
           ) : null}
@@ -259,7 +261,7 @@ const PostingInput: FunctionComponent<Props> = ({
               (priceNumberError !== undefined ? " is-invalid" : "")
             }
             placeholder="12.34"
-            name={`postings-${index}-price_number`}
+            name={`${inputPrefix}postings-${index}-price_number`}
             value={priceNumber}
             onChange={(event) => onPriceNumberChange?.(event.target.value)}
             disabled={priceModeValue === PriceMode.EXPANDED}
@@ -285,7 +287,7 @@ const PostingInput: FunctionComponent<Props> = ({
                 (priceCurrencyError !== undefined ? " is-invalid" : "")
               }
               placeholder="USD"
-              name={`postings-${index}-price_currency`}
+              name={`${inputPrefix}postings-${index}-price_currency`}
               value={priceCurrency}
               disabled={priceModeValue === PriceMode.EXPANDED}
               onChange={(event) => onPriceCurrencyChange?.(event.target.value)}

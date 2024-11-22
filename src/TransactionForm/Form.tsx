@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from "react";
+import { FunctionComponent, useContext } from "react";
 import DateInput from "../Shared/DateInput";
 import ErrorRow from "../Shared/ErrorRow";
 import SelectionInput from "../Shared/Selection";
@@ -6,6 +6,7 @@ import TextInput from "../Shared/TextInput";
 import PostingListContainer, { PostingRecord } from "./PostingListContainer";
 import MetaListContainer, { MetaRecord } from "./MetaListContainer";
 import SubmitButton from "../Shared/SubmitButton";
+import { InputPrefixContext } from "./context";
 
 export interface Props {
   readonly action?: string;
@@ -50,6 +51,7 @@ const Form: FunctionComponent<Props> = ({
   defaultCurrencies,
   errors,
 }: Props) => {
+  const inputPrefix = useContext(InputPrefixContext);
   let initialFileValue = initialFile;
   let initialDateValue = initialDate;
   let initialNarrationValue = initialNarration;
@@ -71,7 +73,7 @@ const Form: FunctionComponent<Props> = ({
     <form action={action} method={method ?? "POST"}>
       <SelectionInput
         title="File"
-        name="file"
+        name={`${inputPrefix}file`}
         values={files}
         initialValue={initialFileValue}
         error={fileError}
@@ -88,6 +90,7 @@ const Form: FunctionComponent<Props> = ({
       />
       <DateInput
         defaultValue={initialDateValue}
+        name={`${inputPrefix}date`}
         error={dateError}
         required
         onChange={(value) => {
@@ -102,7 +105,7 @@ const Form: FunctionComponent<Props> = ({
       />
       <TextInput
         label="Payee"
-        name="payee"
+        name={`${inputPrefix}payee`}
         placeholder="Payee of the transaction"
         defaultValue={initialPayeeValue}
         error={payeeError}
@@ -118,7 +121,7 @@ const Form: FunctionComponent<Props> = ({
       />
       <TextInput
         label="Narration"
-        name="narration"
+        name={`${inputPrefix}narration`}
         placeholder="Narration of the transaction"
         defaultValue={initialNarrationValue}
         error={narrationError}

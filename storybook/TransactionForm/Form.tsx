@@ -4,6 +4,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import Form from "../../src/TransactionForm/Form";
 import { PriceMode } from "../../src/TransactionForm/PostingInput";
+import { InputPrefixContext } from "../../src/TransactionForm/context";
 
 const files: Array<string> = [
   "main.bean",
@@ -53,6 +54,17 @@ export const Primary: ComponentStory<typeof Form> = () => (
     accountCurrencies={accountCurrencies}
     defaultCurrencies={defaultCurrencies}
   />
+);
+
+export const InputPrefix: ComponentStory<typeof Form> = () => (
+  <InputPrefixContext.Provider value="forms-0-">
+    <Form
+      files={files}
+      accounts={accounts}
+      accountCurrencies={accountCurrencies}
+      defaultCurrencies={defaultCurrencies}
+    />
+  </InputPrefixContext.Provider>
 );
 
 export const InitialValues: ComponentStory<typeof Form> = () => (

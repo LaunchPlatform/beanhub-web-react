@@ -1,4 +1,5 @@
-import React, { FunctionComponent } from "react";
+import { FunctionComponent, useContext } from "react";
+import { InputPrefixContext } from "./context";
 
 export interface Props {
   readonly metaKey?: string;
@@ -32,6 +33,7 @@ const MetaInput: FunctionComponent<Props> = ({
   const isInvalid = [metaKeyError, metaValueError].some(
     (value) => value !== undefined
   );
+  const inputPrefixContext = useContext(InputPrefixContext);
   return (
     <div className="input-group">
       <input
@@ -41,7 +43,7 @@ const MetaInput: FunctionComponent<Props> = ({
           "form-control" + (metaKeyError !== undefined ? " is-invalid" : "")
         }
         placeholder="Key"
-        name={`metadata-${index}-key`}
+        name={`${inputPrefixContext}metadata-${index}-key`}
         value={metaKey}
         defaultValue={defaultMetaKey}
         readOnly={keyReadonly}
@@ -58,7 +60,7 @@ const MetaInput: FunctionComponent<Props> = ({
           "form-control" + (metaValueError !== undefined ? " is-invalid" : "")
         }
         placeholder="Value"
-        name={`metadata-${index}-value`}
+        name={`${inputPrefixContext}metadata-${index}-value`}
         value={metaValue}
         defaultValue={defaultMetaValue}
         readOnly={valueReadonly}
