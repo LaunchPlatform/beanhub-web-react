@@ -65,7 +65,7 @@ export const BothError: ComponentStory<typeof MetaInput> = () => (
   />
 );
 
-export const KeyDisabled: ComponentStory<typeof MetaInput> = () => (
+export const KeyReadonly: ComponentStory<typeof MetaInput> = () => (
   <MetaInput
     defaultMetaKey="import-id"
     defaultMetaValue="MOCK_VALUE"
@@ -73,11 +73,11 @@ export const KeyDisabled: ComponentStory<typeof MetaInput> = () => (
     onKeyChange={action("onKeyChange")}
     onValueChange={action("onValueChange")}
     onDelete={action("onDelete")}
-    keyDisabled
+    keyReadonly
   />
 );
 
-export const ValueDisabled: ComponentStory<typeof MetaInput> = () => (
+export const ValueReadonly: ComponentStory<typeof MetaInput> = () => (
   <MetaInput
     defaultMetaKey="import-id"
     defaultMetaValue="MOCK_VALUE"
@@ -85,11 +85,11 @@ export const ValueDisabled: ComponentStory<typeof MetaInput> = () => (
     onKeyChange={action("onKeyChange")}
     onValueChange={action("onValueChange")}
     onDelete={action("onDelete")}
-    valueDisabled
+    valueReadonly
   />
 );
 
-export const BothDisabled: ComponentStory<typeof MetaInput> = () => (
+export const BothReadonly: ComponentStory<typeof MetaInput> = () => (
   <MetaInput
     defaultMetaKey="import-id"
     defaultMetaValue="MOCK_VALUE"
@@ -97,7 +97,7 @@ export const BothDisabled: ComponentStory<typeof MetaInput> = () => (
     onKeyChange={action("onKeyChange")}
     onValueChange={action("onValueChange")}
     onDelete={action("onDelete")}
-    keyDisabled
-    valueDisabled
+    keyReadonly
+    valueReadonly
   />
 );
