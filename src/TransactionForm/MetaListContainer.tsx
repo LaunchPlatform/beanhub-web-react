@@ -6,16 +6,20 @@ import MetaInputContainer from "./MetaInputContainer";
 export interface MetaRecord {
   readonly metaKey?: string;
   readonly metaKeyError?: string;
+  readonly metaKeyDisabled?: boolean;
   readonly metaValue?: string;
   readonly metaValueError?: string;
+  readonly metaValueDisabled?: boolean;
 }
 
 interface MetaRecordState {
   readonly key?: string;
   readonly metaKey: string;
   readonly metaKeyError?: string;
+  readonly metaKeyDisabled?: boolean;
   readonly metaValue: string;
   readonly metaValueError?: string;
+  readonly metaValueDisabled?: boolean;
 }
 
 export interface Props {
@@ -26,19 +30,22 @@ const MetaListContainer: FunctionComponent<Props> = ({
   initialMeta,
 }: Props) => {
   let filledInitialMeta = initialMeta;
-  if (filledInitialMeta !== undefined && filledInitialMeta.length < 1) {
-    // Fill up to one meta if it's not already
-    const toFillCount = 1 - filledInitialMeta.length;
-    for (let i = 0; i < toFillCount; i++) {
-      filledInitialMeta = [
-        ...filledInitialMeta,
-        {
-          key: uuid(),
-          metaKey: "",
-          metaValue: "",
-        } as MetaRecordState,
-      ];
-    }
+  if (
+    filledInitialMeta !== undefined &&
+    filledInitialMeta.filter(
+      (item) =>
+        (item.metaKey?.trim().length || 0) === 0 &&
+        (item.metaValue?.trim().length || 0) === 0
+    ).length <= 0
+  ) {
+    filledInitialMeta = [
+      ...filledInitialMeta,
+      {
+        key: uuid(),
+        metaKey: "",
+        metaValue: "",
+      } as MetaRecordState,
+    ];
   }
   let initialState = (filledInitialMeta ?? [{}]).map(
     (item) =>
@@ -46,8 +53,10 @@ const MetaListContainer: FunctionComponent<Props> = ({
         key: uuid(),
         metaKey: item.metaKey,
         metaKeyError: item.metaKeyError,
+        metaKeyDisabled: item.metaKeyDisabled,
         metaValue: item.metaValue,
         metaValueError: item.metaValueError,
+        metaValueDisabled: item.metaValueDisabled,
       } as MetaRecordState)
   );
   if (window.history.state?.meta !== undefined) {
@@ -76,15 +85,23 @@ const MetaListContainer: FunctionComponent<Props> = ({
           index={index}
           metaKey={metaItem.metaKey}
           metaKeyError={metaItem.metaKeyError}
+          metaKeyDisabled={metaItem.metaKeyDisabled}
           metaValue={metaItem.metaValue}
           metaValueError={metaItem.metaValueError}
+          metaValueDisabled={metaItem.metaValueDisabled}
           onKeyChange={(metaKey) => {
             let newMeta = [...metaState];
             newMeta[index] = {
               ...newMeta[index],
               metaKey,
             };
-            if (newMeta.every((item) => item.metaKey.trim().length > 0)) {
+            if (
+              newMeta.filter(
+                (item) =>
+                  item.metaKey.trim().length === 0 &&
+                  item.metaValue.trim().length === 0
+              ).length <= 0
+            ) {
               // Append a new meta
               newMeta = [
                 ...newMeta,

@@ -72,6 +72,7 @@ const MetaInput: FunctionComponent<Props> = ({
           type="button"
           className="btn btn-outline-default"
           onClick={onDelete}
+          disabled={keyDisabled || valueDisabled}
         >
           <i className="fal fa-trash-alt"></i>
         </button>
