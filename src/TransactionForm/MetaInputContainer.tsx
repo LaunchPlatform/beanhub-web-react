@@ -5,8 +5,10 @@ export interface Props {
   readonly index: number;
   readonly metaKey?: string;
   readonly metaKeyError?: string;
+  readonly metaKeyDisabled?: boolean;
   readonly metaValue?: string;
   readonly metaValueError?: string;
+  readonly metaValueDisabled?: boolean;
   readonly onKeyChange?: (value: string) => void;
   readonly onValueChange?: (value: string) => void;
   readonly onDelete?: () => void;
@@ -15,8 +17,10 @@ export interface Props {
 const MetaInputContainer: FunctionComponent<Props> = ({
   metaKey,
   metaKeyError,
+  metaKeyDisabled,
   metaValue,
   metaValueError,
+  metaValueDisabled,
   index,
   onKeyChange,
   onValueChange,
@@ -30,8 +34,10 @@ const MetaInputContainer: FunctionComponent<Props> = ({
       onDelete={onDelete}
       metaKey={metaKeyValue}
       metaKeyError={metaKeyError}
+      keyDisabled={metaKeyDisabled}
       metaValue={metaValueValue}
       metaValueError={metaValueError}
+      valueDisabled={metaValueDisabled}
       onKeyChange={(value) => {
         setMetaKey(value);
         onKeyChange?.(value);

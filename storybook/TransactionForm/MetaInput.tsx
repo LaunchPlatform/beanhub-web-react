@@ -64,3 +64,40 @@ export const BothError: ComponentStory<typeof MetaInput> = () => (
     onDelete={action("onDelete")}
   />
 );
+
+export const KeyDisabled: ComponentStory<typeof MetaInput> = () => (
+  <MetaInput
+    defaultMetaKey="import-id"
+    defaultMetaValue="MOCK_VALUE"
+    index={0}
+    onKeyChange={action("onKeyChange")}
+    onValueChange={action("onValueChange")}
+    onDelete={action("onDelete")}
+    keyDisabled
+  />
+);
+
+export const ValueDisabled: ComponentStory<typeof MetaInput> = () => (
+  <MetaInput
+    defaultMetaKey="import-id"
+    defaultMetaValue="MOCK_VALUE"
+    index={0}
+    onKeyChange={action("onKeyChange")}
+    onValueChange={action("onValueChange")}
+    onDelete={action("onDelete")}
+    valueDisabled
+  />
+);
+
+export const BothDisabled: ComponentStory<typeof MetaInput> = () => (
+  <MetaInput
+    defaultMetaKey="import-id"
+    defaultMetaValue="MOCK_VALUE"
+    index={0}
+    onKeyChange={action("onKeyChange")}
+    onValueChange={action("onValueChange")}
+    onDelete={action("onDelete")}
+    keyDisabled
+    valueDisabled
+  />
+);

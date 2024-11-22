@@ -9,3 +9,22 @@ export default {
 export const Primary: ComponentStory<typeof MetaListContainer> = () => (
   <MetaListContainer />
 );
+
+export const InitialValue: ComponentStory<typeof MetaListContainer> = () => (
+  <MetaListContainer
+    initialMeta={[{ metaKey: "mock-key", metaValue: "mock-value" }]}
+  />
+);
+
+export const InitialDisabledItem: ComponentStory<typeof MetaListContainer> = () => (
+  <MetaListContainer
+    initialMeta={[
+      {
+        metaKey: "mock-key",
+        metaValue: "mock-value",
+        metaKeyDisabled: true,
+        metaValueDisabled: true,
+      },
+    ]}
+  />
+);
