@@ -12,15 +12,19 @@ import { ThemeConfig, defaulThemeConfig } from "./Theme/types";
 import TransactionForm, {
   Props as TransactionFormProps,
 } from "./TransactionForm/Form";
+import { InputPrefixContext } from "./TransactionForm/context";
 
 // TODO: maybe there's a better way to expose it?
 (window as any).renderTransactionForm = (
   element: HTMLElement,
-  props: TransactionFormProps
+  props: TransactionFormProps,
+  inputPrefix?: string
 ) => {
   ReactDOM.render(
     <React.StrictMode>
-      <TransactionForm {...props} />
+      <InputPrefixContext.Provider value={inputPrefix ?? ""}>
+        <TransactionForm {...props} />
+      </InputPrefixContext.Provider>
     </React.StrictMode>,
     element
   );
