@@ -16,14 +16,14 @@ export const InitialValue: ComponentStory<typeof MetaListContainer> = () => (
   />
 );
 
-export const InitialDisabledItem: ComponentStory<typeof MetaListContainer> = () => (
+export const InitialReadonlyItem: ComponentStory<typeof MetaListContainer> = () => (
   <MetaListContainer
     initialMeta={[
       {
         metaKey: "mock-key",
         metaValue: "mock-value",
-        metaKeyDisabled: true,
-        metaValueDisabled: true,
+        metaKeyReadonly: true,
+        metaValueReadonly: true,
       },
     ]}
   />

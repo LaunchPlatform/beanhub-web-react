@@ -3,11 +3,11 @@ import React, { FunctionComponent } from "react";
 export interface Props {
   readonly metaKey?: string;
   readonly defaultMetaKey?: string;
-  readonly keyDisabled?: boolean;
+  readonly keyReadonly?: boolean;
   readonly metaKeyError?: string;
   readonly metaValue?: string;
   readonly defaultMetaValue?: string;
-  readonly valueDisabled?: boolean;
+  readonly valueReadonly?: boolean;
   readonly metaValueError?: string;
   readonly index: number;
   readonly onKeyChange?: (key: string) => void;
@@ -18,11 +18,11 @@ export interface Props {
 const MetaInput: FunctionComponent<Props> = ({
   metaKey,
   defaultMetaKey,
-  keyDisabled,
+  keyReadonly,
   metaKeyError,
   metaValue,
   defaultMetaValue,
-  valueDisabled,
+  valueReadonly,
   metaValueError,
   index,
   onKeyChange,
@@ -44,7 +44,7 @@ const MetaInput: FunctionComponent<Props> = ({
         name={`metadata-${index}-key`}
         value={metaKey}
         defaultValue={defaultMetaKey}
-        disabled={keyDisabled}
+        readOnly={keyReadonly}
         onChange={(event) => onKeyChange?.(event.target.value)}
         style={{ width: "20em", flexGrow: 0 }}
       />
@@ -61,7 +61,7 @@ const MetaInput: FunctionComponent<Props> = ({
         name={`metadata-${index}-value`}
         value={metaValue}
         defaultValue={defaultMetaValue}
-        disabled={valueDisabled}
+        readOnly={valueReadonly}
         onChange={(event) => onValueChange?.(event.target.value)}
         style={{
           flexGrow: 1,
@@ -72,7 +72,7 @@ const MetaInput: FunctionComponent<Props> = ({
           type="button"
           className="btn btn-outline-default"
           onClick={onDelete}
-          disabled={keyDisabled || valueDisabled}
+          disabled={keyReadonly || valueReadonly}
         >
           <i className="fal fa-trash-alt"></i>
         </button>

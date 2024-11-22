@@ -6,20 +6,20 @@ import MetaInputContainer from "./MetaInputContainer";
 export interface MetaRecord {
   readonly metaKey?: string;
   readonly metaKeyError?: string;
-  readonly metaKeyDisabled?: boolean;
+  readonly metaKeyReadonly?: boolean;
   readonly metaValue?: string;
   readonly metaValueError?: string;
-  readonly metaValueDisabled?: boolean;
+  readonly metaValueReadonly?: boolean;
 }
 
 interface MetaRecordState {
   readonly key?: string;
   readonly metaKey: string;
   readonly metaKeyError?: string;
-  readonly metaKeyDisabled?: boolean;
+  readonly metaKeyReadonly?: boolean;
   readonly metaValue: string;
   readonly metaValueError?: string;
-  readonly metaValueDisabled?: boolean;
+  readonly metaValueReadonly?: boolean;
 }
 
 export interface Props {
@@ -53,10 +53,10 @@ const MetaListContainer: FunctionComponent<Props> = ({
         key: uuid(),
         metaKey: item.metaKey,
         metaKeyError: item.metaKeyError,
-        metaKeyDisabled: item.metaKeyDisabled,
+        metaKeyReadonly: item.metaKeyReadonly,
         metaValue: item.metaValue,
         metaValueError: item.metaValueError,
-        metaValueDisabled: item.metaValueDisabled,
+        metaValueReadonly: item.metaValueReadonly,
       } as MetaRecordState)
   );
   if (window.history.state?.meta !== undefined) {
@@ -85,10 +85,10 @@ const MetaListContainer: FunctionComponent<Props> = ({
           index={index}
           metaKey={metaItem.metaKey}
           metaKeyError={metaItem.metaKeyError}
-          metaKeyDisabled={metaItem.metaKeyDisabled}
+          metaKeyReadonly={metaItem.metaKeyReadonly}
           metaValue={metaItem.metaValue}
           metaValueError={metaItem.metaValueError}
-          metaValueDisabled={metaItem.metaValueDisabled}
+          metaValueReadonly={metaItem.metaValueReadonly}
           onKeyChange={(metaKey) => {
             let newMeta = [...metaState];
             newMeta[index] = {
