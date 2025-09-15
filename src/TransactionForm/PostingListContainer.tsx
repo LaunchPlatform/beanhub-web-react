@@ -40,6 +40,7 @@ export interface Props {
   readonly accounts: Array<string>;
   readonly accountCurrencies: Record<string, Array<string>>;
   readonly defaultCurrencies: Array<string>;
+  readonly required?: boolean;
 }
 
 const PostingListContainer: FunctionComponent<Props> = ({
@@ -47,6 +48,7 @@ const PostingListContainer: FunctionComponent<Props> = ({
   accounts,
   accountCurrencies,
   defaultCurrencies,
+  required,
 }: Props) => {
   let filledInitialPostings = initialPostings;
   if (filledInitialPostings !== undefined && filledInitialPostings.length < 2) {
@@ -103,7 +105,7 @@ const PostingListContainer: FunctionComponent<Props> = ({
     initialState
   );
   return (
-    <FormRow title="Postings" required>
+    <FormRow title="Postings" required={required ?? false}>
       {postingsState.map((posting, index) => (
         <PostingInputContainer
           key={posting.key}

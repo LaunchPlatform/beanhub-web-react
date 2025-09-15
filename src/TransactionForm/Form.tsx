@@ -141,6 +141,7 @@ const Form: FunctionComponent<Props> = ({
         accounts={accounts}
         accountCurrencies={accountCurrencies}
         defaultCurrencies={defaultCurrencies}
+        required
       />
       <MetaListContainer initialMeta={initialMeta} />
       {hiddenFields !== undefined
