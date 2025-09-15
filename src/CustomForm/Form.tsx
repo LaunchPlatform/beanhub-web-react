@@ -240,6 +240,7 @@ const FormField: FunctionComponent<FieldProps> = ({
           accounts={accounts}
           accountCurrencies={accountCurrencies}
           defaultCurrencies={currencies}
+          // TODO: handle on change and the history
         />
       );
   }

@@ -70,7 +70,22 @@ const fields: Array<Field> = [
     displayName: "The Number",
     type: FieldType.number,
   },
+  {
+    name: "postings",
+    displayName: "Postings",
+    type: FieldType.postings,
+  },
 ];
+
+const accountCurrencies = {
+  Assets: ["USD"],
+  "Assets:Bank": ["USD", "TWD"],
+  "Assets:Cash": ["USD", "EUR"],
+  Expenses: ["USD", "TWD", "BTC"],
+  "Expenses:Office": ["USD"],
+  Equity: ["USD"],
+  "Equity:CommonStock": ["USD"],
+};
 
 export default {
   component: Form,
@@ -81,6 +96,7 @@ export const Primary: ComponentStory<typeof Form> = () => (
     files={files}
     currencies={currencies}
     accounts={accounts}
+    accountCurrencies={accountCurrencies}
     fields={fields}
     defaultDate={today}
   />
@@ -91,6 +107,7 @@ export const Required: ComponentStory<typeof Form> = () => (
     files={files}
     currencies={currencies}
     accounts={accounts}
+    accountCurrencies={accountCurrencies}
     fields={fields.map((field) => ({ ...field, required: true }))}
     defaultDate={today}
   />
@@ -101,6 +118,7 @@ export const Error: ComponentStory<typeof Form> = () => (
     files={files}
     currencies={currencies}
     accounts={accounts}
+    accountCurrencies={accountCurrencies}
     fields={fields.map((field) => ({ ...field, error: "Required" }))}
     defaultDate={today}
   />
@@ -123,6 +141,7 @@ export const DefaultValues: ComponentStory<typeof Form> = () => (
       ...field,
       default: defaultValues[field.name],
     }))}
+    accountCurrencies={accountCurrencies}
     defaultDate={today}
   />
 );
@@ -140,6 +159,7 @@ export const Creatable: ComponentStory<typeof Form> = () => (
         ? { creatable: true }
         : {}),
     }))}
+    accountCurrencies={accountCurrencies}
     defaultDate={today}
   />
 );
