@@ -7,6 +7,9 @@ import TextInput from "../Shared/TextInput";
 import SubmitButton from "../Shared/SubmitButton";
 import CurrencyInput from "../Shared/CurrencyInput";
 import NumberInput from "../Shared/NumberInput";
+import PostingListContainer, {
+  PostingRecord,
+} from "../TransactionForm/PostingListContainer";
 
 export enum FieldType {
   str = "str",
@@ -15,6 +18,7 @@ export enum FieldType {
   date = "date",
   currency = "currency",
   account = "account",
+  postings = "postings",
 }
 
 export interface BaseField {
@@ -52,7 +56,17 @@ export interface AccountField extends BaseField {
   readonly default?: string;
 }
 
-export type Field = OtherField | CurrencyField | FileField | AccountField;
+export interface PostingsField extends BaseField {
+  readonly type: FieldType.postings;
+  readonly default?: Array<PostingRecord>;
+}
+
+export type Field =
+  | OtherField
+  | CurrencyField
+  | FileField
+  | AccountField
+  | PostingsField;
 
 export interface Props {
   readonly action?: string;
@@ -62,6 +76,7 @@ export interface Props {
   readonly files: Array<string>;
   readonly currencies: Array<string>;
   readonly accounts: Array<string>;
+  readonly accountCurrencies: Record<string, Array<string>>;
   readonly defaultDate: string;
   readonly errors?: Array<string>;
   readonly submit?: string;
@@ -72,6 +87,7 @@ interface FieldProps {
   readonly files: Array<string>;
   readonly currencies: Array<string>;
   readonly accounts: Array<string>;
+  readonly accountCurrencies: Record<string, Array<string>>;
   readonly defaultDate: string;
 }
 
@@ -81,6 +97,7 @@ const FormField: FunctionComponent<FieldProps> = ({
   files,
   accounts,
   defaultDate,
+  accountCurrencies,
 }: FieldProps) => {
   let initialValue = field.default;
   if (window.history.state?.[field.name] !== undefined) {
@@ -158,7 +175,7 @@ const FormField: FunctionComponent<FieldProps> = ({
           label={displayName}
           name={field.name}
           currencies={currencies}
-          initialValue={initialValue}
+          initialValue={initialValue as string}
           error={field.error}
           multiple={field.multiple}
           creatable={field.creatable}
@@ -216,6 +233,15 @@ const FormField: FunctionComponent<FieldProps> = ({
           }}
         />
       );
+    case FieldType.postings:
+      return (
+        <PostingListContainer
+          initialPostings={initialValue as Array<PostingRecord>}
+          accounts={accounts}
+          accountCurrencies={accountCurrencies}
+          defaultCurrencies={currencies}
+        />
+      );
   }
 };
 
@@ -227,6 +253,7 @@ const Form: FunctionComponent<Props> = ({
   files,
   currencies,
   accounts,
+  accountCurrencies,
   defaultDate,
   errors,
   submit,
@@ -240,6 +267,7 @@ const Form: FunctionComponent<Props> = ({
           currencies={currencies}
           files={files}
           accounts={accounts}
+          accountCurrencies={accountCurrencies}
           defaultDate={defaultDate}
         />
       ))}
