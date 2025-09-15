@@ -75,6 +75,11 @@ const fields: Array<Field> = [
     displayName: "Postings",
     type: FieldType.postings,
   },
+  {
+    name: "meta",
+    displayName: "Meta",
+    type: FieldType.meta,
+  },
 ];
 
 const accountCurrencies = {
@@ -140,6 +145,12 @@ const defaultValues = {
       account: "Expenses:Office",
       unitNumber: "-123.45",
       unitCurrency: "USD",
+    },
+  ],
+  meta: [
+    {
+      metaKey: "doc",
+      metaValue: "my-invoice.pdf",
     },
   ],
 };
