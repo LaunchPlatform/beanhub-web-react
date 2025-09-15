@@ -24,10 +24,12 @@ interface MetaRecordState {
 
 export interface Props {
   readonly initialMeta?: Array<MetaRecord>;
+  readonly required?: boolean;
 }
 
 const MetaListContainer: FunctionComponent<Props> = ({
   initialMeta,
+  required,
 }: Props) => {
   let filledInitialMeta = initialMeta;
   if (
@@ -78,7 +80,7 @@ const MetaListContainer: FunctionComponent<Props> = ({
     initialState
   );
   return (
-    <FormRow title="Metadata">
+    <FormRow title="Metadata" required={required ?? false}>
       {metaState.map((metaItem, index) => (
         <MetaInputContainer
           key={metaItem.key}

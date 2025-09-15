@@ -10,6 +10,9 @@ import NumberInput from "../Shared/NumberInput";
 import PostingListContainer, {
   PostingRecord,
 } from "../TransactionForm/PostingListContainer";
+import MetaListContainer, {
+  MetaRecord,
+} from "../TransactionForm/MetaListContainer";
 
 export enum FieldType {
   str = "str",
@@ -19,6 +22,7 @@ export enum FieldType {
   currency = "currency",
   account = "account",
   postings = "postings",
+  meta = "meta",
 }
 
 export interface BaseField {
@@ -61,12 +65,18 @@ export interface PostingsField extends BaseField {
   readonly default?: Array<PostingRecord>;
 }
 
+export interface MetaField extends BaseField {
+  readonly type: FieldType.postings;
+  readonly default?: Array<MetaRecord>;
+}
+
 export type Field =
   | OtherField
   | CurrencyField
   | FileField
   | AccountField
-  | PostingsField;
+  | PostingsField
+  | MetaField;
 
 export interface Props {
   readonly action?: string;
@@ -240,6 +250,15 @@ const FormField: FunctionComponent<FieldProps> = ({
           accounts={accounts}
           accountCurrencies={accountCurrencies}
           defaultCurrencies={currencies}
+          required={field.required}
+          // TODO: add errors
+          // TODO: handle on change and the history
+        />
+      );
+    case FieldType.meta:
+      return (
+        <MetaListContainer
+          initialMeta={initialValue as Array<MetaRecord>}
           required={field.required}
           // TODO: add errors
           // TODO: handle on change and the history
