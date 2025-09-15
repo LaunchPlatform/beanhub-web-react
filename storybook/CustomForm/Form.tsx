@@ -130,6 +130,13 @@ const defaultValues = {
   currency: ["USD", "BTC"],
   str: "My txn",
   number: "123.45",
+  postings: [
+    {
+      account: "Assets:Cash",
+      unitNumber: "123.45",
+      unitCurrency: "USD",
+    },
+  ],
 };
 
 export const DefaultValues: ComponentStory<typeof Form> = () => (
