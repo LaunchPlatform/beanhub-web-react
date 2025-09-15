@@ -136,6 +136,11 @@ const defaultValues = {
       unitNumber: "123.45",
       unitCurrency: "USD",
     },
+    {
+      account: "Expenses:Office",
+      unitNumber: "-123.45",
+      unitCurrency: "USD",
+    },
   ],
 };
 
