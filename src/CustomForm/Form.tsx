@@ -251,7 +251,7 @@ const FormField: FunctionComponent<FieldProps> = ({
           accountCurrencies={accountCurrencies}
           defaultCurrencies={currencies}
           required={field.required}
-          // TODO: add errors
+          error={field.error}
           // TODO: handle on change and the history
         />
       );
@@ -260,7 +260,7 @@ const FormField: FunctionComponent<FieldProps> = ({
         <MetaListContainer
           initialMeta={initialValue as Array<MetaRecord>}
           required={field.required}
-          // TODO: add errors
+          error={field.error}
           // TODO: handle on change and the history
         />
       );

@@ -25,11 +25,13 @@ interface MetaRecordState {
 export interface Props {
   readonly initialMeta?: Array<MetaRecord>;
   readonly required?: boolean;
+  readonly error?: string;
 }
 
 const MetaListContainer: FunctionComponent<Props> = ({
   initialMeta,
   required,
+  error,
 }: Props) => {
   let filledInitialMeta = initialMeta;
   if (
@@ -176,6 +178,9 @@ const MetaListContainer: FunctionComponent<Props> = ({
           }}
         />
       ))}
+      {error !== undefined ? (
+        <div className="invalid-feedback">{error}</div>
+      ) : null}
     </FormRow>
   );
 };

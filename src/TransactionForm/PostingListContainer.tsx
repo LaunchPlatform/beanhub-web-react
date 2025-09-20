@@ -41,6 +41,7 @@ export interface Props {
   readonly accountCurrencies: Record<string, Array<string>>;
   readonly defaultCurrencies: Array<string>;
   readonly required?: boolean;
+  readonly error?: string;
 }
 
 const PostingListContainer: FunctionComponent<Props> = ({
@@ -49,6 +50,7 @@ const PostingListContainer: FunctionComponent<Props> = ({
   accountCurrencies,
   defaultCurrencies,
   required,
+  error,
 }: Props) => {
   let filledInitialPostings = initialPostings;
   if (filledInitialPostings !== undefined && filledInitialPostings.length < 2) {
@@ -278,6 +280,9 @@ const PostingListContainer: FunctionComponent<Props> = ({
           }}
         />
       ))}
+      {error !== undefined ? (
+        <div className="invalid-feedback">{error}</div>
+      ) : null}
     </FormRow>
   );
 };
