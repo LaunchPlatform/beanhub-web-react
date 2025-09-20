@@ -179,7 +179,10 @@ const MetaListContainer: FunctionComponent<Props> = ({
         />
       ))}
       {error !== undefined ? (
-        <div className="invalid-feedback">{error}</div>
+        <div>
+          <div className="is-invalid"></div>
+          <div className="invalid-feedback">{error}</div>
+        </div>
       ) : null}
     </FormRow>
   );
