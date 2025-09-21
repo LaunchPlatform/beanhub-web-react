@@ -5,8 +5,6 @@ export type Props = PropsWithChildren<{
 }>;
 
 const HeaderLine: FunctionComponent<Props> = ({ title, children }: Props) => (
-  <div className="row">
-    <div className="col-12">{title}</div>
-  </div>
+  <div className="panel-tag">{title}</div>
 );
 export default HeaderLine;

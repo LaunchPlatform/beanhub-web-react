@@ -13,6 +13,7 @@ import PostingListContainer, {
 import MetaListContainer, {
   MetaRecord,
 } from "../TransactionForm/MetaListContainer";
+import HeaderLine from "../Shared/HeaderLine";
 
 export enum FieldType {
   str = "str",
@@ -23,6 +24,7 @@ export enum FieldType {
   account = "account",
   postings = "postings",
   meta = "meta",
+  header = "header",
 }
 
 export interface BaseField {
@@ -264,6 +266,8 @@ const FormField: FunctionComponent<FieldProps> = ({
           // TODO: handle on change and the history
         />
       );
+    case FieldType.header:
+      return <HeaderLine title={displayName} />;
   }
 };
 
