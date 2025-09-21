@@ -39,6 +39,11 @@ const today = "2023-07-22";
 
 const fields: Array<Field> = [
   {
+    name: "header0",
+    displayName: "books/2025.bean:123",
+    type: FieldType.header,
+  },
+  {
     name: "date",
     displayName: "The Date",
     type: FieldType.date,
