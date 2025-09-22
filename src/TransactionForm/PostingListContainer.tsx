@@ -113,8 +113,7 @@ const PostingListContainer: FunctionComponent<Props> = ({
       {postingsState.map((posting, index) => (
         <PostingInputContainer
           key={posting.key}
-          index={index}
-          name={name}
+          name={`${name}-${index}`}
           account={posting.account}
           accountError={posting.accountError}
           unitNumber={posting.unitNumber}

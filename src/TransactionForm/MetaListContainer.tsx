@@ -88,8 +88,7 @@ const MetaListContainer: FunctionComponent<Props> = ({
       {metaState.map((metaItem, index) => (
         <MetaInputContainer
           key={metaItem.key}
-          index={index}
-          name={name}
+          name={`${name}-${index}`}
           metaKey={metaItem.metaKey}
           metaKeyError={metaItem.metaKeyError}
           metaKeyReadonly={metaItem.metaKeyReadonly}
