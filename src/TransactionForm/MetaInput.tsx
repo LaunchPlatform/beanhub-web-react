@@ -1,5 +1,4 @@
-import { FunctionComponent, useContext } from "react";
-import { InputPrefixContext } from "./context";
+import { FunctionComponent } from "react";
 
 export interface Props {
   readonly metaKey?: string;
