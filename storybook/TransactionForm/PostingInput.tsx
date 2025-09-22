@@ -18,7 +18,6 @@ export const Primary: ComponentStory<typeof PostingInput> = () => (
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     onDelete={action("onDelete")}
     onAccountChange={action("onAccountChange")}
     onUnitNumberChange={action("onUnitNumberChange")}
@@ -32,7 +31,6 @@ export const WithAccountCandidates: ComponentStory<typeof PostingInput> = () => 
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     onDelete={action("onDelete")}
     onAccountChange={action("onAccountChange")}
     onUnitNumberChange={action("onUnitNumberChange")}
@@ -70,7 +68,6 @@ export const WithCurrencyCandidates: ComponentStory<typeof PostingInput> = () =>
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     onDelete={action("onDelete")}
     onAccountChange={action("onAccountChange")}
     onUnitNumberChange={action("onUnitNumberChange")}
@@ -95,7 +92,6 @@ export const AccountError: ComponentStory<typeof PostingInput> = () => (
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     accountError="Account required"
     onDelete={action("onDelete")}
     onAccountChange={action("onAccountChange")}
@@ -110,7 +106,6 @@ export const NumberError: ComponentStory<typeof PostingInput> = () => (
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     unitNumberError="Number required"
     onDelete={action("onDelete")}
     onAccountChange={action("onAccountChange")}
@@ -125,7 +120,6 @@ export const CurrencyError: ComponentStory<typeof PostingInput> = () => (
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     unitCurrencyError="Currency required"
     onDelete={action("onDelete")}
     onAccountChange={action("onAccountChange")}
@@ -140,7 +134,6 @@ export const AccountNumberError: ComponentStory<typeof PostingInput> = () => (
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     accountError="Account required"
     unitNumberError="Number required"
     onDelete={action("onDelete")}
@@ -156,7 +149,6 @@ export const NumberCurrencyError: ComponentStory<typeof PostingInput> = () => (
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     unitNumberError="Number required"
     unitCurrencyError="Currency required"
     onDelete={action("onDelete")}
@@ -172,7 +164,6 @@ export const AllError: ComponentStory<typeof PostingInput> = () => (
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     accountError="Account required"
     unitNumberError="Number required"
     unitCurrencyError="Currency required"
@@ -189,7 +180,6 @@ export const Price: ComponentStory<typeof PostingInput> = () => (
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     priceMode={PriceMode.PRICE}
     onDelete={action("onDelete")}
     onAccountChange={action("onAccountChange")}
@@ -206,7 +196,6 @@ export const TotalPrice: ComponentStory<typeof PostingInput> = () => (
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     priceMode={PriceMode.TOTAL_PRICE}
     onDelete={action("onDelete")}
     onAccountChange={action("onAccountChange")}
@@ -223,7 +212,6 @@ export const PriceAllError: ComponentStory<typeof PostingInput> = () => (
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     priceMode={PriceMode.PRICE}
     accountError="Account required"
     unitNumberError="Number required"
@@ -243,7 +231,6 @@ export const WithPriceCurrencyCandidates: ComponentStory<typeof PostingInput> = 
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     priceMode={PriceMode.PRICE}
     onDelete={action("onDelete")}
     onAccountChange={action("onAccountChange")}
