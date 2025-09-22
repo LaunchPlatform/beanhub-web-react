@@ -9,6 +9,7 @@ export interface Props {
   readonly metaValue?: string;
   readonly metaValueError?: string;
   readonly metaValueReadonly?: boolean;
+  readonly name: string;
   readonly onKeyChange?: (value: string) => void;
   readonly onValueChange?: (value: string) => void;
   readonly onDelete?: () => void;
@@ -22,6 +23,7 @@ const MetaInputContainer: FunctionComponent<Props> = ({
   metaValueError,
   metaValueReadonly,
   index,
+  name,
   onKeyChange,
   onValueChange,
   onDelete,
@@ -31,6 +33,7 @@ const MetaInputContainer: FunctionComponent<Props> = ({
   return (
     <MetaInput
       index={index}
+      name={name}
       onDelete={onDelete}
       metaKey={metaKeyValue}
       metaKeyError={metaKeyError}

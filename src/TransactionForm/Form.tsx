@@ -137,13 +137,14 @@ const Form: FunctionComponent<Props> = ({
         }}
       />
       <PostingListContainer
+        name="postings"
         initialPostings={initialPostings}
         accounts={accounts}
         accountCurrencies={accountCurrencies}
         defaultCurrencies={defaultCurrencies}
         required
       />
-      <MetaListContainer initialMeta={initialMeta} />
+      <MetaListContainer name="metadata" initialMeta={initialMeta} />
       {hiddenFields !== undefined
         ? Object.entries(hiddenFields).map(([key, value]) => (
             <input type="hidden" name={key} value={value} />

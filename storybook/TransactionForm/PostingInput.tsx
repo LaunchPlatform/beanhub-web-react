@@ -14,6 +14,7 @@ export default {
 
 export const Primary: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""
@@ -27,6 +28,7 @@ export const Primary: ComponentStory<typeof PostingInput> = () => (
 
 export const WithAccountCandidates: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""
@@ -64,6 +66,7 @@ export const WithAccountCandidates: ComponentStory<typeof PostingInput> = () => 
 
 export const WithCurrencyCandidates: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""
@@ -88,6 +91,7 @@ export const WithCurrencyCandidates: ComponentStory<typeof PostingInput> = () =>
 
 export const AccountError: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""
@@ -102,6 +106,7 @@ export const AccountError: ComponentStory<typeof PostingInput> = () => (
 
 export const NumberError: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""
@@ -116,6 +121,7 @@ export const NumberError: ComponentStory<typeof PostingInput> = () => (
 
 export const CurrencyError: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""
@@ -130,6 +136,7 @@ export const CurrencyError: ComponentStory<typeof PostingInput> = () => (
 
 export const AccountNumberError: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""
@@ -145,6 +152,7 @@ export const AccountNumberError: ComponentStory<typeof PostingInput> = () => (
 
 export const NumberCurrencyError: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""
@@ -160,6 +168,7 @@ export const NumberCurrencyError: ComponentStory<typeof PostingInput> = () => (
 
 export const AllError: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""
@@ -176,6 +185,7 @@ export const AllError: ComponentStory<typeof PostingInput> = () => (
 
 export const Price: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""
@@ -192,6 +202,7 @@ export const Price: ComponentStory<typeof PostingInput> = () => (
 
 export const TotalPrice: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""
@@ -208,6 +219,7 @@ export const TotalPrice: ComponentStory<typeof PostingInput> = () => (
 
 export const PriceAllError: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""
@@ -227,6 +239,7 @@ export const PriceAllError: ComponentStory<typeof PostingInput> = () => (
 
 export const WithPriceCurrencyCandidates: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""

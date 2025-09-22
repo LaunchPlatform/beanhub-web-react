@@ -27,6 +27,7 @@ export interface Props {
   readonly priceExpanded?: boolean;
   readonly accounts: Array<string>;
   readonly currencies: Array<string>;
+  readonly name: string;
   readonly onAccountChange?: (value: string) => void;
   readonly onAccountBlur?: () => void;
   readonly onUnitNumberChange?: (value: string) => void;
@@ -193,6 +194,7 @@ const PostingInputContainer: FunctionComponent<Props> = ({
   accounts,
   currencies,
   index,
+  name,
   onAccountChange,
   onAccountBlur,
   onUnitNumberChange,
@@ -233,6 +235,7 @@ const PostingInputContainer: FunctionComponent<Props> = ({
   return (
     <PostingInput
       index={index}
+      name={name}
       onDelete={onDelete}
       // Account value
       account={accountProps.value}

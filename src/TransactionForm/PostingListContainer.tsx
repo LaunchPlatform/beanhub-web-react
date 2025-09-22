@@ -42,6 +42,7 @@ export interface Props {
   readonly defaultCurrencies: Array<string>;
   readonly required?: boolean;
   readonly error?: string;
+  readonly name: string;
 }
 
 const PostingListContainer: FunctionComponent<Props> = ({
@@ -51,6 +52,7 @@ const PostingListContainer: FunctionComponent<Props> = ({
   defaultCurrencies,
   required,
   error,
+  name,
 }: Props) => {
   let filledInitialPostings = initialPostings;
   if (filledInitialPostings !== undefined && filledInitialPostings.length < 2) {
@@ -112,6 +114,7 @@ const PostingListContainer: FunctionComponent<Props> = ({
         <PostingInputContainer
           key={posting.key}
           index={index}
+          name={name}
           account={posting.account}
           accountError={posting.accountError}
           unitNumber={posting.unitNumber}

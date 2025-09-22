@@ -33,6 +33,7 @@ export default {
 
 export const Primary: ComponentStory<typeof PostingInputContainer> = () => (
   <PostingInputContainer
+    name="postings"
     index={0}
     accounts={accounts}
     currencies={currencies}

@@ -35,6 +35,7 @@ export default {
 
 export const Primary: ComponentStory<typeof PostingListContainer> = () => (
   <PostingListContainer
+    name="postings"
     accounts={accounts}
     accountCurrencies={accountCurrencies}
     defaultCurrencies={defaultCurrencies}
@@ -43,6 +44,7 @@ export const Primary: ComponentStory<typeof PostingListContainer> = () => (
 
 export const InitialValues: ComponentStory<typeof PostingListContainer> = () => (
   <PostingListContainer
+    name="postings"
     initialPostings={[
       { account: "Assets", unitNumber: "-12.34", unitCurrency: "USD" },
       { account: "Expenses", unitNumber: "12.34", unitCurrency: "USD" },
@@ -55,6 +57,7 @@ export const InitialValues: ComponentStory<typeof PostingListContainer> = () => 
 
 export const Error: ComponentStory<typeof PostingListContainer> = () => (
   <PostingListContainer
+    name="postings"
     initialPostings={[
       {
         account: "Assets",
@@ -72,6 +75,7 @@ export const Error: ComponentStory<typeof PostingListContainer> = () => (
 
 export const Optional: ComponentStory<typeof PostingListContainer> = () => (
   <PostingListContainer
+    name="postings"
     accounts={accounts}
     accountCurrencies={accountCurrencies}
     defaultCurrencies={defaultCurrencies}

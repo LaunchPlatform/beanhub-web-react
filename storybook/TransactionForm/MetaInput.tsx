@@ -12,6 +12,7 @@ export default {
 
 export const Primary: ComponentStory<typeof MetaInput> = () => (
   <MetaInput
+    name="metadata"
     defaultMetaKey="import-id"
     defaultMetaValue="MOCK_VALUE"
     index={0}
@@ -23,6 +24,7 @@ export const Primary: ComponentStory<typeof MetaInput> = () => (
 
 export const Empty: ComponentStory<typeof MetaInput> = () => (
   <MetaInput
+    name="metadata"
     index={0}
     onKeyChange={action("onKeyChange")}
     onValueChange={action("onValueChange")}
@@ -32,6 +34,7 @@ export const Empty: ComponentStory<typeof MetaInput> = () => (
 
 export const KeyError: ComponentStory<typeof MetaInput> = () => (
   <MetaInput
+    name="metadata"
     key="import-id"
     metaKeyError="Invalid key name"
     index={0}
@@ -43,6 +46,7 @@ export const KeyError: ComponentStory<typeof MetaInput> = () => (
 
 export const ValueError: ComponentStory<typeof MetaInput> = () => (
   <MetaInput
+    name="metadata"
     defaultMetaKey="import-id"
     metaValueError="Invalid value"
     index={0}
@@ -54,6 +58,7 @@ export const ValueError: ComponentStory<typeof MetaInput> = () => (
 
 export const BothError: ComponentStory<typeof MetaInput> = () => (
   <MetaInput
+    name="metadata"
     defaultMetaKey="import-id"
     metaKeyError="Invalid key name"
     defaultMetaValue="MOCK_VALUE"
@@ -67,6 +72,7 @@ export const BothError: ComponentStory<typeof MetaInput> = () => (
 
 export const KeyReadonly: ComponentStory<typeof MetaInput> = () => (
   <MetaInput
+    name="metadata"
     defaultMetaKey="import-id"
     defaultMetaValue="MOCK_VALUE"
     index={0}
@@ -79,6 +85,7 @@ export const KeyReadonly: ComponentStory<typeof MetaInput> = () => (
 
 export const ValueReadonly: ComponentStory<typeof MetaInput> = () => (
   <MetaInput
+    name="metadata"
     defaultMetaKey="import-id"
     defaultMetaValue="MOCK_VALUE"
     index={0}
@@ -91,6 +98,7 @@ export const ValueReadonly: ComponentStory<typeof MetaInput> = () => (
 
 export const BothReadonly: ComponentStory<typeof MetaInput> = () => (
   <MetaInput
+    name="metadata"
     defaultMetaKey="import-id"
     defaultMetaValue="MOCK_VALUE"
     index={0}

@@ -249,6 +249,7 @@ const FormField: FunctionComponent<FieldProps> = ({
       return (
         <PostingListContainer
           initialPostings={initialValue as Array<PostingRecord>}
+          name={field.name}
           accounts={accounts}
           accountCurrencies={accountCurrencies}
           defaultCurrencies={currencies}
@@ -261,6 +262,7 @@ const FormField: FunctionComponent<FieldProps> = ({
       return (
         <MetaListContainer
           initialMeta={initialValue as Array<MetaRecord>}
+          name={field.name}
           required={field.required}
           error={field.error}
           // TODO: handle on change and the history

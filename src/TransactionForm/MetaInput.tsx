@@ -11,6 +11,7 @@ export interface Props {
   readonly valueReadonly?: boolean;
   readonly metaValueError?: string;
   readonly index: number;
+  readonly name: string;
   readonly onKeyChange?: (key: string) => void;
   readonly onValueChange?: (key: string) => void;
   readonly onDelete?: () => void;
@@ -26,6 +27,7 @@ const MetaInput: FunctionComponent<Props> = ({
   valueReadonly,
   metaValueError,
   index,
+  name,
   onKeyChange,
   onValueChange,
   onDelete,
@@ -33,7 +35,7 @@ const MetaInput: FunctionComponent<Props> = ({
   const isInvalid = [metaKeyError, metaValueError].some(
     (value) => value !== undefined
   );
-  const inputPrefixContext = useContext(InputPrefixContext);
+  const inputPrefixContext = `${useContext(InputPrefixContext)}${name}`;
   return (
     <div className="input-group">
       <input
@@ -43,7 +45,7 @@ const MetaInput: FunctionComponent<Props> = ({
           "form-control" + (metaKeyError !== undefined ? " is-invalid" : "")
         }
         placeholder="Key"
-        name={`${inputPrefixContext}metadata-${index}-key`}
+        name={`${inputPrefixContext}-${index}-key`}
         value={metaKey}
         defaultValue={defaultMetaKey}
         readOnly={keyReadonly}
@@ -60,7 +62,7 @@ const MetaInput: FunctionComponent<Props> = ({
           "form-control" + (metaValueError !== undefined ? " is-invalid" : "")
         }
         placeholder="Value"
-        name={`${inputPrefixContext}metadata-${index}-value`}
+        name={`${inputPrefixContext}-${index}-value`}
         value={metaValue}
         defaultValue={defaultMetaValue}
         readOnly={valueReadonly}

@@ -26,12 +26,14 @@ export interface Props {
   readonly initialMeta?: Array<MetaRecord>;
   readonly required?: boolean;
   readonly error?: string;
+  readonly name: string;
 }
 
 const MetaListContainer: FunctionComponent<Props> = ({
   initialMeta,
   required,
   error,
+  name,
 }: Props) => {
   let filledInitialMeta = initialMeta;
   if (
@@ -87,6 +89,7 @@ const MetaListContainer: FunctionComponent<Props> = ({
         <MetaInputContainer
           key={metaItem.key}
           index={index}
+          name={name}
           metaKey={metaItem.metaKey}
           metaKeyError={metaItem.metaKeyError}
           metaKeyReadonly={metaItem.metaKeyReadonly}

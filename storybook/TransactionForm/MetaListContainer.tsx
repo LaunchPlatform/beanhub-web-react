@@ -7,17 +7,19 @@ export default {
 } as ComponentMeta<typeof MetaListContainer>;
 
 export const Primary: ComponentStory<typeof MetaListContainer> = () => (
-  <MetaListContainer />
+  <MetaListContainer name="metadata" />
 );
 
 export const InitialValue: ComponentStory<typeof MetaListContainer> = () => (
   <MetaListContainer
+    name="metadata"
     initialMeta={[{ metaKey: "mock-key", metaValue: "mock-value" }]}
   />
 );
 
 export const InitialReadonlyItem: ComponentStory<typeof MetaListContainer> = () => (
   <MetaListContainer
+    name="metadata"
     initialMeta={[
       {
         metaKey: "mock-key",
