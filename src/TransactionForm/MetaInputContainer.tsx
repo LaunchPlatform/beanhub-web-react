@@ -2,13 +2,13 @@ import React, { FunctionComponent, useState } from "react";
 import MetaInput from "./MetaInput";
 
 export interface Props {
-  readonly index: number;
   readonly metaKey?: string;
   readonly metaKeyError?: string;
   readonly metaKeyReadonly?: boolean;
   readonly metaValue?: string;
   readonly metaValueError?: string;
   readonly metaValueReadonly?: boolean;
+  readonly name: string;
   readonly onKeyChange?: (value: string) => void;
   readonly onValueChange?: (value: string) => void;
   readonly onDelete?: () => void;
@@ -21,7 +21,7 @@ const MetaInputContainer: FunctionComponent<Props> = ({
   metaValue,
   metaValueError,
   metaValueReadonly,
-  index,
+  name,
   onKeyChange,
   onValueChange,
   onDelete,
@@ -30,7 +30,7 @@ const MetaInputContainer: FunctionComponent<Props> = ({
   const [metaValueValue, setMetaValue] = useState<string>(metaValue ?? "");
   return (
     <MetaInput
-      index={index}
+      name={name}
       onDelete={onDelete}
       metaKey={metaKeyValue}
       metaKeyError={metaKeyError}

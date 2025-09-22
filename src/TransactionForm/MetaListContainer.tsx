@@ -24,10 +24,16 @@ interface MetaRecordState {
 
 export interface Props {
   readonly initialMeta?: Array<MetaRecord>;
+  readonly required?: boolean;
+  readonly error?: string;
+  readonly name: string;
 }
 
 const MetaListContainer: FunctionComponent<Props> = ({
   initialMeta,
+  required,
+  error,
+  name,
 }: Props) => {
   let filledInitialMeta = initialMeta;
   if (
@@ -78,11 +84,11 @@ const MetaListContainer: FunctionComponent<Props> = ({
     initialState
   );
   return (
-    <FormRow title="Metadata">
+    <FormRow title="Metadata" required={required ?? false}>
       {metaState.map((metaItem, index) => (
         <MetaInputContainer
           key={metaItem.key}
-          index={index}
+          name={`${name}-${index}`}
           metaKey={metaItem.metaKey}
           metaKeyError={metaItem.metaKeyError}
           metaKeyReadonly={metaItem.metaKeyReadonly}
@@ -174,6 +180,12 @@ const MetaListContainer: FunctionComponent<Props> = ({
           }}
         />
       ))}
+      {error !== undefined ? (
+        <div>
+          <div className="is-invalid"></div>
+          <div className="invalid-feedback">{error}</div>
+        </div>
+      ) : null}
     </FormRow>
   );
 };

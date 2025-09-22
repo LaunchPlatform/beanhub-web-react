@@ -39,6 +39,11 @@ const today = "2023-07-22";
 
 const fields: Array<Field> = [
   {
+    name: "header0",
+    displayName: "books/2025.bean:123",
+    type: FieldType.header,
+  },
+  {
     name: "date",
     displayName: "The Date",
     type: FieldType.date,
@@ -70,7 +75,27 @@ const fields: Array<Field> = [
     displayName: "The Number",
     type: FieldType.number,
   },
+  {
+    name: "postings",
+    displayName: "Postings",
+    type: FieldType.postings,
+  },
+  {
+    name: "meta",
+    displayName: "Meta",
+    type: FieldType.meta,
+  },
 ];
+
+const accountCurrencies = {
+  Assets: ["USD"],
+  "Assets:Bank": ["USD", "TWD"],
+  "Assets:Cash": ["USD", "EUR"],
+  Expenses: ["USD", "TWD", "BTC"],
+  "Expenses:Office": ["USD"],
+  Equity: ["USD"],
+  "Equity:CommonStock": ["USD"],
+};
 
 export default {
   component: Form,
@@ -81,6 +106,7 @@ export const Primary: ComponentStory<typeof Form> = () => (
     files={files}
     currencies={currencies}
     accounts={accounts}
+    accountCurrencies={accountCurrencies}
     fields={fields}
     defaultDate={today}
   />
@@ -91,6 +117,7 @@ export const Required: ComponentStory<typeof Form> = () => (
     files={files}
     currencies={currencies}
     accounts={accounts}
+    accountCurrencies={accountCurrencies}
     fields={fields.map((field) => ({ ...field, required: true }))}
     defaultDate={today}
   />
@@ -101,6 +128,7 @@ export const Error: ComponentStory<typeof Form> = () => (
     files={files}
     currencies={currencies}
     accounts={accounts}
+    accountCurrencies={accountCurrencies}
     fields={fields.map((field) => ({ ...field, error: "Required" }))}
     defaultDate={today}
   />
@@ -112,6 +140,24 @@ const defaultValues = {
   currency: ["USD", "BTC"],
   str: "My txn",
   number: "123.45",
+  postings: [
+    {
+      account: "Assets:Cash",
+      unitNumber: "123.45",
+      unitCurrency: "USD",
+    },
+    {
+      account: "Expenses:Office",
+      unitNumber: "-123.45",
+      unitCurrency: "USD",
+    },
+  ],
+  meta: [
+    {
+      metaKey: "doc",
+      metaValue: "my-invoice.pdf",
+    },
+  ],
 };
 
 export const DefaultValues: ComponentStory<typeof Form> = () => (
@@ -123,6 +169,7 @@ export const DefaultValues: ComponentStory<typeof Form> = () => (
       ...field,
       default: defaultValues[field.name],
     }))}
+    accountCurrencies={accountCurrencies}
     defaultDate={today}
   />
 );
@@ -140,6 +187,7 @@ export const Creatable: ComponentStory<typeof Form> = () => (
         ? { creatable: true }
         : {}),
     }))}
+    accountCurrencies={accountCurrencies}
     defaultDate={today}
   />
 );

@@ -12,7 +12,7 @@ export default {
 
 export const Primary: ComponentStory<typeof MetaInputContainer> = () => (
   <MetaInputContainer
-    index={0}
+    name="metadata"
     onKeyChange={action("onKeyChange")}
     onValueChange={action("onValueChange")}
     onDelete={action("onDelete")}

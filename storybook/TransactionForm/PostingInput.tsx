@@ -14,10 +14,10 @@ export default {
 
 export const Primary: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     onDelete={action("onDelete")}
     onAccountChange={action("onAccountChange")}
     onUnitNumberChange={action("onUnitNumberChange")}
@@ -27,10 +27,10 @@ export const Primary: ComponentStory<typeof PostingInput> = () => (
 
 export const WithAccountCandidates: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     onDelete={action("onDelete")}
     onAccountChange={action("onAccountChange")}
     onUnitNumberChange={action("onUnitNumberChange")}
@@ -64,10 +64,10 @@ export const WithAccountCandidates: ComponentStory<typeof PostingInput> = () => 
 
 export const WithCurrencyCandidates: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     onDelete={action("onDelete")}
     onAccountChange={action("onAccountChange")}
     onUnitNumberChange={action("onUnitNumberChange")}
@@ -88,10 +88,10 @@ export const WithCurrencyCandidates: ComponentStory<typeof PostingInput> = () =>
 
 export const AccountError: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     accountError="Account required"
     onDelete={action("onDelete")}
     onAccountChange={action("onAccountChange")}
@@ -102,10 +102,10 @@ export const AccountError: ComponentStory<typeof PostingInput> = () => (
 
 export const NumberError: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     unitNumberError="Number required"
     onDelete={action("onDelete")}
     onAccountChange={action("onAccountChange")}
@@ -116,10 +116,10 @@ export const NumberError: ComponentStory<typeof PostingInput> = () => (
 
 export const CurrencyError: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     unitCurrencyError="Currency required"
     onDelete={action("onDelete")}
     onAccountChange={action("onAccountChange")}
@@ -130,10 +130,10 @@ export const CurrencyError: ComponentStory<typeof PostingInput> = () => (
 
 export const AccountNumberError: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     accountError="Account required"
     unitNumberError="Number required"
     onDelete={action("onDelete")}
@@ -145,10 +145,10 @@ export const AccountNumberError: ComponentStory<typeof PostingInput> = () => (
 
 export const NumberCurrencyError: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     unitNumberError="Number required"
     unitCurrencyError="Currency required"
     onDelete={action("onDelete")}
@@ -160,10 +160,10 @@ export const NumberCurrencyError: ComponentStory<typeof PostingInput> = () => (
 
 export const AllError: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     accountError="Account required"
     unitNumberError="Number required"
     unitCurrencyError="Currency required"
@@ -176,10 +176,10 @@ export const AllError: ComponentStory<typeof PostingInput> = () => (
 
 export const Price: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     priceMode={PriceMode.PRICE}
     onDelete={action("onDelete")}
     onAccountChange={action("onAccountChange")}
@@ -192,10 +192,10 @@ export const Price: ComponentStory<typeof PostingInput> = () => (
 
 export const TotalPrice: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     priceMode={PriceMode.TOTAL_PRICE}
     onDelete={action("onDelete")}
     onAccountChange={action("onAccountChange")}
@@ -208,10 +208,10 @@ export const TotalPrice: ComponentStory<typeof PostingInput> = () => (
 
 export const PriceAllError: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     priceMode={PriceMode.PRICE}
     accountError="Account required"
     unitNumberError="Number required"
@@ -227,10 +227,10 @@ export const PriceAllError: ComponentStory<typeof PostingInput> = () => (
 
 export const WithPriceCurrencyCandidates: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
+    name="postings"
     account=""
     unitNumber=""
     unitCurrency=""
-    index={0}
     priceMode={PriceMode.PRICE}
     onDelete={action("onDelete")}
     onAccountChange={action("onAccountChange")}

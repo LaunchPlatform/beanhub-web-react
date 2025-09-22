@@ -7,6 +7,13 @@ import TextInput from "../Shared/TextInput";
 import SubmitButton from "../Shared/SubmitButton";
 import CurrencyInput from "../Shared/CurrencyInput";
 import NumberInput from "../Shared/NumberInput";
+import PostingListContainer, {
+  PostingRecord,
+} from "../TransactionForm/PostingListContainer";
+import MetaListContainer, {
+  MetaRecord,
+} from "../TransactionForm/MetaListContainer";
+import HeaderLine from "../Shared/HeaderLine";
 
 export enum FieldType {
   str = "str",
@@ -15,6 +22,9 @@ export enum FieldType {
   date = "date",
   currency = "currency",
   account = "account",
+  postings = "postings",
+  meta = "meta",
+  header = "header",
 }
 
 export interface BaseField {
@@ -52,7 +62,23 @@ export interface AccountField extends BaseField {
   readonly default?: string;
 }
 
-export type Field = OtherField | CurrencyField | FileField | AccountField;
+export interface PostingsField extends BaseField {
+  readonly type: FieldType.postings;
+  readonly default?: Array<PostingRecord>;
+}
+
+export interface MetaField extends BaseField {
+  readonly type: FieldType.postings;
+  readonly default?: Array<MetaRecord>;
+}
+
+export type Field =
+  | OtherField
+  | CurrencyField
+  | FileField
+  | AccountField
+  | PostingsField
+  | MetaField;
 
 export interface Props {
   readonly action?: string;
@@ -62,6 +88,7 @@ export interface Props {
   readonly files: Array<string>;
   readonly currencies: Array<string>;
   readonly accounts: Array<string>;
+  readonly accountCurrencies: Record<string, Array<string>>;
   readonly defaultDate: string;
   readonly errors?: Array<string>;
   readonly submit?: string;
@@ -72,6 +99,7 @@ interface FieldProps {
   readonly files: Array<string>;
   readonly currencies: Array<string>;
   readonly accounts: Array<string>;
+  readonly accountCurrencies: Record<string, Array<string>>;
   readonly defaultDate: string;
 }
 
@@ -81,6 +109,7 @@ const FormField: FunctionComponent<FieldProps> = ({
   files,
   accounts,
   defaultDate,
+  accountCurrencies,
 }: FieldProps) => {
   let initialValue = field.default;
   if (window.history.state?.[field.name] !== undefined) {
@@ -158,7 +187,7 @@ const FormField: FunctionComponent<FieldProps> = ({
           label={displayName}
           name={field.name}
           currencies={currencies}
-          initialValue={initialValue}
+          initialValue={initialValue as string}
           error={field.error}
           multiple={field.multiple}
           creatable={field.creatable}
@@ -216,6 +245,31 @@ const FormField: FunctionComponent<FieldProps> = ({
           }}
         />
       );
+    case FieldType.postings:
+      return (
+        <PostingListContainer
+          initialPostings={initialValue as Array<PostingRecord>}
+          name={field.name}
+          accounts={accounts}
+          accountCurrencies={accountCurrencies}
+          defaultCurrencies={currencies}
+          required={field.required}
+          error={field.error}
+          // TODO: handle on change and the history
+        />
+      );
+    case FieldType.meta:
+      return (
+        <MetaListContainer
+          initialMeta={initialValue as Array<MetaRecord>}
+          name={field.name}
+          required={field.required}
+          error={field.error}
+          // TODO: handle on change and the history
+        />
+      );
+    case FieldType.header:
+      return <HeaderLine title={displayName} />;
   }
 };
 
@@ -227,6 +281,7 @@ const Form: FunctionComponent<Props> = ({
   files,
   currencies,
   accounts,
+  accountCurrencies,
   defaultDate,
   errors,
   submit,
@@ -240,6 +295,7 @@ const Form: FunctionComponent<Props> = ({
           currencies={currencies}
           files={files}
           accounts={accounts}
+          accountCurrencies={accountCurrencies}
           defaultDate={defaultDate}
         />
       ))}

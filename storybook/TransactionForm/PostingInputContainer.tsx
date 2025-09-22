@@ -33,7 +33,7 @@ export default {
 
 export const Primary: ComponentStory<typeof PostingInputContainer> = () => (
   <PostingInputContainer
-    index={0}
+    name="postings"
     accounts={accounts}
     currencies={currencies}
     onDelete={action("onDelete")}

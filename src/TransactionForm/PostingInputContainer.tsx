@@ -10,7 +10,7 @@ import PostingInput, { PriceMode } from "./PostingInput";
 import { fuzzyMatch } from "./fuzzyMatch";
 
 export interface Props {
-  readonly index: number;
+  readonly name: string;
   readonly account?: string;
   readonly accountError?: string;
   readonly unitNumber?: string;
@@ -192,7 +192,7 @@ const PostingInputContainer: FunctionComponent<Props> = ({
   priceCurrencyUpdateCounter,
   accounts,
   currencies,
-  index,
+  name,
   onAccountChange,
   onAccountBlur,
   onUnitNumberChange,
@@ -232,7 +232,7 @@ const PostingInputContainer: FunctionComponent<Props> = ({
   );
   return (
     <PostingInput
-      index={index}
+      name={name}
       onDelete={onDelete}
       // Account value
       account={accountProps.value}
