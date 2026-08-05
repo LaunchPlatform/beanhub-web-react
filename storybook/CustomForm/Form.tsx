@@ -42,6 +42,7 @@ const fields: Array<Field> = [
     name: "header0",
     displayName: "books/2025.bean:123",
     type: FieldType.header,
+    href: "/repos/alice/ledger/blob/main/books/2025.bean#L123",
   },
   {
     name: "date",

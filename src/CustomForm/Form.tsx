@@ -38,9 +38,17 @@ export interface BaseField {
 export interface OtherField extends BaseField {
   readonly type: Exclude<
     FieldType,
-    FieldType.file | FieldType.currency | FieldType.account
+    | FieldType.file
+    | FieldType.currency
+    | FieldType.account
+    | FieldType.header
   >;
   readonly default?: string;
+}
+
+export interface HeaderField extends BaseField {
+  readonly type: FieldType.header;
+  readonly href?: string;
 }
 
 export interface CurrencyField extends BaseField {
@@ -78,7 +86,8 @@ export type Field =
   | FileField
   | AccountField
   | PostingsField
-  | MetaField;
+  | MetaField
+  | HeaderField;
 
 export interface Props {
   readonly action?: string;
@@ -111,7 +120,7 @@ const FormField: FunctionComponent<FieldProps> = ({
   defaultDate,
   accountCurrencies,
 }: FieldProps) => {
-  let initialValue = field.default;
+  let initialValue = "default" in field ? field.default : undefined;
   if (window.history.state?.[field.name] !== undefined) {
     initialValue = window.history.state?.[field.name];
   }
@@ -269,7 +278,7 @@ const FormField: FunctionComponent<FieldProps> = ({
         />
       );
     case FieldType.header:
-      return <HeaderLine title={displayName} />;
+      return <HeaderLine title={displayName} href={field.href} />;
   }
 };
 
