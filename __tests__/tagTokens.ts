@@ -1,9 +1,12 @@
 import { it, expect, describe } from "@jest/globals";
 import {
   formatTokenLabel,
+  isValidToken,
   joinTokenList,
   normalizeToken,
   parseTokenList,
+  sanitizeTokenBody,
+  sanitizeTokenInput,
   splitRawTokenInput,
 } from "../src/Shared/tagTokens";
 
@@ -11,6 +14,29 @@ describe("normalizeToken", () => {
   it("strips repeated prefixes", () => {
     expect(normalizeToken("##trip", "#")).toBe("trip");
     expect(normalizeToken("^^invoice", "^")).toBe("invoice");
+  });
+
+  it("drops illegal characters", () => {
+    expect(normalizeToken("trip!", "#")).toBe("trip");
+    expect(normalizeToken("bad name", "#")).toBe("badname");
+    expect(normalizeToken("@@@", "#")).toBe("");
+  });
+});
+
+describe("isValidToken / sanitize", () => {
+  it("accepts Beancount tag/link bodies", () => {
+    expect(isValidToken("trip")).toBe(true);
+    expect(isValidToken("invoice-42")).toBe(true);
+    expect(isValidToken("a_b/c.d")).toBe(true);
+    expect(isValidToken("bad name")).toBe(false);
+    expect(isValidToken("tag!")).toBe(false);
+  });
+
+  it("sanitizes body and live input", () => {
+    expect(sanitizeTokenBody("trip!")).toBe("trip");
+    expect(sanitizeTokenInput("#trip!", "#")).toBe("trip");
+    expect(sanitizeTokenInput("^a, ^b!", "^")).toBe("a, b");
+    expect(sanitizeTokenInput("foo bar", "#")).toBe("foo bar");
   });
 });
 
@@ -29,6 +55,11 @@ describe("parseTokenList", () => {
       "vacation",
       "food",
     ]);
+  });
+
+  it("skips illegal tokens", () => {
+    expect(parseTokenList("ok bad! also_ok", "#")).toEqual(["ok", "bad", "also_ok"]);
+    expect(parseTokenList("!!!", "#")).toEqual([]);
   });
 
   it("returns empty for blank", () => {

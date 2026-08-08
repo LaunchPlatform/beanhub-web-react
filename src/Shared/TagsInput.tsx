@@ -8,15 +8,13 @@ import { OnChangeValue, StylesConfig } from "react-select";
 import FormRow from "./FormRow";
 import {
   formatTokenLabel,
+  isValidToken,
   joinTokenList,
   normalizeToken,
   parseTokenList,
+  sanitizeTokenInput,
   splitRawTokenInput,
 } from "./tagTokens";
-
-function escapeRegExp(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
 
 interface Option {
   readonly value: string;
@@ -160,13 +158,7 @@ const TagsInput: FunctionComponent<Props> = ({
           if (action.action !== "input-change") {
             return;
           }
-          // Keep the typing field bare (no # / ^); strip as the user types or pastes.
-          const bare = stripPrefix
-            ? value.replace(
-                new RegExp(`^\\s*${escapeRegExp(stripPrefix)}+`),
-                ""
-              )
-            : value;
+          const bare = sanitizeTokenInput(value, stripPrefix);
           // Comma or space in the middle of pasted/typed text: commit completed tokens.
           if (/[,\s]/.test(bare)) {
             const parts = bare.split(/[,\s]+/);
@@ -185,6 +177,10 @@ const TagsInput: FunctionComponent<Props> = ({
           if (inputValue.trim()) {
             addFromRaw(inputValue);
           }
+        }}
+        isValidNewOption={(value) => {
+          const token = normalizeToken(value, stripPrefix);
+          return isValidToken(token);
         }}
         formatCreateLabel={(value) => {
           const token = normalizeToken(value, stripPrefix);

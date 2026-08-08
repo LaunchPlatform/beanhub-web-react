@@ -1,3 +1,36 @@
+/** Beancount tag/link body — matches beanhub lexer `_tag_or_link`. */
+export const TOKEN_BODY_PATTERN = /^[A-Za-z0-9\-_/.]+$/;
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+export function isValidToken(token: string): boolean {
+  return TOKEN_BODY_PATTERN.test(token);
+}
+
+/** Keep only characters allowed in a Beancount tag/link body. */
+export function sanitizeTokenBody(value: string): string {
+  return value.replace(/[^A-Za-z0-9\-_/.]/g, "");
+}
+
+/**
+ * Normalize live input: strip leading markers, drop illegal characters,
+ * but keep spaces/commas so multi-token paste still works.
+ */
+export function sanitizeTokenInput(
+  value: string,
+  stripPrefix?: string
+): string {
+  let cleaned = value;
+  if (stripPrefix) {
+    const prefix = escapeRegExp(stripPrefix);
+    cleaned = cleaned.replace(new RegExp(`(^|[\\s,]+)${prefix}+`, "g"), "$1");
+    cleaned = cleaned.replace(new RegExp(`^\\s*${prefix}+`), "");
+  }
+  return cleaned.replace(/[^A-Za-z0-9\-_/\s,.]/g, "");
+}
+
 export function normalizeToken(value: string, stripPrefix?: string): string {
   let token = value.trim();
   if (!token) {
@@ -8,7 +41,8 @@ export function normalizeToken(value: string, stripPrefix?: string): string {
       token = token.slice(stripPrefix.length).trim();
     }
   }
-  return token;
+  token = sanitizeTokenBody(token);
+  return isValidToken(token) ? token : "";
 }
 
 /** Chip / create-label text with Beancount marker; bare token for the input field. */
