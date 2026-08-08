@@ -1,10 +1,17 @@
 import React, {
   FunctionComponent,
   KeyboardEventHandler,
+  MouseEvent,
+  useRef,
   useState,
 } from "react";
 import CreatableSelect from "react-select/creatable";
-import { OnChangeValue, StylesConfig } from "react-select";
+import {
+  MultiValueGenericProps,
+  OnChangeValue,
+  SelectInstance,
+  StylesConfig,
+} from "react-select";
 import FormRow from "./FormRow";
 import {
   formatTokenLabel,
@@ -55,6 +62,8 @@ const TagsInput: FunctionComponent<Props> = ({
   hint,
   onChange,
 }: Props) => {
+  const selectRef = useRef<SelectInstance<Option, true>>(null);
+  const editingOriginalRef = useRef<string | null>(null);
   const [tokens, setTokens] = useState<Array<string>>(
     parseTokenList(initialValue, stripPrefix)
   );
@@ -66,13 +75,16 @@ const TagsInput: FunctionComponent<Props> = ({
     onChange?.(joinTokenList(next));
   };
 
-  const addFromRaw = (raw: string) => {
+  const mergeIncoming = (
+    current: Array<string>,
+    raw: string
+  ): Array<string> => {
     const incoming = splitRawTokenInput(raw, stripPrefix);
     if (incoming.length === 0) {
-      return;
+      return current;
     }
-    const seen = new Set(tokens);
-    const next = [...tokens];
+    const seen = new Set(current);
+    const next = [...current];
     for (const token of incoming) {
       if (seen.has(token)) {
         continue;
@@ -80,8 +92,28 @@ const TagsInput: FunctionComponent<Props> = ({
       seen.add(token);
       next.push(token);
     }
-    commitTokens(next);
+    return next;
+  };
+
+  const addFromRaw = (raw: string) => {
+    editingOriginalRef.current = null;
+    commitTokens(mergeIncoming(tokens, raw));
     setInputValue("");
+  };
+
+  /** Click a chip → move bare value into the input for editing. */
+  const beginEdit = (token: string) => {
+    let next = tokens;
+    if (inputValue.trim()) {
+      next = mergeIncoming(next, inputValue);
+    }
+    next = next.filter((item) => item !== token);
+    commitTokens(next);
+    editingOriginalRef.current = token;
+    setInputValue(token);
+    window.requestAnimationFrame(() => {
+      selectRef.current?.focus();
+    });
   };
 
   const styles: StylesConfig<Option, true> = {
@@ -108,6 +140,7 @@ const TagsInput: FunctionComponent<Props> = ({
     multiValueLabel: (provided) => ({
       ...provided,
       color: "#5b3f8c",
+      cursor: "text",
     }),
     multiValueRemove: (provided) => ({
       ...provided,
@@ -128,24 +161,59 @@ const TagsInput: FunctionComponent<Props> = ({
   };
 
   const handleKeyDown: KeyboardEventHandler<HTMLDivElement> = (event) => {
-    if (!inputValue) {
-      return;
-    }
     switch (event.key) {
       case "Enter":
       case "Tab":
       case ",":
       case " ":
+        if (!inputValue) {
+          return;
+        }
         event.preventDefault();
         addFromRaw(inputValue);
         break;
+      case "Escape":
+        event.preventDefault();
+        if (editingOriginalRef.current !== null) {
+          const original = editingOriginalRef.current;
+          editingOriginalRef.current = null;
+          commitTokens(mergeIncoming(tokens, original));
+          setInputValue("");
+        } else {
+          setInputValue("");
+        }
+        break;
     }
+  };
+
+  const MultiValueLabel = (
+    props: MultiValueGenericProps<Option, true>
+  ) => {
+    const token = props.data.value;
+    const onMouseDown = (event: MouseEvent) => {
+      // Keep select from taking the click as a blur/clear; start edit instead.
+      event.preventDefault();
+      event.stopPropagation();
+      beginEdit(token);
+    };
+    return (
+      <div
+        {...props.innerProps}
+        onMouseDown={onMouseDown}
+        title="Click to edit"
+        role="button"
+        tabIndex={-1}
+      >
+        {props.children}
+      </div>
+    );
   };
 
   return (
     <FormRow title={label} required={required}>
       <input type="hidden" name={name} value={joinTokenList(tokens)} />
       <CreatableSelect<Option, true>
+        ref={selectRef}
         className={error !== undefined ? "is-invalid" : ""}
         isMulti
         isClearable
@@ -191,12 +259,13 @@ const TagsInput: FunctionComponent<Props> = ({
         components={{
           DropdownIndicator: null,
           IndicatorSeparator: null,
+          MultiValueLabel,
         }}
         aria-label={label}
       />
       <small className="form-text text-muted">
         {hint ??
-          "Type a value, then press Enter, comma, or space to add. Click × to remove."}
+          "Press Enter, comma, or space to add. Click a chip to edit; × to remove."}
       </small>
       {error !== undefined ? (
         <div className="invalid-feedback d-block">{error}</div>
