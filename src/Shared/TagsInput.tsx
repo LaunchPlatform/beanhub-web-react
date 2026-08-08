@@ -60,6 +60,21 @@ interface LabelHelpers {
   setEditingValue: (value: string) => void;
 }
 
+/** Applied inline — custom MultiValueLabel does not run emotion `css` from react-select. */
+const CHIP_LABEL_STYLE: React.CSSProperties = {
+  color: "#5b3f8c",
+  cursor: "text",
+  fontSize: "85%",
+  paddingLeft: 12,
+  paddingRight: 8,
+  paddingTop: 5,
+  paddingBottom: 5,
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+  boxSizing: "border-box",
+};
+
 /** Chip label shows Beancount marker (# / ^); option.value stays bare for submit/edit. */
 const toOptions = (
   tokens: Array<string>,
@@ -233,13 +248,17 @@ const TagsInput: FunctionComponent<Props> = ({
         return (
           <div
             {...props.innerProps}
-            style={{ display: "flex", alignItems: "center" }}
+            style={{
+              ...CHIP_LABEL_STYLE,
+              display: "flex",
+              alignItems: "center",
+              whiteSpace: "nowrap",
+            }}
           >
             {prefix ? (
               <span
                 style={{
                   color: "#5b3f8c",
-                  fontSize: "85%",
                   lineHeight: 1,
                   flexShrink: 0,
                 }}
@@ -264,7 +283,7 @@ const TagsInput: FunctionComponent<Props> = ({
                 outline: "none",
                 background: "transparent",
                 color: "#5b3f8c",
-                fontSize: "85%",
+                fontSize: "inherit",
                 padding: 0,
                 margin: 0,
                 minWidth: `${Math.max(draft.length, 1)}ch`,
@@ -287,6 +306,7 @@ const TagsInput: FunctionComponent<Props> = ({
           title="Click to edit"
           role="button"
           tabIndex={-1}
+          style={CHIP_LABEL_STYLE}
         >
           {props.children}
         </div>
@@ -321,17 +341,12 @@ const TagsInput: FunctionComponent<Props> = ({
       ...provided,
       color: "#5b3f8c",
       cursor: "text",
-      // react-select defaults (6/3) look flush once a leading #/^ is shown
-      paddingLeft: 8,
-      paddingRight: 6,
-      paddingTop: 4,
-      paddingBottom: 4,
     }),
     multiValueRemove: (provided) => ({
       ...provided,
       color: "#5b3f8c",
-      paddingLeft: 2,
-      paddingRight: 4,
+      paddingLeft: 4,
+      paddingRight: 6,
       ":hover": {
         backgroundColor: "#d9cceb",
         color: "#3d2a61",
