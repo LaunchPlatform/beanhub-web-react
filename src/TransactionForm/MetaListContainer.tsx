@@ -27,6 +27,7 @@ export interface Props {
   readonly required?: boolean;
   readonly error?: string;
   readonly name: string;
+  readonly onChange?: (meta: Array<MetaRecord>) => void;
 }
 
 const MetaListContainer: FunctionComponent<Props> = ({
@@ -34,6 +35,7 @@ const MetaListContainer: FunctionComponent<Props> = ({
   required,
   error,
   name,
+  onChange,
 }: Props) => {
   let filledInitialMeta = initialMeta;
   if (
@@ -83,6 +85,35 @@ const MetaListContainer: FunctionComponent<Props> = ({
   const [metaState, setMetaState] = useState<Array<MetaRecordState>>(
     initialState
   );
+  const updateMeta = (newMeta: Array<MetaRecordState>) => {
+    setMetaState(newMeta);
+    window.history.replaceState(
+      {
+        ...window.history.state,
+        meta: newMeta,
+      },
+      ""
+    );
+    onChange?.(
+      newMeta.map((item) => ({
+        metaKey: item.metaKey,
+        metaKeyError: item.metaKeyError,
+        metaKeyReadonly: item.metaKeyReadonly,
+        metaValue: item.metaValue,
+        metaValueError: item.metaValueError,
+        metaValueReadonly: item.metaValueReadonly,
+      }))
+    );
+  };
+  useEffect(() => {
+    onChange?.(
+      metaState.map((item) => ({
+        metaKey: item.metaKey,
+        metaValue: item.metaValue,
+      }))
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <FormRow title="Metadata" required={required ?? false}>
       {metaState.map((metaItem, index) => (
@@ -118,14 +149,7 @@ const MetaListContainer: FunctionComponent<Props> = ({
                 } as MetaRecordState,
               ];
             }
-            setMetaState(newMeta);
-            window.history.replaceState(
-              {
-                ...window.history.state,
-                meta: newMeta,
-              },
-              ""
-            );
+            updateMeta(newMeta);
           }}
           onValueChange={(metaValue) => {
             let newMeta = [...metaState];
@@ -133,14 +157,7 @@ const MetaListContainer: FunctionComponent<Props> = ({
               ...newMeta[index],
               metaValue,
             };
-            setMetaState(newMeta);
-            window.history.replaceState(
-              {
-                ...window.history.state,
-                meta: newMeta,
-              },
-              ""
-            );
+            updateMeta(newMeta);
           }}
           onDelete={() => {
             const itemIndex = metaState.findIndex(
@@ -169,14 +186,7 @@ const MetaListContainer: FunctionComponent<Props> = ({
             } else {
               newMeta = metaState.filter((item) => item.key !== metaItem.key);
             }
-            setMetaState(newMeta);
-            window.history.replaceState(
-              {
-                ...window.history.state,
-                meta: newMeta,
-              },
-              ""
-            );
+            updateMeta(newMeta);
           }}
         />
       ))}

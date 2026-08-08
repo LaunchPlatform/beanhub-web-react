@@ -2,7 +2,7 @@ import React, { FunctionComponent, useState, useEffect } from "react";
 import { v4 as uuid } from "uuid";
 import FormRow from "../Shared/FormRow";
 import PostingInputContainer from "./PostingInputContainer";
-import { PriceMode } from "./PostingInput";
+import { CostMode, PriceMode } from "./PostingInput";
 
 export interface PostingRecord {
   readonly account?: string;
@@ -11,6 +11,17 @@ export interface PostingRecord {
   readonly unitNumberError?: string;
   readonly unitCurrency?: string;
   readonly unitCurrencyError?: string;
+  readonly flag?: string;
+  readonly flagError?: string;
+  readonly costMode?: CostMode;
+  readonly costNumber?: string;
+  readonly costNumberError?: string;
+  readonly costCurrency?: string;
+  readonly costCurrencyError?: string;
+  readonly costDate?: string;
+  readonly costDateError?: string;
+  readonly costLabel?: string;
+  readonly costLabelError?: string;
   readonly priceMode?: PriceMode;
   readonly priceNumber?: string;
   readonly priceNumberError?: string;
@@ -27,6 +38,18 @@ interface PostingRecordState {
   readonly unitCurrency: string;
   readonly unitCurrencyUpdateCounter?: number;
   readonly unitCurrencyError?: string;
+  readonly flag: string;
+  readonly flagError?: string;
+  readonly costMode: CostMode;
+  readonly costNumber: string;
+  readonly costNumberError?: string;
+  readonly costCurrency: string;
+  readonly costCurrencyUpdateCounter?: number;
+  readonly costCurrencyError?: string;
+  readonly costDate: string;
+  readonly costDateError?: string;
+  readonly costLabel: string;
+  readonly costLabelError?: string;
   readonly priceMode: PriceMode;
   readonly priceNumber: string;
   readonly priceNumberError?: string;
@@ -34,6 +57,23 @@ interface PostingRecordState {
   readonly priceCurrencyUpdateCounter?: number;
   readonly priceCurrencyError?: string;
 }
+
+const emptyPosting = (): PostingRecordState =>
+  ({
+    key: uuid(),
+    account: "",
+    unitNumber: "",
+    unitCurrency: "",
+    flag: "",
+    costMode: CostMode.INACTIVE,
+    costNumber: "",
+    costCurrency: "",
+    costDate: "",
+    costLabel: "",
+    priceMode: PriceMode.INACTIVE,
+    priceNumber: "",
+    priceCurrency: "",
+  } as PostingRecordState);
 
 export interface Props {
   readonly initialPostings?: Array<PostingRecord>;
@@ -43,6 +83,8 @@ export interface Props {
   readonly required?: boolean;
   readonly error?: string;
   readonly name: string;
+  readonly advanced?: boolean;
+  readonly onChange?: (postings: Array<PostingRecord>) => void;
 }
 
 const PostingListContainer: FunctionComponent<Props> = ({
@@ -53,24 +95,15 @@ const PostingListContainer: FunctionComponent<Props> = ({
   required,
   error,
   name,
+  advanced,
+  onChange,
 }: Props) => {
   let filledInitialPostings = initialPostings;
   if (filledInitialPostings !== undefined && filledInitialPostings.length < 2) {
     // Fill up to 2 postings if it's not already
     const toFillCount = 2 - filledInitialPostings.length;
     for (let i = 0; i < toFillCount; i++) {
-      filledInitialPostings = [
-        ...filledInitialPostings,
-        {
-          key: uuid(),
-          account: "",
-          unitNumber: "",
-          unitCurrency: "",
-          priceMode: PriceMode.INACTIVE,
-          priceNumber: "",
-          priceCurrency: "",
-        } as PostingRecordState,
-      ];
+      filledInitialPostings = [...filledInitialPostings, emptyPosting()];
     }
   }
   let initialState = (filledInitialPostings ?? [{}, {}]).map(
@@ -83,6 +116,17 @@ const PostingListContainer: FunctionComponent<Props> = ({
         unitNumberError: posting.unitNumberError,
         unitCurrency: posting.unitCurrency ?? "",
         unitCurrencyError: posting.unitCurrencyError,
+        flag: posting.flag ?? "",
+        flagError: posting.flagError,
+        costMode: posting.costMode ?? CostMode.INACTIVE,
+        costNumber: posting.costNumber ?? "",
+        costNumberError: posting.costNumberError,
+        costCurrency: posting.costCurrency ?? "",
+        costCurrencyError: posting.costCurrencyError,
+        costDate: posting.costDate ?? "",
+        costDateError: posting.costDateError,
+        costLabel: posting.costLabel ?? "",
+        costLabelError: posting.costLabelError,
         priceMode: posting.priceMode ?? PriceMode.INACTIVE,
         priceNumber: posting.priceNumber ?? "",
         priceNumberError: posting.priceNumberError,
@@ -108,12 +152,68 @@ const PostingListContainer: FunctionComponent<Props> = ({
   const [postingsState, setPostingsState] = useState<Array<PostingRecordState>>(
     initialState
   );
+  const updatePostings = (newPostings: Array<PostingRecordState>) => {
+    setPostingsState(newPostings);
+    window.history.replaceState(
+      {
+        ...window.history.state,
+        postings: newPostings,
+      },
+      ""
+    );
+    onChange?.(
+      newPostings.map((posting) => ({
+        account: posting.account,
+        accountError: posting.accountError,
+        unitNumber: posting.unitNumber,
+        unitNumberError: posting.unitNumberError,
+        unitCurrency: posting.unitCurrency,
+        unitCurrencyError: posting.unitCurrencyError,
+        flag: posting.flag,
+        flagError: posting.flagError,
+        costMode: posting.costMode,
+        costNumber: posting.costNumber,
+        costNumberError: posting.costNumberError,
+        costCurrency: posting.costCurrency,
+        costCurrencyError: posting.costCurrencyError,
+        costDate: posting.costDate,
+        costDateError: posting.costDateError,
+        costLabel: posting.costLabel,
+        costLabelError: posting.costLabelError,
+        priceMode: posting.priceMode,
+        priceNumber: posting.priceNumber,
+        priceNumberError: posting.priceNumberError,
+        priceCurrency: posting.priceCurrency,
+        priceCurrencyError: posting.priceCurrencyError,
+      }))
+    );
+  };
+  useEffect(() => {
+    onChange?.(
+      postingsState.map((posting) => ({
+        account: posting.account,
+        unitNumber: posting.unitNumber,
+        unitCurrency: posting.unitCurrency,
+        flag: posting.flag,
+        costMode: posting.costMode,
+        costNumber: posting.costNumber,
+        costCurrency: posting.costCurrency,
+        costDate: posting.costDate,
+        costLabel: posting.costLabel,
+        priceMode: posting.priceMode,
+        priceNumber: posting.priceNumber,
+        priceCurrency: posting.priceCurrency,
+      }))
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <FormRow title="Postings" required={required ?? false}>
       {postingsState.map((posting, index) => (
         <PostingInputContainer
           key={posting.key}
           name={`${name}-${index}`}
+          advanced={advanced}
           account={posting.account}
           accountError={posting.accountError}
           unitNumber={posting.unitNumber}
@@ -121,8 +221,24 @@ const PostingListContainer: FunctionComponent<Props> = ({
           unitCurrency={posting.unitCurrency}
           unitCurrencyUpdateCounter={posting.unitCurrencyUpdateCounter}
           unitCurrencyError={posting.unitCurrencyError}
+          flag={posting.flag}
+          flagError={posting.flagError}
+          costExpanded={
+            !!advanced &&
+            postingsState.some((item) => item.costMode !== CostMode.INACTIVE)
+          }
+          initialCostMode={posting.costMode}
+          costNumber={posting.costNumber}
+          costNumberError={posting.costNumberError}
+          costCurrency={posting.costCurrency}
+          costCurrencyUpdateCounter={posting.costCurrencyUpdateCounter}
+          costCurrencyError={posting.costCurrencyError}
+          costDate={posting.costDate}
+          costDateError={posting.costDateError}
+          costLabel={posting.costLabel}
+          costLabelError={posting.costLabelError}
           priceExpanded={postingsState.some(
-            (posting) => posting.priceMode !== PriceMode.INACTIVE
+            (item) => item.priceMode !== PriceMode.INACTIVE
           )}
           initialPriceMode={posting.priceMode}
           priceNumber={posting.priceNumber}
@@ -142,27 +258,9 @@ const PostingListContainer: FunctionComponent<Props> = ({
             };
             if (newPostings.every((item) => item.account.trim().length > 0)) {
               // Append a new posting
-              newPostings = [
-                ...newPostings,
-                {
-                  key: uuid(),
-                  account: "",
-                  unitNumber: "",
-                  unitCurrency: "",
-                  priceMode: PriceMode.INACTIVE,
-                  priceNumber: "",
-                  priceCurrency: "",
-                } as PostingRecordState,
-              ];
+              newPostings = [...newPostings, emptyPosting()];
             }
-            setPostingsState(newPostings);
-            window.history.replaceState(
-              {
-                ...window.history.state,
-                postings: newPostings,
-              },
-              ""
-            );
+            updatePostings(newPostings);
           }}
           onAccountBlur={() => {
             const currencies =
@@ -180,14 +278,7 @@ const PostingListContainer: FunctionComponent<Props> = ({
               unitCurrencyUpdateCounter:
                 (newPostings[index].unitCurrencyUpdateCounter ?? 0) + 1,
             };
-            setPostingsState(newPostings);
-            window.history.replaceState(
-              {
-                ...window.history.state,
-                postings: newPostings,
-              },
-              ""
-            );
+            updatePostings(newPostings);
           }}
           onUnitNumberChange={(unitNumber) => {
             let newPostings = [...postingsState];
@@ -195,14 +286,7 @@ const PostingListContainer: FunctionComponent<Props> = ({
               ...newPostings[index],
               unitNumber,
             };
-            setPostingsState(newPostings);
-            window.history.replaceState(
-              {
-                ...window.history.state,
-                postings: newPostings,
-              },
-              ""
-            );
+            updatePostings(newPostings);
           }}
           onUnitCurrencyChange={(unitCurrency) => {
             let newPostings = [...postingsState];
@@ -210,14 +294,55 @@ const PostingListContainer: FunctionComponent<Props> = ({
               ...newPostings[index],
               unitCurrency,
             };
-            setPostingsState(newPostings);
-            window.history.replaceState(
-              {
-                ...window.history.state,
-                postings: newPostings,
-              },
-              ""
-            );
+            updatePostings(newPostings);
+          }}
+          onFlagChange={(flag) => {
+            let newPostings = [...postingsState];
+            newPostings[index] = {
+              ...newPostings[index],
+              flag,
+            };
+            updatePostings(newPostings);
+          }}
+          onCostModeChange={(costMode) => {
+            let newPostings = [...postingsState];
+            newPostings[index] = {
+              ...newPostings[index],
+              costMode,
+            };
+            updatePostings(newPostings);
+          }}
+          onCostNumberChange={(costNumber) => {
+            let newPostings = [...postingsState];
+            newPostings[index] = {
+              ...newPostings[index],
+              costNumber,
+            };
+            updatePostings(newPostings);
+          }}
+          onCostCurrencyChange={(costCurrency) => {
+            let newPostings = [...postingsState];
+            newPostings[index] = {
+              ...newPostings[index],
+              costCurrency,
+            };
+            updatePostings(newPostings);
+          }}
+          onCostDateChange={(costDate) => {
+            let newPostings = [...postingsState];
+            newPostings[index] = {
+              ...newPostings[index],
+              costDate,
+            };
+            updatePostings(newPostings);
+          }}
+          onCostLabelChange={(costLabel) => {
+            let newPostings = [...postingsState];
+            newPostings[index] = {
+              ...newPostings[index],
+              costLabel,
+            };
+            updatePostings(newPostings);
           }}
           onPriceModeChange={(priceMode) => {
             let newPostings = [...postingsState];
@@ -225,14 +350,7 @@ const PostingListContainer: FunctionComponent<Props> = ({
               ...newPostings[index],
               priceMode,
             };
-            setPostingsState(newPostings);
-            window.history.replaceState(
-              {
-                ...window.history.state,
-                postings: newPostings,
-              },
-              ""
-            );
+            updatePostings(newPostings);
           }}
           onPriceNumberChange={(priceNumber) => {
             let newPostings = [...postingsState];
@@ -240,14 +358,7 @@ const PostingListContainer: FunctionComponent<Props> = ({
               ...newPostings[index],
               priceNumber,
             };
-            setPostingsState(newPostings);
-            window.history.replaceState(
-              {
-                ...window.history.state,
-                postings: newPostings,
-              },
-              ""
-            );
+            updatePostings(newPostings);
           }}
           onPriceCurrencyChange={(priceCurrency) => {
             let newPostings = [...postingsState];
@@ -255,14 +366,7 @@ const PostingListContainer: FunctionComponent<Props> = ({
               ...newPostings[index],
               priceCurrency,
             };
-            setPostingsState(newPostings);
-            window.history.replaceState(
-              {
-                ...window.history.state,
-                postings: newPostings,
-              },
-              ""
-            );
+            updatePostings(newPostings);
           }}
           onDelete={() => {
             if (postingsState.length <= 2) {
@@ -271,14 +375,7 @@ const PostingListContainer: FunctionComponent<Props> = ({
             const newPostings = postingsState.filter(
               (item) => item.key !== posting.key
             );
-            setPostingsState(newPostings);
-            window.history.replaceState(
-              {
-                ...window.history.state,
-                postings: newPostings,
-              },
-              ""
-            );
+            updatePostings(newPostings);
           }}
         />
       ))}

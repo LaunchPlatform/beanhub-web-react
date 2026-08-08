@@ -175,6 +175,30 @@ export const DefaultValues: ComponentStory<typeof Form> = () => (
   />
 );
 
+export const WithDiffPreview: ComponentStory<typeof Form> = () => (
+  <Form
+    files={files}
+    currencies={currencies}
+    accounts={accounts}
+    accountCurrencies={accountCurrencies}
+    fields={fields.map((field) => ({
+      ...field,
+      default: defaultValues[field.name],
+    }))}
+    defaultDate={today}
+    showPreview
+    previewType="transaction"
+    originalSources={{
+      __form__: [
+        '2023-07-21 * "" "My txn"',
+        "  Assets:Cash      123.45 USD",
+        "  Expenses:Office -123.45 USD",
+        '  doc: "my-invoice.pdf"',
+      ].join("\n"),
+    }}
+  />
+);
+
 export const Creatable: ComponentStory<typeof Form> = () => (
   <Form
     files={files}
