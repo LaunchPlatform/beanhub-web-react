@@ -4,6 +4,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 
 import PostingInput, {
+  CostMode,
   PriceMode,
 } from "../../src/TransactionForm/PostingInput";
 
@@ -247,5 +248,102 @@ export const WithPriceCurrencyCandidates: ComponentStory<typeof PostingInput> = 
         ],
       },
     ]}
+  />
+);
+
+export const Cost: ComponentStory<typeof PostingInput> = () => (
+  <PostingInput
+    name="postings"
+    account=""
+    unitNumber=""
+    unitCurrency=""
+    costMode={CostMode.COST}
+    onDelete={action("onDelete")}
+    onAccountChange={action("onAccountChange")}
+    onUnitNumberChange={action("onUnitNumberChange")}
+    onUnitCurrencyChange={action("onUnitCurrencyChange")}
+    onCostNumberChange={action("onCostNumberChange")}
+    onCostCurrencyChange={action("onCostCurrencyChange")}
+    onCostDateChange={action("onCostDateChange")}
+    onCostLabelChange={action("onCostLabelChange")}
+  />
+);
+
+export const TotalCost: ComponentStory<typeof PostingInput> = () => (
+  <PostingInput
+    name="postings"
+    account=""
+    unitNumber=""
+    unitCurrency=""
+    costMode={CostMode.TOTAL_COST}
+    onDelete={action("onDelete")}
+    onAccountChange={action("onAccountChange")}
+    onUnitNumberChange={action("onUnitNumberChange")}
+    onUnitCurrencyChange={action("onUnitCurrencyChange")}
+    onCostNumberChange={action("onCostNumberChange")}
+    onCostCurrencyChange={action("onCostCurrencyChange")}
+    onCostDateChange={action("onCostDateChange")}
+    onCostLabelChange={action("onCostLabelChange")}
+  />
+);
+
+export const CostAllError: ComponentStory<typeof PostingInput> = () => (
+  <PostingInput
+    name="postings"
+    account=""
+    unitNumber=""
+    unitCurrency=""
+    costMode={CostMode.COST}
+    accountError="Account required"
+    unitNumberError="Number required"
+    unitCurrencyError="Currency required"
+    costNumberError="Number required"
+    costCurrencyError="Currency required"
+    costDateError="Bad date"
+    costLabelError="Bad label"
+    onDelete={action("onDelete")}
+    onAccountChange={action("onAccountChange")}
+    onUnitNumberChange={action("onUnitNumberChange")}
+    onUnitCurrencyChange={action("onUnitCurrencyChange")}
+  />
+);
+
+export const WithCostCurrencyCandidates: ComponentStory<typeof PostingInput> = () => (
+  <PostingInput
+    name="postings"
+    account=""
+    unitNumber=""
+    unitCurrency=""
+    costMode={CostMode.COST}
+    onDelete={action("onDelete")}
+    onAccountChange={action("onAccountChange")}
+    onUnitNumberChange={action("onUnitNumberChange")}
+    onUnitCurrencyChange={action("onUnitCurrencyChange")}
+    onCostCurrencyCandidateClick={action("onCostCurrencyCandidateClick")}
+    costCurrencyCandidates={[
+      { value: "USD", matchedPieces: [{ text: "USD", matched: true }] },
+      {
+        value: "USDT",
+        matchedPieces: [
+          { text: "USD", matched: true },
+          { text: "T", matched: false },
+        ],
+      },
+    ]}
+  />
+);
+
+export const WithFlag: ComponentStory<typeof PostingInput> = () => (
+  <PostingInput
+    name="postings"
+    account=""
+    unitNumber=""
+    unitCurrency=""
+    flag="!"
+    onDelete={action("onDelete")}
+    onAccountChange={action("onAccountChange")}
+    onUnitNumberChange={action("onUnitNumberChange")}
+    onUnitCurrencyChange={action("onUnitCurrencyChange")}
+    onFlagChange={action("onFlagChange")}
   />
 );

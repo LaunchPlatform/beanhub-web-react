@@ -3,7 +3,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import Form from "../../src/TransactionForm/Form";
-import { PriceMode } from "../../src/TransactionForm/PostingInput";
+import { CostMode, PriceMode } from "../../src/TransactionForm/PostingInput";
 import { InputPrefixContext } from "../../src/TransactionForm/context";
 
 const files: Array<string> = [
@@ -73,6 +73,9 @@ export const InitialValues: ComponentStory<typeof Form> = () => (
     initialNarration="This "
     initialPayee="Jane Doe"
     initialDate="2022-03-02"
+    initialFlag="!"
+    initialTags="trip vacation"
+    initialLinks="invoice-42"
     initialPostings={[
       { account: "Assets", unitNumber: "-12.34", unitCurrency: "USD" },
       { account: "Expenses", unitNumber: "12.34", unitCurrency: "USD" },
@@ -117,12 +120,41 @@ export const InitialPriceValues: ComponentStory<typeof Form> = () => (
   />
 );
 
+export const InitialCostValues: ComponentStory<typeof Form> = () => (
+  <Form
+    files={files}
+    initialNarration="Buy shares"
+    initialPayee="Broker"
+    initialDate="2022-03-02"
+    initialFlag="*"
+    initialPostings={[
+      {
+        account: "Assets:Investments",
+        unitNumber: "10",
+        unitCurrency: "HOOL",
+        costMode: CostMode.COST,
+        costNumber: "123.45",
+        costCurrency: "USD",
+        costDate: "2022-01-15",
+        costLabel: "lot-a",
+      },
+      { account: "Assets:Cash", unitNumber: "-1234.50", unitCurrency: "USD" },
+    ]}
+    accounts={accounts}
+    accountCurrencies={accountCurrencies}
+    defaultCurrencies={defaultCurrencies}
+  />
+);
+
 export const Errors: ComponentStory<typeof Form> = () => (
   <Form
     files={files}
     dateError="Bad date format"
+    flagError="Flag must be * or !"
     payeeError="Bad payee value"
     narrationError="Narration required"
+    tagsError="Invalid tag"
+    linksError="Invalid link"
     initialPostings={[{ accountError: "Bad account" }]}
     initialMeta={[
       {

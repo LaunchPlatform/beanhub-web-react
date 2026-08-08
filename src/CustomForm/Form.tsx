@@ -128,6 +128,27 @@ const FormField: FunctionComponent<FieldProps> = ({
   const placeholder = field.placeholder ?? displayName;
   switch (field.type) {
     case FieldType.str:
+      if (field.name === "flag" || field.name.endsWith("_flag")) {
+        return (
+          <SelectionInput
+            title={displayName}
+            name={field.name}
+            values={["*", "!"]}
+            initialValue={(initialValue as string) ?? "*"}
+            error={field.error}
+            required={field.required}
+            onChange={(value) => {
+              window.history.replaceState(
+                {
+                  ...window.history.state,
+                  [field.name]: value,
+                },
+                ""
+              );
+            }}
+          />
+        );
+      }
       return (
         <TextInput
           label={displayName}

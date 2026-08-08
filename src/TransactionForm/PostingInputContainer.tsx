@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 import { Candidate } from "./PostingCandidateList";
-import PostingInput, { PriceMode } from "./PostingInput";
+import PostingInput, { CostMode, PriceMode } from "./PostingInput";
 import { fuzzyMatch } from "./fuzzyMatch";
 
 export interface Props {
@@ -18,6 +18,19 @@ export interface Props {
   readonly unitCurrency?: string;
   readonly unitCurrencyError?: string;
   readonly unitCurrencyUpdateCounter?: number;
+  readonly flag?: string;
+  readonly flagError?: string;
+  readonly costNumber?: string;
+  readonly costNumberError?: string;
+  readonly costCurrency?: string;
+  readonly costCurrencyError?: string;
+  readonly costCurrencyUpdateCounter?: number;
+  readonly costDate?: string;
+  readonly costDateError?: string;
+  readonly costLabel?: string;
+  readonly costLabelError?: string;
+  readonly initialCostMode?: CostMode;
+  readonly costExpanded?: boolean;
   readonly priceNumber?: string;
   readonly priceNumberError?: string;
   readonly priceCurrency?: string;
@@ -31,6 +44,12 @@ export interface Props {
   readonly onAccountBlur?: () => void;
   readonly onUnitNumberChange?: (value: string) => void;
   readonly onUnitCurrencyChange?: (value: string) => void;
+  readonly onFlagChange?: (value: string) => void;
+  readonly onCostNumberChange?: (value: string) => void;
+  readonly onCostCurrencyChange?: (value: string) => void;
+  readonly onCostDateChange?: (value: string) => void;
+  readonly onCostLabelChange?: (value: string) => void;
+  readonly onCostModeChange?: (costMode: CostMode) => void;
   readonly onPriceNumberChange?: (value: string) => void;
   readonly onPriceCurrencyChange?: (value: string) => void;
   readonly onPriceModeChange?: (priceMode: PriceMode) => void;
@@ -183,6 +202,19 @@ const PostingInputContainer: FunctionComponent<Props> = ({
   unitCurrency,
   unitCurrencyUpdateCounter,
   unitNumberError,
+  flag,
+  flagError,
+  initialCostMode,
+  costExpanded,
+  costNumber,
+  costNumberError,
+  costCurrency,
+  costCurrencyError,
+  costCurrencyUpdateCounter,
+  costDate,
+  costDateError,
+  costLabel,
+  costLabelError,
   initialPriceMode,
   priceExpanded,
   priceNumber,
@@ -197,6 +229,12 @@ const PostingInputContainer: FunctionComponent<Props> = ({
   onAccountBlur,
   onUnitNumberChange,
   onUnitCurrencyChange,
+  onFlagChange,
+  onCostNumberChange,
+  onCostCurrencyChange,
+  onCostDateChange,
+  onCostLabelChange,
+  onCostModeChange,
   onPriceNumberChange,
   onPriceCurrencyChange,
   onPriceModeChange,
@@ -204,6 +242,17 @@ const PostingInputContainer: FunctionComponent<Props> = ({
 }: Props) => {
   const [unitNumberValue, setUnitNumberValue] = useState<string>(
     unitNumber ?? ""
+  );
+  const [flagValue, setFlagValue] = useState<string>(flag ?? "");
+  const [costMode, setCostMode] = useState<CostMode>(
+    initialCostMode ?? CostMode.INACTIVE
+  );
+  const [costNumberValue, setCostNumberValue] = useState<string>(
+    costNumber ?? ""
+  );
+  const [costDateValue, setCostDateValue] = useState<string>(costDate ?? "");
+  const [costLabelValue, setCostLabelValue] = useState<string>(
+    costLabel ?? ""
   );
   const [priceMode, setPriceMode] = useState<PriceMode>(
     initialPriceMode ?? PriceMode.INACTIVE
@@ -224,6 +273,12 @@ const PostingInputContainer: FunctionComponent<Props> = ({
     unitCurrencyUpdateCounter,
     onUnitCurrencyChange
   );
+  const costCurrencyProps = useAutoComplete(
+    costCurrency ?? "",
+    currencies,
+    costCurrencyUpdateCounter,
+    onCostCurrencyChange
+  );
   const priceCurrencyProps = useAutoComplete(
     priceCurrency ?? "",
     currencies,
@@ -234,6 +289,13 @@ const PostingInputContainer: FunctionComponent<Props> = ({
     <PostingInput
       name={name}
       onDelete={onDelete}
+      // Flag
+      flag={flagValue}
+      flagError={flagError}
+      onFlagChange={(value) => {
+        onFlagChange?.(value);
+        setFlagValue(value);
+      }}
       // Account value
       account={accountProps.value}
       accountError={accountError}
@@ -264,6 +326,56 @@ const PostingInputContainer: FunctionComponent<Props> = ({
       onUnitCurrencyKeyPress={unitCurrencyProps.onKeyPress}
       onUnitCurrencyCandidateClick={unitCurrencyProps.onCandidateClick}
       onUnitCurrencyBlur={unitCurrencyProps.onBlur}
+      // Cost mode
+      costMode={
+        costMode === CostMode.INACTIVE
+          ? costExpanded
+            ? CostMode.EXPANDED
+            : costMode
+          : costMode
+      }
+      onCostButtonClick={() => {
+        const options = [
+          CostMode.INACTIVE,
+          CostMode.COST,
+          CostMode.TOTAL_COST,
+        ];
+        const index = options.indexOf(costMode);
+        const nextMode = options[(index + 1) % options.length];
+        setCostMode(nextMode);
+        onCostModeChange?.(nextMode);
+      }}
+      // Cost number
+      costNumber={costNumberValue}
+      costNumberError={costNumberError}
+      onCostNumberChange={(value) => {
+        onCostNumberChange?.(value);
+        setCostNumberValue(value);
+      }}
+      // Cost currency
+      costCurrency={costCurrencyProps.value}
+      costCurrencyCandidates={costCurrencyProps.candidates}
+      costCurrencyCandidateIndex={costCurrencyProps.candidateIndex}
+      costCurrencyError={costCurrencyError}
+      onCostCurrencyChange={costCurrencyProps.onChange}
+      onCostCurrencyKeyDown={costCurrencyProps.onKeyDown}
+      onCostCurrencyKeyPress={costCurrencyProps.onKeyPress}
+      onCostCurrencyCandidateClick={costCurrencyProps.onCandidateClick}
+      onCostCurrencyBlur={costCurrencyProps.onBlur}
+      // Cost date
+      costDate={costDateValue}
+      costDateError={costDateError}
+      onCostDateChange={(value) => {
+        onCostDateChange?.(value);
+        setCostDateValue(value);
+      }}
+      // Cost label
+      costLabel={costLabelValue}
+      costLabelError={costLabelError}
+      onCostLabelChange={(value) => {
+        onCostLabelChange?.(value);
+        setCostLabelValue(value);
+      }}
       // Price mode
       priceMode={
         priceMode === PriceMode.INACTIVE

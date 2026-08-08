@@ -16,10 +16,16 @@ export interface Props {
   readonly fileError?: string;
   readonly initialDate?: string;
   readonly dateError?: string;
+  readonly initialFlag?: string;
+  readonly flagError?: string;
   readonly initialPayee?: string;
   readonly payeeError?: string;
   readonly initialNarration?: string;
   readonly narrationError?: string;
+  readonly initialTags?: string;
+  readonly tagsError?: string;
+  readonly initialLinks?: string;
+  readonly linksError?: string;
   readonly initialPostings?: Array<PostingRecord>;
   readonly initialMeta?: Array<MetaRecord>;
   readonly hiddenFields?: Record<string, string>;
@@ -38,10 +44,16 @@ const Form: FunctionComponent<Props> = ({
   fileError,
   initialDate,
   dateError,
+  initialFlag,
+  flagError,
   initialPayee,
   payeeError,
   initialNarration,
   narrationError,
+  initialTags,
+  tagsError,
+  initialLinks,
+  linksError,
   initialPostings,
   initialMeta,
   hiddenFields,
@@ -54,19 +66,31 @@ const Form: FunctionComponent<Props> = ({
   const inputPrefix = useContext(InputPrefixContext);
   let initialFileValue = initialFile;
   let initialDateValue = initialDate;
+  let initialFlagValue = initialFlag;
   let initialNarrationValue = initialNarration;
   let initialPayeeValue = initialPayee;
+  let initialTagsValue = initialTags;
+  let initialLinksValue = initialLinks;
   if (window.history.state?.file !== undefined) {
     initialFileValue = window.history.state?.file;
   }
   if (window.history.state?.date !== undefined) {
     initialDateValue = window.history.state?.date;
   }
+  if (window.history.state?.flag !== undefined) {
+    initialFlagValue = window.history.state?.flag;
+  }
   if (window.history.state?.narration !== undefined) {
     initialNarrationValue = window.history.state?.narration;
   }
   if (window.history.state?.payee !== undefined) {
     initialPayeeValue = window.history.state?.payee;
+  }
+  if (window.history.state?.tags !== undefined) {
+    initialTagsValue = window.history.state?.tags;
+  }
+  if (window.history.state?.links !== undefined) {
+    initialLinksValue = window.history.state?.links;
   }
 
   return (
@@ -103,6 +127,23 @@ const Form: FunctionComponent<Props> = ({
           );
         }}
       />
+      <SelectionInput
+        title="Flag"
+        name={`${inputPrefix}flag`}
+        values={["*", "!"]}
+        initialValue={initialFlagValue ?? "*"}
+        error={flagError}
+        required
+        onChange={(value) => {
+          window.history.replaceState(
+            {
+              ...window.history.state,
+              flag: value,
+            },
+            ""
+          );
+        }}
+      />
       <TextInput
         label="Payee"
         name={`${inputPrefix}payee`}
@@ -131,6 +172,38 @@ const Form: FunctionComponent<Props> = ({
             {
               ...window.history.state,
               narration: value,
+            },
+            ""
+          );
+        }}
+      />
+      <TextInput
+        label="Tags"
+        name={`${inputPrefix}tags`}
+        placeholder="tag1 tag2"
+        defaultValue={initialTagsValue}
+        error={tagsError}
+        onChange={(value) => {
+          window.history.replaceState(
+            {
+              ...window.history.state,
+              tags: value,
+            },
+            ""
+          );
+        }}
+      />
+      <TextInput
+        label="Links"
+        name={`${inputPrefix}links`}
+        placeholder="link1 link2"
+        defaultValue={initialLinksValue}
+        error={linksError}
+        onChange={(value) => {
+          window.history.replaceState(
+            {
+              ...window.history.state,
+              links: value,
             },
             ""
           );
