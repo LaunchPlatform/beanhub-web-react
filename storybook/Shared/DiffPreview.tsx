@@ -1,0 +1,31 @@
+import React from "react";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+import DiffPreview from "../../src/Shared/DiffPreview";
+
+export default {
+  component: DiffPreview,
+} as ComponentMeta<typeof DiffPreview>;
+
+const original = [
+  '2022-03-02 * "Jane Doe" "Coffee"',
+  "  Assets:Cash     -5 USD",
+  "  Expenses:Food    5 USD",
+].join("\n");
+
+const updated = [
+  '2022-03-02 * "Jane Doe" "Morning coffee"',
+  "  Assets:Cash     -6 USD",
+  "  Expenses:Food    6 USD",
+].join("\n");
+
+export const PreviewOnly: ComponentStory<typeof DiffPreview> = () => (
+  <DiffPreview updated={updated} />
+);
+
+export const WithDiff: ComponentStory<typeof DiffPreview> = () => (
+  <DiffPreview original={original} updated={updated} />
+);
+
+export const Unchanged: ComponentStory<typeof DiffPreview> = () => (
+  <DiffPreview original={original} updated={original} />
+);

@@ -72,6 +72,25 @@ export const WithPreview: ComponentStory<typeof Form> = () => (
   />
 );
 
+export const WithDiffPreview: ComponentStory<typeof Form> = () => (
+  <Form
+    {...shared}
+    showPreview
+    originalSource={[
+      '2022-03-02 * "Jane Doe" "Coffee"',
+      "  Assets:Cash   -5 USD",
+      "  Expenses:Food  5 USD",
+    ].join("\n")}
+    initialDate="2022-03-02"
+    initialPayee="Jane Doe"
+    initialNarration="Morning coffee"
+    initialPostings={[
+      { account: "Assets:Cash", unitNumber: "-6", unitCurrency: "USD" },
+      { account: "Expenses:Food", unitNumber: "6", unitCurrency: "USD" },
+    ]}
+  />
+);
+
 export const InputPrefix: ComponentStory<typeof Form> = () => (
   <InputPrefixContext.Provider value="forms-0-">
     <Form {...shared} />
