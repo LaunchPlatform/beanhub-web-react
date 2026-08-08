@@ -46,7 +46,7 @@ const DiffPreview: FunctionComponent<Props> = ({
         className="form-control"
         style={{
           minHeight: "8rem",
-          whiteSpace: "pre-wrap",
+          whiteSpace: "pre",
           fontFamily:
             "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
           fontSize: "0.875rem",

@@ -1,11 +1,32 @@
 import { it, expect, describe } from "@jest/globals";
 import {
+  formatNumber,
   formatPostingCost,
   formatPostingLine,
   formatTransactionBeancount,
+  calculateColumnWidths,
+  DEFAULT_ACCOUNT_WIDTH,
+  DEFAULT_NUMBER_WIDTH,
+  BALANCE_PREFIX_WIDTH,
+  DEFAULT_INDENT_WIDTH,
 } from "../src/TransactionForm/preview";
 import { CostMode, PriceMode } from "../src/TransactionForm/PostingInput";
 import { shouldUseAdvancedMode } from "../src/TransactionForm/formMode";
+import { computeLineDiff } from "../src/Shared/diff";
+import { formatEntryBeancount } from "../src/TransactionForm/preview";
+
+describe("formatNumber", () => {
+  it("adds thousand separators and preserves decimals", () => {
+    expect(formatNumber("1234.50")).toBe("1,234.50");
+    expect(formatNumber("-1234567.0")).toBe("-1,234,567.0");
+    expect(formatNumber("10")).toBe("10");
+    expect(formatNumber("1,234")).toBe("1,234");
+  });
+
+  it("leaves non-plain numbers alone", () => {
+    expect(formatNumber("(1 + 2)")).toBe("(1 + 2)");
+  });
+});
 
 describe("formatPostingCost", () => {
   it("returns empty when cost inactive", () => {
@@ -24,19 +45,25 @@ describe("formatPostingCost", () => {
     ).toBe('{123.45 USD, 2022-01-15, "lot-a"}');
   });
 
-  it("formats total cost", () => {
+  it("formats total cost with thousand separators", () => {
     expect(
       formatPostingCost({
         costMode: CostMode.TOTAL_COST,
         costNumber: "1000",
         costCurrency: "USD",
       })
-    ).toBe("{{1000 USD}}");
+    ).toBe("{{1,000 USD}}");
   });
 });
 
 describe("formatPostingLine", () => {
-  it("formats flag account amount cost and price", () => {
+  it("aligns account and number columns like beancount-black", () => {
+    const accountWidth = DEFAULT_ACCOUNT_WIDTH;
+    const numberWidth = DEFAULT_NUMBER_WIDTH;
+    const accountFieldWidth =
+      accountWidth + (BALANCE_PREFIX_WIDTH - DEFAULT_INDENT_WIDTH);
+    const account = "Assets:Investments".padEnd(accountFieldWidth);
+    const number = "10".padStart(numberWidth);
     expect(
       formatPostingLine({
         flag: "!",
@@ -50,12 +77,35 @@ describe("formatPostingLine", () => {
         priceNumber: "1.5",
         priceCurrency: "EUR",
       })
-    ).toBe("! Assets:Investments 10 HOOL {12 USD} @ 1.5 EUR");
+    ).toBe(`! ${account} ${number} HOOL {12 USD} @ 1.5 EUR`);
+  });
+
+  it("does not pad short postings without amounts", () => {
+    expect(formatPostingLine({ account: "Assets:Cash" })).toBe("Assets:Cash");
   });
 });
 
 describe("formatTransactionBeancount", () => {
-  it("formats a full transaction", () => {
+  it("formats a full transaction with black-style layout", () => {
+    const widths = calculateColumnWidths([
+      {
+        account: "Assets:Investments",
+        unitNumber: "10",
+        unitCurrency: "HOOL",
+      },
+      {
+        account: "Assets:Cash",
+        unitNumber: "-1234.50",
+        unitCurrency: "USD",
+      },
+    ]);
+    const accountFieldWidth =
+      widths.accountWidth + (BALANCE_PREFIX_WIDTH - DEFAULT_INDENT_WIDTH);
+    const investments = "Assets:Investments".padEnd(accountFieldWidth);
+    const cash = "Assets:Cash".padEnd(accountFieldWidth);
+    const ten = "10".padStart(widths.numberWidth);
+    const cashAmount = "-1,234.50".padStart(widths.numberWidth);
+
     expect(
       formatTransactionBeancount({
         date: "2022-03-02",
@@ -85,10 +135,10 @@ describe("formatTransactionBeancount", () => {
       })
     ).toBe(
       [
-        '2022-03-02 * "Broker" "Buy shares" #trip #vacation ^invoice-42',
+        '2022-03-02 * "Broker" "Buy shares" ^invoice-42 #trip #vacation',
         '  import-id: "abc"',
-        '  Assets:Investments 10 HOOL {123.45 USD, 2022-01-15, "lot-a"}',
-        "  Assets:Cash -1234.50 USD",
+        `  ${investments} ${ten} HOOL {123.45 USD, 2022-01-15, "lot-a"}`,
+        `  ${cash} ${cashAmount} USD`,
       ].join("\n")
     );
   });
@@ -120,9 +170,6 @@ describe("shouldUseAdvancedMode", () => {
   });
 });
 
-import { computeLineDiff } from "../src/Shared/diff";
-import { formatEntryBeancount } from "../src/TransactionForm/preview";
-
 describe("computeLineDiff", () => {
   it("marks changed lines", () => {
     expect(
@@ -148,6 +195,9 @@ describe("formatEntryBeancount", () => {
     expect(
       formatEntryBeancount("close", { date: "2022-01-01", account: "Assets:Cash" })
     ).toBe("2022-01-01 close Assets:Cash");
+
+    const account = "Assets:Cash".padEnd(DEFAULT_ACCOUNT_WIDTH);
+    const number = "10".padStart(DEFAULT_NUMBER_WIDTH);
     expect(
       formatEntryBeancount("balance", {
         date: "2022-01-01",
@@ -155,7 +205,8 @@ describe("formatEntryBeancount", () => {
         number: "10",
         currency: "USD",
       })
-    ).toBe("2022-01-01 balance Assets:Cash 10 USD");
+    ).toBe(`2022-01-01 balance ${account} ${number} USD`);
+
     expect(
       formatEntryBeancount("note", {
         date: "2022-01-01",
