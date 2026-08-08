@@ -3,6 +3,7 @@ import DateInput from "../Shared/DateInput";
 import ErrorRow from "../Shared/ErrorRow";
 import SelectionInput from "../Shared/Selection";
 import TextInput from "../Shared/TextInput";
+import TagsInput from "../Shared/TagsInput";
 import PostingListContainer, { PostingRecord } from "./PostingListContainer";
 import MetaListContainer, { MetaRecord } from "./MetaListContainer";
 import SubmitButton from "../Shared/SubmitButton";
@@ -242,11 +243,12 @@ const Form: FunctionComponent<Props> = ({
       />
       {advanced ? (
         <>
-          <TextInput
+          <TagsInput
             label="Tags"
             name={`${inputPrefix}tags`}
-            placeholder="tag1 tag2"
-            defaultValue={initialTagsValue}
+            stripPrefix="#"
+            placeholder="Add a tag"
+            initialValue={initialTagsValue}
             error={tagsError}
             onChange={(value) => {
               setTagsValue(value);
@@ -259,12 +261,14 @@ const Form: FunctionComponent<Props> = ({
               );
             }}
           />
-          <TextInput
+          <TagsInput
             label="Links"
             name={`${inputPrefix}links`}
-            placeholder="link1 link2"
-            defaultValue={initialLinksValue}
+            stripPrefix="^"
+            placeholder="Add a link"
+            initialValue={initialLinksValue}
             error={linksError}
+            hint="Beancount link without ^. Press Enter or comma to add; click × to remove."
             onChange={(value) => {
               setLinksValue(value);
               window.history.replaceState(
