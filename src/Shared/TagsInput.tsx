@@ -239,9 +239,9 @@ const TagsInput: FunctionComponent<Props> = ({
               <span
                 style={{
                   color: "#5b3f8c",
-                  paddingLeft: 6,
                   fontSize: "85%",
                   lineHeight: 1,
+                  flexShrink: 0,
                 }}
               >
                 {prefix}
@@ -265,7 +265,7 @@ const TagsInput: FunctionComponent<Props> = ({
                 background: "transparent",
                 color: "#5b3f8c",
                 fontSize: "85%",
-                padding: prefix ? "3px 6px 3px 0" : "3px 6px",
+                padding: 0,
                 margin: 0,
                 minWidth: `${Math.max(draft.length, 1)}ch`,
                 width: `${Math.max(draft.length + 1, 2)}ch`,
@@ -321,10 +321,17 @@ const TagsInput: FunctionComponent<Props> = ({
       ...provided,
       color: "#5b3f8c",
       cursor: "text",
+      // react-select defaults (6/3) look flush once a leading #/^ is shown
+      paddingLeft: 8,
+      paddingRight: 6,
+      paddingTop: 4,
+      paddingBottom: 4,
     }),
     multiValueRemove: (provided) => ({
       ...provided,
       color: "#5b3f8c",
+      paddingLeft: 2,
+      paddingRight: 4,
       ":hover": {
         backgroundColor: "#d9cceb",
         color: "#3d2a61",
