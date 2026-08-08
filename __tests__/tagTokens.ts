@@ -1,5 +1,6 @@
 import { it, expect, describe } from "@jest/globals";
 import {
+  formatTokenLabel,
   joinTokenList,
   normalizeToken,
   parseTokenList,
@@ -10,6 +11,14 @@ describe("normalizeToken", () => {
   it("strips repeated prefixes", () => {
     expect(normalizeToken("##trip", "#")).toBe("trip");
     expect(normalizeToken("^^invoice", "^")).toBe("invoice");
+  });
+});
+
+describe("formatTokenLabel", () => {
+  it("adds Beancount markers for chips", () => {
+    expect(formatTokenLabel("trip", "#")).toBe("#trip");
+    expect(formatTokenLabel("invoice", "^")).toBe("^invoice");
+    expect(formatTokenLabel("trip")).toBe("trip");
   });
 });
 

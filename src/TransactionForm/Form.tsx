@@ -271,7 +271,7 @@ const Form: FunctionComponent<Props> = ({
             placeholder="Add a link"
             initialValue={initialLinksValue}
             error={linksError}
-            hint="Beancount link without ^. Press Enter or comma to add; click × to remove."
+            hint="Chips show ^name; type the name without ^, then press Enter or comma. Click × to remove."
             onChange={(value) => {
               setLinksValue(value);
               window.history.replaceState(

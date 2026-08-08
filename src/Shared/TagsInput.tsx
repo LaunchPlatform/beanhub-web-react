@@ -7,11 +7,16 @@ import CreatableSelect from "react-select/creatable";
 import { OnChangeValue, StylesConfig } from "react-select";
 import FormRow from "./FormRow";
 import {
+  formatTokenLabel,
   joinTokenList,
   normalizeToken,
   parseTokenList,
   splitRawTokenInput,
 } from "./tagTokens";
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
 interface Option {
   readonly value: string;
@@ -31,8 +36,15 @@ export interface Props {
   readonly onChange?: (value: string) => void;
 }
 
-const toOptions = (tokens: Array<string>): Array<Option> =>
-  tokens.map((token) => ({ value: token, label: token }));
+/** Chip label shows Beancount marker (# / ^); option.value stays bare for submit/edit. */
+const toOptions = (
+  tokens: Array<string>,
+  stripPrefix?: string
+): Array<Option> =>
+  tokens.map((token) => ({
+    value: token,
+    label: formatTokenLabel(token, stripPrefix),
+  }));
 
 const TagsInput: FunctionComponent<Props> = ({
   label,
@@ -98,7 +110,6 @@ const TagsInput: FunctionComponent<Props> = ({
     multiValueLabel: (provided) => ({
       ...provided,
       color: "#5b3f8c",
-      paddingLeft: stripPrefix ? 2 : provided.paddingLeft,
     }),
     multiValueRemove: (provided) => ({
       ...provided,
@@ -142,16 +153,23 @@ const TagsInput: FunctionComponent<Props> = ({
         isClearable
         menuIsOpen={false}
         inputValue={inputValue}
-        value={toOptions(tokens)}
+        value={toOptions(tokens, stripPrefix)}
         placeholder={placeholder ?? "Type and press Enter"}
         onChange={handleChange}
         onInputChange={(value, action) => {
           if (action.action !== "input-change") {
             return;
           }
+          // Keep the typing field bare (no # / ^); strip as the user types or pastes.
+          const bare = stripPrefix
+            ? value.replace(
+                new RegExp(`^\\s*${escapeRegExp(stripPrefix)}+`),
+                ""
+              )
+            : value;
           // Comma or space in the middle of pasted/typed text: commit completed tokens.
-          if (/[,\s]/.test(value)) {
-            const parts = value.split(/[,\s]+/);
+          if (/[,\s]/.test(bare)) {
+            const parts = bare.split(/[,\s]+/);
             const complete = parts.slice(0, -1).join(" ");
             const rest = parts[parts.length - 1] ?? "";
             if (complete.trim()) {
@@ -160,7 +178,7 @@ const TagsInput: FunctionComponent<Props> = ({
             setInputValue(rest);
             return;
           }
-          setInputValue(value);
+          setInputValue(bare);
         }}
         onKeyDown={handleKeyDown}
         onBlur={() => {
@@ -170,8 +188,7 @@ const TagsInput: FunctionComponent<Props> = ({
         }}
         formatCreateLabel={(value) => {
           const token = normalizeToken(value, stripPrefix);
-          const display = stripPrefix ? `${stripPrefix}${token}` : token;
-          return `Add ${display}`;
+          return `Add ${formatTokenLabel(token, stripPrefix)}`;
         }}
         styles={styles}
         theme={(theme) => ({ ...theme, borderRadius: 0 })}
@@ -183,7 +200,9 @@ const TagsInput: FunctionComponent<Props> = ({
       />
       <small className="form-text text-muted">
         {hint ??
-          "Type a value, then press Enter, comma, or space to add. Click × to remove."}
+          (stripPrefix
+            ? `Chips show ${stripPrefix}name; type the name without ${stripPrefix}, then press Enter, comma, or space. Click × to remove.`
+            : "Type a value, then press Enter, comma, or space to add. Click × to remove.")}
       </small>
       {error !== undefined ? (
         <div className="invalid-feedback d-block">{error}</div>

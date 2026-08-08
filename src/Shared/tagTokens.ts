@@ -11,6 +11,14 @@ export function normalizeToken(value: string, stripPrefix?: string): string {
   return token;
 }
 
+/** Chip / create-label text with Beancount marker; bare token for the input field. */
+export function formatTokenLabel(token: string, stripPrefix?: string): string {
+  if (!token) {
+    return "";
+  }
+  return stripPrefix ? `${stripPrefix}${token}` : token;
+}
+
 export function parseTokenList(
   value?: string,
   stripPrefix?: string
