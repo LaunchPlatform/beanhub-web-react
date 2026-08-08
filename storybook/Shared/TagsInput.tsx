@@ -25,7 +25,6 @@ export const Links: ComponentStory<typeof TagsInput> = () => (
     stripPrefix="^"
     initialValue="invoice-42"
     placeholder="Add a link"
-    hint="Chips show ^name; type the name without ^, then press Enter or comma. Click × to remove."
     onChange={action("onChange")}
   />
 );

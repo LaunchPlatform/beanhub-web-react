@@ -200,9 +200,7 @@ const TagsInput: FunctionComponent<Props> = ({
       />
       <small className="form-text text-muted">
         {hint ??
-          (stripPrefix
-            ? `Chips show ${stripPrefix}name; type the name without ${stripPrefix}, then press Enter, comma, or space. Click × to remove.`
-            : "Type a value, then press Enter, comma, or space to add. Click × to remove.")}
+          "Type a value, then press Enter, comma, or space to add. Click × to remove."}
       </small>
       {error !== undefined ? (
         <div className="invalid-feedback d-block">{error}</div>
