@@ -5,10 +5,6 @@ import {
   formatPostingLine,
   formatTransactionBeancount,
   calculateColumnWidths,
-  DEFAULT_ACCOUNT_WIDTH,
-  DEFAULT_NUMBER_WIDTH,
-  BALANCE_PREFIX_WIDTH,
-  DEFAULT_INDENT_WIDTH,
 } from "../src/TransactionForm/preview";
 import { CostMode, PriceMode } from "../src/TransactionForm/PostingInput";
 import { shouldUseAdvancedMode } from "../src/TransactionForm/formMode";
@@ -57,27 +53,60 @@ describe("formatPostingCost", () => {
 });
 
 describe("formatPostingLine", () => {
-  it("aligns account and number columns like beancount-black", () => {
-    const accountWidth = DEFAULT_ACCOUNT_WIDTH;
-    const numberWidth = DEFAULT_NUMBER_WIDTH;
-    const accountFieldWidth =
-      accountWidth + (BALANCE_PREFIX_WIDTH - DEFAULT_INDENT_WIDTH);
-    const account = "Assets:Investments".padEnd(accountFieldWidth);
-    const number = "10".padStart(numberWidth);
-    expect(
-      formatPostingLine({
+  it("aligns account and number columns from content widths", () => {
+    const widths = calculateColumnWidths([
+      {
         flag: "!",
         account: "Assets:Investments",
         unitNumber: "10",
         unitCurrency: "HOOL",
-        costMode: CostMode.COST,
-        costNumber: "12",
-        costCurrency: "USD",
-        priceMode: PriceMode.PRICE,
-        priceNumber: "1.5",
-        priceCurrency: "EUR",
-      })
-    ).toBe(`! ${account} ${number} HOOL {12 USD} @ 1.5 EUR`);
+      },
+    ]);
+    expect(
+      formatPostingLine(
+        {
+          flag: "!",
+          account: "Assets:Investments",
+          unitNumber: "10",
+          unitCurrency: "HOOL",
+          costMode: CostMode.COST,
+          costNumber: "12",
+          costCurrency: "USD",
+          priceMode: PriceMode.PRICE,
+          priceNumber: "1.5",
+          priceCurrency: "EUR",
+        },
+        widths,
+        { reserveFlagColumn: true }
+      )
+    ).toBe("! Assets:Investments 10 HOOL {12 USD} @ 1.5 EUR");
+  });
+
+  it("reserves a flag column so amounts stay aligned", () => {
+    const postings = [
+      {
+        flag: "*",
+        account: "Assets:Cash",
+        unitNumber: "-5",
+        unitCurrency: "USD",
+      },
+      {
+        account: "Expenses:Food",
+        unitNumber: "5",
+        unitCurrency: "USD",
+      },
+    ];
+    const widths = calculateColumnWidths(postings);
+    expect(formatPostingLine(postings[0], widths, { reserveFlagColumn: true })).toBe(
+      `* ${"Assets:Cash".padEnd(widths.accountWidth)} ${"-5".padStart(
+        widths.numberWidth
+      )} USD`
+    );
+    expect(formatPostingLine(postings[1], widths, { reserveFlagColumn: true })).toBe(
+      `  ${"Expenses:Food".padEnd(widths.accountWidth)} ${"5".padStart(
+        widths.numberWidth
+      )} USD`
+    );
   });
 
   it("does not pad short postings without amounts", () => {
@@ -86,26 +115,7 @@ describe("formatPostingLine", () => {
 });
 
 describe("formatTransactionBeancount", () => {
-  it("formats a full transaction with black-style layout", () => {
-    const widths = calculateColumnWidths([
-      {
-        account: "Assets:Investments",
-        unitNumber: "10",
-        unitCurrency: "HOOL",
-      },
-      {
-        account: "Assets:Cash",
-        unitNumber: "-1234.50",
-        unitCurrency: "USD",
-      },
-    ]);
-    const accountFieldWidth =
-      widths.accountWidth + (BALANCE_PREFIX_WIDTH - DEFAULT_INDENT_WIDTH);
-    const investments = "Assets:Investments".padEnd(accountFieldWidth);
-    const cash = "Assets:Cash".padEnd(accountFieldWidth);
-    const ten = "10".padStart(widths.numberWidth);
-    const cashAmount = "-1,234.50".padStart(widths.numberWidth);
-
+  it("formats a full transaction with compact aligned layout", () => {
     expect(
       formatTransactionBeancount({
         date: "2022-03-02",
@@ -137,8 +147,41 @@ describe("formatTransactionBeancount", () => {
       [
         '2022-03-02 * "Broker" "Buy shares" ^invoice-42 #trip #vacation',
         '  import-id: "abc"',
-        `  ${investments} ${ten} HOOL {123.45 USD, 2022-01-15, "lot-a"}`,
-        `  ${cash} ${cashAmount} USD`,
+        '  Assets:Investments        10 HOOL {123.45 USD, 2022-01-15, "lot-a"}',
+        "  Assets:Cash        -1,234.50 USD",
+      ].join("\n")
+    );
+  });
+
+  it("keeps posting amounts aligned when one posting has a flag", () => {
+    expect(
+      formatTransactionBeancount({
+        date: "2022-03-02",
+        flag: "*",
+        narration: "Coffee",
+        payee: "Jane Doe",
+        postings: [
+          {
+            flag: "*",
+            account: "Assets:Cash",
+            unitNumber: "-5",
+            unitCurrency: "USD",
+            costMode: CostMode.COST,
+            costNumber: "555",
+            costCurrency: "BTC",
+          },
+          {
+            account: "Expenses:Food",
+            unitNumber: "5",
+            unitCurrency: "USD",
+          },
+        ],
+      })
+    ).toBe(
+      [
+        '2022-03-02 * "Jane Doe" "Coffee"',
+        "  * Assets:Cash   -5 USD {555 BTC}",
+        "    Expenses:Food  5 USD",
       ].join("\n")
     );
   });
@@ -196,8 +239,6 @@ describe("formatEntryBeancount", () => {
       formatEntryBeancount("close", { date: "2022-01-01", account: "Assets:Cash" })
     ).toBe("2022-01-01 close Assets:Cash");
 
-    const account = "Assets:Cash".padEnd(DEFAULT_ACCOUNT_WIDTH);
-    const number = "10".padStart(DEFAULT_NUMBER_WIDTH);
     expect(
       formatEntryBeancount("balance", {
         date: "2022-01-01",
@@ -205,7 +246,7 @@ describe("formatEntryBeancount", () => {
         number: "10",
         currency: "USD",
       })
-    ).toBe(`2022-01-01 balance ${account} ${number} USD`);
+    ).toBe("2022-01-01 balance Assets:Cash 10 USD");
 
     expect(
       formatEntryBeancount("note", {

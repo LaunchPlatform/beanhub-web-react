@@ -52,7 +52,7 @@ const DiffPreview: FunctionComponent<Props> = ({
           fontSize: "0.875rem",
           backgroundColor: "#f8f9fa",
           marginBottom: 0,
-          padding: 0,
+          padding: "0.5rem 0.75rem",
           overflow: "auto",
         }}
       >
@@ -61,10 +61,13 @@ const DiffPreview: FunctionComponent<Props> = ({
             key={`${line.type}-${index}-${line.text}`}
             style={{
               ...lineStyle(line.type),
-              padding: "0 0.75rem",
+              marginLeft: hasOriginal ? "-0.75rem" : undefined,
+              marginRight: hasOriginal ? "-0.75rem" : undefined,
+              paddingLeft: hasOriginal ? "0.75rem" : undefined,
+              paddingRight: hasOriginal ? "0.75rem" : undefined,
             }}
           >
-            {prefix(line.type)}
+            {hasOriginal ? prefix(line.type) : null}
             {line.text || " "}
           </div>
         ))}

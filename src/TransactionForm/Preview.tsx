@@ -17,6 +17,7 @@ const Preview: FunctionComponent<Props> = ({ source }: Props) => (
         fontSize: "0.875rem",
         backgroundColor: "#f8f9fa",
         marginBottom: 0,
+        padding: "0.5rem 0.75rem",
       }}
     >
       {source || " "}

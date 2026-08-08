@@ -79,8 +79,10 @@ export function calculateColumnWidths(
   postings: Array<PostingRecord> = [],
   balance?: { account?: string; number?: string }
 ): ColumnWidths {
-  let accountWidth = DEFAULT_ACCOUNT_WIDTH;
-  let numberWidth = DEFAULT_NUMBER_WIDTH;
+  // Content-based widths for form preview (avoid beancount-black's file-wide
+  // minima / balance-alignment padding that leave huge gaps in a small preview).
+  let accountWidth = 1;
+  let numberWidth = 1;
 
   for (const posting of postings) {
     const account = (posting.account ?? "").trim();
@@ -158,17 +160,14 @@ export function formatPostingLine(
   widths: ColumnWidths = {
     accountWidth: DEFAULT_ACCOUNT_WIDTH,
     numberWidth: DEFAULT_NUMBER_WIDTH,
-  }
+  },
+  options: { reserveFlagColumn?: boolean } = {}
 ): string {
-  const items: Array<string> = [];
-  const flag = (posting.flag ?? "").trim();
-  if (flag) {
-    items.push(flag);
-  }
   const account = (posting.account ?? "").trim();
   const number = (posting.unitNumber ?? "").trim();
   const currency = (posting.unitCurrency ?? "").trim();
   const hasAmount = number.length > 0 && currency.length > 0;
+  const flag = (posting.flag ?? "").trim();
 
   if (!account && !hasAmount) {
     return "";
@@ -176,15 +175,26 @@ export function formatPostingLine(
 
   // Short posting (no amount): account only, no padding — matches beancount-black.
   if (!hasAmount) {
+    const items: Array<string> = [];
+    if (flag) {
+      items.push(flag);
+    } else if (options.reserveFlagColumn) {
+      items.push(" ");
+    }
     if (account) {
       items.push(account);
     }
     return items.join(" ");
   }
 
-  const accountFieldWidth =
-    widths.accountWidth + (BALANCE_PREFIX_WIDTH - DEFAULT_INDENT_WIDTH);
-  items.push(padEnd(account, accountFieldWidth));
+  const items: Array<string> = [];
+  // Keep account/amount columns aligned when only some postings have a flag.
+  if (flag) {
+    items.push(flag);
+  } else if (options.reserveFlagColumn) {
+    items.push(" ");
+  }
+  items.push(padEnd(account, widths.accountWidth));
   items.push(padStart(formatNumber(number), widths.numberWidth));
   items.push(currency);
 
@@ -219,6 +229,9 @@ export function formatTransactionBeancount(
 
   const postings = input.postings ?? [];
   const widths = calculateColumnWidths(postings);
+  const reserveFlagColumn = postings.some(
+    (posting) => (posting.flag ?? "").trim().length > 0
+  );
   const indent = " ".repeat(DEFAULT_INDENT_WIDTH);
 
   const lines = [header];
@@ -231,7 +244,7 @@ export function formatTransactionBeancount(
     lines.push(`${indent}${key}: ${quoteBeancountString(value)}`);
   }
   for (const posting of postings) {
-    const line = formatPostingLine(posting, widths);
+    const line = formatPostingLine(posting, widths, { reserveFlagColumn });
     if (!line.trim()) {
       continue;
     }
