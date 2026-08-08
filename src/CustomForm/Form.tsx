@@ -467,6 +467,7 @@ const Form: FunctionComponent<Props> = ({
       original: originalSources?.[originalKey],
     };
   });
+  const multiEntryPreview = previews.length > 1;
 
   return (
     <form action={action} method={method ?? "POST"}>
@@ -487,20 +488,23 @@ const Form: FunctionComponent<Props> = ({
         />
       ))}
       {showPreview
-        ? previews.map((preview) => (
-            <DiffPreview
-              key={`preview-${preview.key}`}
-              title={
-                preview.title
-                  ? preview.original
-                    ? `Diff · ${preview.title}`
-                    : `Preview · ${preview.title}`
-                  : undefined
-              }
-              original={preview.original}
-              updated={preview.source}
-            />
-          ))
+        ? previews.map((preview) => {
+            const kind = preview.original ? "Diff" : "Preview";
+            // HeaderLine already shows file:lineno above each entry; only
+            // repeat it in the preview label when multiple entries need disambiguation.
+            const title =
+              multiEntryPreview && preview.title
+                ? `${kind} · ${preview.title}`
+                : kind;
+            return (
+              <DiffPreview
+                key={`preview-${preview.key}`}
+                title={title}
+                original={preview.original}
+                updated={preview.source}
+              />
+            );
+          })
         : null}
       {hiddenFields !== undefined
         ? Object.entries(hiddenFields).map(([key, value]) => (
