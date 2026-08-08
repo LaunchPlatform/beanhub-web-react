@@ -75,6 +75,16 @@ const CHIP_LABEL_STYLE: React.CSSProperties = {
   boxSizing: "border-box",
 };
 
+const CHIP_EDIT_LABEL_STYLE: React.CSSProperties = {
+  ...CHIP_LABEL_STYLE,
+  display: "flex",
+  alignItems: "center",
+  gap: 0,
+  backgroundColor: "#ffffff",
+  borderRadius: 3,
+  overflow: "visible",
+};
+
 /** Chip label shows Beancount marker (# / ^); option.value stays bare for submit/edit. */
 const toOptions = (
   tokens: Array<string>,
@@ -246,22 +256,16 @@ const TagsInput: FunctionComponent<Props> = ({
           }
         };
         return (
-          <div
-            {...props.innerProps}
-            style={{
-              ...CHIP_LABEL_STYLE,
-              display: "flex",
-              alignItems: "center",
-              whiteSpace: "nowrap",
-            }}
-          >
+          <div {...props.innerProps} style={CHIP_EDIT_LABEL_STYLE}>
             {prefix ? (
               <span
                 style={{
-                  color: "#5b3f8c",
+                  color: "#9b87c4",
                   lineHeight: 1,
                   flexShrink: 0,
+                  userSelect: "none",
                 }}
+                aria-hidden="true"
               >
                 {prefix}
               </span>
@@ -282,8 +286,10 @@ const TagsInput: FunctionComponent<Props> = ({
                 border: "none",
                 outline: "none",
                 background: "transparent",
-                color: "#5b3f8c",
+                color: "#3d2a61",
+                caretColor: "#886ab5",
                 fontSize: "inherit",
+                fontWeight: 600,
                 padding: 0,
                 margin: 0,
                 minWidth: `${Math.max(draft.length, 1)}ch`,
@@ -332,26 +338,38 @@ const TagsInput: FunctionComponent<Props> = ({
           }
         : undefined),
     }),
-    multiValue: (provided) => ({
-      ...provided,
-      backgroundColor: "#efeaf7",
-      borderRadius: "3px",
-    }),
+    multiValue: (provided, { data }) => {
+      const isEditing = data.value === editingToken;
+      return {
+        ...provided,
+        backgroundColor: isEditing ? "#ffffff" : "#efeaf7",
+        borderRadius: "4px",
+        boxShadow: isEditing ? "0 0 0 2px #886ab5" : undefined,
+        outline: isEditing ? "2px solid rgba(136, 106, 181, 0.2)" : undefined,
+        outlineOffset: isEditing ? 1 : undefined,
+      };
+    },
     multiValueLabel: (provided) => ({
       ...provided,
       color: "#5b3f8c",
       cursor: "text",
     }),
-    multiValueRemove: (provided) => ({
-      ...provided,
-      color: "#5b3f8c",
-      paddingLeft: 4,
-      paddingRight: 6,
-      ":hover": {
-        backgroundColor: "#d9cceb",
-        color: "#3d2a61",
-      },
-    }),
+    multiValueRemove: (provided, { data }) => {
+      const isEditing = data.value === editingToken;
+      return {
+        ...provided,
+        color: "#5b3f8c",
+        paddingLeft: 4,
+        paddingRight: 6,
+        borderTopRightRadius: 4,
+        borderBottomRightRadius: 4,
+        backgroundColor: isEditing ? "#f3eef9" : undefined,
+        ":hover": {
+          backgroundColor: "#d9cceb",
+          color: "#3d2a61",
+        },
+      };
+    },
     menu: () => ({ display: "none" }),
     dropdownIndicator: () => ({ display: "none" }),
     indicatorSeparator: () => ({ display: "none" }),
