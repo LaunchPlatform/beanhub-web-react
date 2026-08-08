@@ -119,3 +119,56 @@ describe("shouldUseAdvancedMode", () => {
     expect(shouldUseAdvancedMode({ initialMode: "advanced" })).toBe(true);
   });
 });
+
+import { computeLineDiff } from "../src/Shared/diff";
+import { formatEntryBeancount } from "../src/TransactionForm/preview";
+
+describe("computeLineDiff", () => {
+  it("marks changed lines", () => {
+    expect(
+      computeLineDiff("a\nb\nc", "a\nx\nc").map((line) => [line.type, line.text])
+    ).toEqual([
+      ["same", "a"],
+      ["remove", "b"],
+      ["add", "x"],
+      ["same", "c"],
+    ]);
+  });
+});
+
+describe("formatEntryBeancount", () => {
+  it("formats open/close/balance/note/event", () => {
+    expect(
+      formatEntryBeancount("open", {
+        date: "2022-01-01",
+        account: "Assets:Cash",
+        currency: "USD,EUR",
+      })
+    ).toBe("2022-01-01 open Assets:Cash USD,EUR");
+    expect(
+      formatEntryBeancount("close", { date: "2022-01-01", account: "Assets:Cash" })
+    ).toBe("2022-01-01 close Assets:Cash");
+    expect(
+      formatEntryBeancount("balance", {
+        date: "2022-01-01",
+        account: "Assets:Cash",
+        number: "10",
+        currency: "USD",
+      })
+    ).toBe("2022-01-01 balance Assets:Cash 10 USD");
+    expect(
+      formatEntryBeancount("note", {
+        date: "2022-01-01",
+        account: "Assets:Cash",
+        comment: "hello",
+      })
+    ).toBe('2022-01-01 note Assets:Cash "hello"');
+    expect(
+      formatEntryBeancount("event", {
+        date: "2022-01-01",
+        type: "location",
+        description: "Paris",
+      })
+    ).toBe('2022-01-01 event "location" "Paris"');
+  });
+});

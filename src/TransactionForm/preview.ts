@@ -2,6 +2,7 @@ import { CostMode, PriceMode } from "./PostingInput";
 import { PostingRecord } from "./PostingListContainer";
 import { MetaRecord } from "./MetaListContainer";
 import { isActiveCostMode, isActivePriceMode } from "./formMode";
+import { PreviewType } from "../Shared/diff";
 
 export interface TransactionPreviewInput {
   readonly date?: string;
@@ -127,4 +128,93 @@ export function formatTransactionBeancount(
     lines.push(`  ${line}`);
   }
   return lines.join("\n");
+}
+
+function asString(value: unknown): string {
+  if (value === undefined || value === null) {
+    return "";
+  }
+  if (Array.isArray(value)) {
+    return value.join(",");
+  }
+  return String(value);
+}
+
+export function detectPreviewType(
+  values: Record<string, unknown>
+): Exclude<PreviewType, "auto"> {
+  if (values.postings !== undefined) {
+    return "transaction";
+  }
+  if (values.symbol !== undefined) {
+    return "commodity";
+  }
+  if (values.comment !== undefined) {
+    return "note";
+  }
+  if (values.type !== undefined && values.description !== undefined) {
+    return "event";
+  }
+  if (values.number !== undefined && values.currency !== undefined) {
+    return "balance";
+  }
+  if (values.account !== undefined && values.currency !== undefined) {
+    return "open";
+  }
+  if (values.account !== undefined) {
+    return "close";
+  }
+  return "transaction";
+}
+
+export function formatEntryBeancount(
+  previewType: PreviewType,
+  values: Record<string, unknown>
+): string {
+  const kind =
+    previewType === "auto" ? detectPreviewType(values) : previewType;
+  const date = asString(values.date).trim() || "YYYY-MM-DD";
+  switch (kind) {
+    case "transaction":
+      return formatTransactionBeancount({
+        date: asString(values.date),
+        flag: asString(values.flag),
+        payee: asString(values.payee),
+        narration: asString(values.narration),
+        tags: asString(values.tags),
+        links: asString(values.links),
+        postings: (values.postings as Array<PostingRecord>) ?? [],
+        metadata: (values.metadata as Array<MetaRecord>) ?? [],
+      });
+    case "open": {
+      const account = asString(values.account).trim();
+      const currency = asString(values.currency).trim();
+      return `${date} open ${account}${currency ? ` ${currency}` : ""}`.trim();
+    }
+    case "close":
+      return `${date} close ${asString(values.account).trim()}`.trim();
+    case "commodity":
+      return `${date} commodity ${asString(values.symbol).trim()}`.trim();
+    case "balance": {
+      const tolerance = asString(values.tolerance).trim();
+      if (tolerance) {
+        return `${date} balance ${asString(values.account).trim()} ${asString(
+          values.number
+        ).trim()} ~ ${tolerance} ${asString(values.currency).trim()}`.trim();
+      }
+      return `${date} balance ${asString(values.account).trim()} ${asString(
+        values.number
+      ).trim()} ${asString(values.currency).trim()}`.trim();
+    }
+    case "note":
+      return `${date} note ${asString(values.account).trim()} ${quoteBeancountString(
+        asString(values.comment)
+      )}`;
+    case "event":
+      return `${date} event ${quoteBeancountString(
+        asString(values.type)
+      )} ${quoteBeancountString(asString(values.description))}`;
+    default:
+      return "";
+  }
 }

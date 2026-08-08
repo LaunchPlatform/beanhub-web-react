@@ -1,12 +1,16 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useMemo, useState } from "react";
 import DateInput from "../Shared/DateInput";
 import ErrorRow from "../Shared/ErrorRow";
 import SelectionInput from "../Shared/Selection";
 import Selection from "../Shared/Selection";
 import TextInput from "../Shared/TextInput";
+import TagsInput from "../Shared/TagsInput";
 import SubmitButton from "../Shared/SubmitButton";
 import CurrencyInput from "../Shared/CurrencyInput";
 import NumberInput from "../Shared/NumberInput";
+import DiffPreview from "../Shared/DiffPreview";
+import { FormMode, shouldUseAdvancedMode } from "../TransactionForm/formMode";
+import ModeToggle from "../TransactionForm/ModeToggle";
 import PostingListContainer, {
   PostingRecord,
 } from "../TransactionForm/PostingListContainer";
@@ -14,6 +18,8 @@ import MetaListContainer, {
   MetaRecord,
 } from "../TransactionForm/MetaListContainer";
 import HeaderLine from "../Shared/HeaderLine";
+import { PreviewType } from "../Shared/diff";
+import { formatEntryBeancount } from "../TransactionForm/preview";
 
 export enum FieldType {
   str = "str",
@@ -76,7 +82,7 @@ export interface PostingsField extends BaseField {
 }
 
 export interface MetaField extends BaseField {
-  readonly type: FieldType.postings;
+  readonly type: FieldType.meta;
   readonly default?: Array<MetaRecord>;
 }
 
@@ -101,6 +107,10 @@ export interface Props {
   readonly defaultDate: string;
   readonly errors?: Array<string>;
   readonly submit?: string;
+  readonly showPreview?: boolean;
+  readonly previewType?: PreviewType;
+  /** Map of entry id (field prefix without trailing `_`) to original Beancount source. */
+  readonly originalSources?: Record<string, string>;
 }
 
 interface FieldProps {
@@ -110,7 +120,29 @@ interface FieldProps {
   readonly accounts: Array<string>;
   readonly accountCurrencies: Record<string, Array<string>>;
   readonly defaultDate: string;
+  readonly advanced: boolean;
+  readonly onValueChange: (name: string, value: unknown) => void;
 }
+
+const fieldBaseName = (name: string): string => {
+  const idx = name.lastIndexOf("_");
+  if (idx <= 0) {
+    return name;
+  }
+  return name.slice(idx + 1);
+};
+
+const fieldPrefix = (name: string): string | null => {
+  const idx = name.lastIndexOf("_");
+  if (idx <= 0) {
+    return null;
+  }
+  return name.slice(0, idx);
+};
+
+const isFlagField = (name: string) => fieldBaseName(name) === "flag";
+const isTagsField = (name: string) => fieldBaseName(name) === "tags";
+const isLinksField = (name: string) => fieldBaseName(name) === "links";
 
 const FormField: FunctionComponent<FieldProps> = ({
   field,
@@ -119,6 +151,8 @@ const FormField: FunctionComponent<FieldProps> = ({
   accounts,
   defaultDate,
   accountCurrencies,
+  advanced,
+  onValueChange,
 }: FieldProps) => {
   let initialValue = "default" in field ? field.default : undefined;
   if (window.history.state?.[field.name] !== undefined) {
@@ -126,9 +160,29 @@ const FormField: FunctionComponent<FieldProps> = ({
   }
   const displayName = field.displayName ?? field.name;
   const placeholder = field.placeholder ?? displayName;
+  const persist = (value: unknown) => {
+    onValueChange(field.name, value);
+    window.history.replaceState(
+      {
+        ...window.history.state,
+        [field.name]: value,
+      },
+      ""
+    );
+  };
+
   switch (field.type) {
     case FieldType.str:
-      if (field.name === "flag" || field.name.endsWith("_flag")) {
+      if (isFlagField(field.name)) {
+        if (!advanced) {
+          return (
+            <input
+              type="hidden"
+              name={field.name}
+              value={(initialValue as string) ?? "*"}
+            />
+          );
+        }
         return (
           <SelectionInput
             title={displayName}
@@ -137,15 +191,30 @@ const FormField: FunctionComponent<FieldProps> = ({
             initialValue={(initialValue as string) ?? "*"}
             error={field.error}
             required={field.required}
-            onChange={(value) => {
-              window.history.replaceState(
-                {
-                  ...window.history.state,
-                  [field.name]: value,
-                },
-                ""
-              );
-            }}
+            onChange={(value) => persist(value)}
+          />
+        );
+      }
+      if (isTagsField(field.name) || isLinksField(field.name)) {
+        if (!advanced) {
+          return (
+            <input
+              type="hidden"
+              name={field.name}
+              value={(initialValue as string) ?? ""}
+            />
+          );
+        }
+        return (
+          <TagsInput
+            label={displayName}
+            name={field.name}
+            stripPrefix={isTagsField(field.name) ? "#" : "^"}
+            placeholder={placeholder}
+            initialValue={initialValue as string}
+            error={field.error}
+            required={field.required}
+            onChange={(value) => persist(value)}
           />
         );
       }
@@ -157,15 +226,7 @@ const FormField: FunctionComponent<FieldProps> = ({
           defaultValue={initialValue as string}
           error={field.error}
           required={field.required}
-          onChange={(value) => {
-            window.history.replaceState(
-              {
-                ...window.history.state,
-                [field.name]: value,
-              },
-              ""
-            );
-          }}
+          onChange={(value) => persist(value)}
         />
       );
     case FieldType.number:
@@ -177,15 +238,7 @@ const FormField: FunctionComponent<FieldProps> = ({
           defaultValue={initialValue as string}
           error={field.error}
           required={field.required}
-          onChange={(value) => {
-            window.history.replaceState(
-              {
-                ...window.history.state,
-                [field.name]: value,
-              },
-              ""
-            );
-          }}
+          onChange={(value) => persist(value)}
         />
       );
     case FieldType.date:
@@ -200,15 +253,7 @@ const FormField: FunctionComponent<FieldProps> = ({
           defaultValue={initialValue as string}
           error={field.error}
           required={field.required}
-          onChange={(value) => {
-            window.history.replaceState(
-              {
-                ...window.history.state,
-                [field.name]: value,
-              },
-              ""
-            );
-          }}
+          onChange={(value) => persist(value)}
         />
       );
     case FieldType.currency:
@@ -222,15 +267,7 @@ const FormField: FunctionComponent<FieldProps> = ({
           multiple={field.multiple}
           creatable={field.creatable}
           required={field.required}
-          onChange={(value) => {
-            window.history.replaceState(
-              {
-                ...window.history.state,
-                [field.name]: value,
-              },
-              ""
-            );
-          }}
+          onChange={(value) => persist(value)}
         />
       );
     case FieldType.file:
@@ -243,15 +280,7 @@ const FormField: FunctionComponent<FieldProps> = ({
           error={field.error}
           required={field.required}
           creatable={field.creatable}
-          onChange={(value) => {
-            window.history.replaceState(
-              {
-                ...window.history.state,
-                [field.name]: value,
-              },
-              ""
-            );
-          }}
+          onChange={(value) => persist(value)}
         />
       );
     case FieldType.account:
@@ -264,15 +293,7 @@ const FormField: FunctionComponent<FieldProps> = ({
           error={field.error}
           required={field.required}
           creatable={field.creatable}
-          onChange={(value) => {
-            window.history.replaceState(
-              {
-                ...window.history.state,
-                [field.name]: value,
-              },
-              ""
-            );
-          }}
+          onChange={(value) => persist(value)}
         />
       );
     case FieldType.postings:
@@ -285,7 +306,8 @@ const FormField: FunctionComponent<FieldProps> = ({
           defaultCurrencies={currencies}
           required={field.required}
           error={field.error}
-          // TODO: handle on change and the history
+          advanced={advanced}
+          onChange={(postings) => persist(postings)}
         />
       );
     case FieldType.meta:
@@ -295,12 +317,94 @@ const FormField: FunctionComponent<FieldProps> = ({
           name={field.name}
           required={field.required}
           error={field.error}
-          // TODO: handle on change and the history
+          onChange={(meta) => persist(meta)}
         />
       );
     case FieldType.header:
       return <HeaderLine title={displayName} href={field.href} />;
   }
+};
+
+const initialValuesFromFields = (
+  fields: Array<Field>,
+  defaultDate: string
+): Record<string, unknown> => {
+  const values: Record<string, unknown> = {};
+  for (const field of fields) {
+    if (field.type === FieldType.header) {
+      continue;
+    }
+    let value = "default" in field ? field.default : undefined;
+    if (window.history.state?.[field.name] !== undefined) {
+      value = window.history.state?.[field.name];
+    }
+    if (field.type === FieldType.date && value === undefined) {
+      value = defaultDate;
+    }
+    if (isFlagField(field.name) && (value === undefined || value === "")) {
+      value = "*";
+    }
+    values[field.name] = value;
+  }
+  return values;
+};
+
+const entryGroups = (
+  fields: Array<Field>
+): Array<{ key: string; fields: Array<Field>; title?: string }> => {
+  const groups: Array<{ key: string; fields: Array<Field>; title?: string }> =
+    [];
+  let pendingTitle: string | undefined;
+  let current: { key: string; fields: Array<Field>; title?: string } | null =
+    null;
+
+  const pushCurrent = () => {
+    if (current && current.fields.length > 0) {
+      groups.push(current);
+    }
+    current = null;
+  };
+
+  for (const field of fields) {
+    if (field.type === FieldType.header) {
+      pushCurrent();
+      pendingTitle = field.displayName;
+      continue;
+    }
+    const prefix = fieldPrefix(field.name) ?? "__form__";
+    if (!current || current.key !== prefix) {
+      pushCurrent();
+      current = {
+        key: prefix,
+        fields: [],
+        title: pendingTitle,
+      };
+      pendingTitle = undefined;
+    }
+    current.fields.push(field);
+  }
+  pushCurrent();
+  if (groups.length === 0) {
+    return [{ key: "__form__", fields }];
+  }
+  return groups;
+};
+
+const stripPrefixValues = (
+  values: Record<string, unknown>,
+  prefix: string | null
+): Record<string, unknown> => {
+  if (!prefix || prefix === "__form__") {
+    return values;
+  }
+  const result: Record<string, unknown> = {};
+  const fullPrefix = `${prefix}_`;
+  for (const [key, value] of Object.entries(values)) {
+    if (key.startsWith(fullPrefix)) {
+      result[key.slice(fullPrefix.length)] = value;
+    }
+  }
+  return result;
 };
 
 const Form: FunctionComponent<Props> = ({
@@ -315,9 +419,58 @@ const Form: FunctionComponent<Props> = ({
   defaultDate,
   errors,
   submit,
+  showPreview,
+  previewType,
+  originalSources,
 }: Props) => {
+  const hasTxnFields = fields.some((field) => field.type === FieldType.postings);
+  const flagField = fields.find((f) => isFlagField(f.name));
+  const tagsField = fields.find((f) => isTagsField(f.name));
+  const linksField = fields.find((f) => isLinksField(f.name));
+  const postingsField = fields.find((f) => f.type === FieldType.postings);
+  const inferredAdvanced = shouldUseAdvancedMode({
+    initialFlag:
+      flagField && "default" in flagField
+        ? (flagField.default as string | undefined)
+        : undefined,
+    initialTags:
+      tagsField && "default" in tagsField
+        ? (tagsField.default as string | undefined)
+        : undefined,
+    initialLinks:
+      linksField && "default" in linksField
+        ? (linksField.default as string | undefined)
+        : undefined,
+    initialPostings:
+      postingsField && "default" in postingsField
+        ? (postingsField.default as Array<PostingRecord> | undefined)
+        : undefined,
+  });
+  const [mode, setMode] = useState<FormMode>(
+    hasTxnFields && inferredAdvanced ? "advanced" : "simple"
+  );
+  const advanced = !hasTxnFields || mode === "advanced";
+  const [values, setValues] = useState<Record<string, unknown>>(() =>
+    initialValuesFromFields(fields, defaultDate)
+  );
+
+  const groups = useMemo(() => entryGroups(fields), [fields]);
+  const previews = groups.map((group) => {
+    const prefix = group.key === "__form__" ? null : group.key;
+    const scoped = stripPrefixValues(values, prefix);
+    const source = formatEntryBeancount(previewType ?? "auto", scoped);
+    const originalKey = prefix ?? "__form__";
+    return {
+      key: group.key,
+      title: group.title,
+      source,
+      original: originalSources?.[originalKey],
+    };
+  });
+
   return (
     <form action={action} method={method ?? "POST"}>
+      {hasTxnFields ? <ModeToggle mode={mode} onChange={setMode} /> : null}
       {fields.map((field) => (
         <FormField
           key={field.name}
@@ -327,8 +480,28 @@ const Form: FunctionComponent<Props> = ({
           accounts={accounts}
           accountCurrencies={accountCurrencies}
           defaultDate={defaultDate}
+          advanced={advanced}
+          onValueChange={(name, value) =>
+            setValues((current) => ({ ...current, [name]: value }))
+          }
         />
       ))}
+      {showPreview
+        ? previews.map((preview) => (
+            <DiffPreview
+              key={`preview-${preview.key}`}
+              title={
+                preview.title
+                  ? preview.original
+                    ? `Diff · ${preview.title}`
+                    : `Preview · ${preview.title}`
+                  : undefined
+              }
+              original={preview.original}
+              updated={preview.source}
+            />
+          ))
+        : null}
       {hiddenFields !== undefined
         ? Object.entries(hiddenFields).map(([key, value]) => (
             <input type="hidden" name={key} value={value} />

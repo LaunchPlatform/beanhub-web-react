@@ -11,6 +11,7 @@ import { InputPrefixContext } from "./context";
 import { FormMode, shouldUseAdvancedMode } from "./formMode";
 import ModeToggle from "./ModeToggle";
 import Preview from "./Preview";
+import DiffPreview from "../Shared/DiffPreview";
 import { formatTransactionBeancount } from "./preview";
 
 export interface Props {
@@ -41,6 +42,7 @@ export interface Props {
   readonly errors?: Array<string>;
   readonly initialMode?: FormMode;
   readonly showPreview?: boolean;
+  readonly originalSource?: string;
 }
 
 const Form: FunctionComponent<Props> = ({
@@ -71,6 +73,7 @@ const Form: FunctionComponent<Props> = ({
   errors,
   initialMode,
   showPreview,
+  originalSource,
 }: Props) => {
   const inputPrefix = useContext(InputPrefixContext);
   let initialFileValue = initialFile;
@@ -306,7 +309,13 @@ const Form: FunctionComponent<Props> = ({
         initialMeta={initialMeta}
         onChange={setMetaValue}
       />
-      {showPreview ? <Preview source={previewSource} /> : null}
+      {showPreview ? (
+        originalSource !== undefined ? (
+          <DiffPreview original={originalSource} updated={previewSource} />
+        ) : (
+          <Preview source={previewSource} />
+        )
+      ) : null}
       {hiddenFields !== undefined
         ? Object.entries(hiddenFields).map(([key, value]) => (
             <input type="hidden" name={key} value={value} />
