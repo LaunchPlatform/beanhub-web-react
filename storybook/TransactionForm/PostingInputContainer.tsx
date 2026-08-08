@@ -39,3 +39,13 @@ export const Primary: ComponentStory<typeof PostingInputContainer> = () => (
     onDelete={action("onDelete")}
   />
 );
+
+export const Advanced: ComponentStory<typeof PostingInputContainer> = () => (
+  <PostingInputContainer
+    name="postings"
+    advanced
+    accounts={accounts}
+    currencies={currencies}
+    onDelete={action("onDelete")}
+  />
+);

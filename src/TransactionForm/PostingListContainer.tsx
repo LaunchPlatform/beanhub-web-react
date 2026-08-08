@@ -83,6 +83,8 @@ export interface Props {
   readonly required?: boolean;
   readonly error?: string;
   readonly name: string;
+  readonly advanced?: boolean;
+  readonly onChange?: (postings: Array<PostingRecord>) => void;
 }
 
 const PostingListContainer: FunctionComponent<Props> = ({
@@ -93,6 +95,8 @@ const PostingListContainer: FunctionComponent<Props> = ({
   required,
   error,
   name,
+  advanced,
+  onChange,
 }: Props) => {
   let filledInitialPostings = initialPostings;
   if (filledInitialPostings !== undefined && filledInitialPostings.length < 2) {
@@ -157,13 +161,59 @@ const PostingListContainer: FunctionComponent<Props> = ({
       },
       ""
     );
+    onChange?.(
+      newPostings.map((posting) => ({
+        account: posting.account,
+        accountError: posting.accountError,
+        unitNumber: posting.unitNumber,
+        unitNumberError: posting.unitNumberError,
+        unitCurrency: posting.unitCurrency,
+        unitCurrencyError: posting.unitCurrencyError,
+        flag: posting.flag,
+        flagError: posting.flagError,
+        costMode: posting.costMode,
+        costNumber: posting.costNumber,
+        costNumberError: posting.costNumberError,
+        costCurrency: posting.costCurrency,
+        costCurrencyError: posting.costCurrencyError,
+        costDate: posting.costDate,
+        costDateError: posting.costDateError,
+        costLabel: posting.costLabel,
+        costLabelError: posting.costLabelError,
+        priceMode: posting.priceMode,
+        priceNumber: posting.priceNumber,
+        priceNumberError: posting.priceNumberError,
+        priceCurrency: posting.priceCurrency,
+        priceCurrencyError: posting.priceCurrencyError,
+      }))
+    );
   };
+  useEffect(() => {
+    onChange?.(
+      postingsState.map((posting) => ({
+        account: posting.account,
+        unitNumber: posting.unitNumber,
+        unitCurrency: posting.unitCurrency,
+        flag: posting.flag,
+        costMode: posting.costMode,
+        costNumber: posting.costNumber,
+        costCurrency: posting.costCurrency,
+        costDate: posting.costDate,
+        costLabel: posting.costLabel,
+        priceMode: posting.priceMode,
+        priceNumber: posting.priceNumber,
+        priceCurrency: posting.priceCurrency,
+      }))
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <FormRow title="Postings" required={required ?? false}>
       {postingsState.map((posting, index) => (
         <PostingInputContainer
           key={posting.key}
           name={`${name}-${index}`}
+          advanced={advanced}
           account={posting.account}
           accountError={posting.accountError}
           unitNumber={posting.unitNumber}
@@ -173,9 +223,10 @@ const PostingListContainer: FunctionComponent<Props> = ({
           unitCurrencyError={posting.unitCurrencyError}
           flag={posting.flag}
           flagError={posting.flagError}
-          costExpanded={postingsState.some(
-            (item) => item.costMode !== CostMode.INACTIVE
-          )}
+          costExpanded={
+            !!advanced &&
+            postingsState.some((item) => item.costMode !== CostMode.INACTIVE)
+          }
           initialCostMode={posting.costMode}
           costNumber={posting.costNumber}
           costNumberError={posting.costNumberError}

@@ -13,29 +13,24 @@ export default {
   argTypes: { onDelete: { action: "clicked" } },
 } as ComponentMeta<typeof PostingInput>;
 
+const baseProps = {
+  name: "postings",
+  account: "",
+  unitNumber: "",
+  unitCurrency: "",
+  onDelete: action("onDelete"),
+  onAccountChange: action("onAccountChange"),
+  onUnitNumberChange: action("onUnitNumberChange"),
+  onUnitCurrencyChange: action("onUnitCurrencyChange"),
+};
+
 export const Primary: ComponentStory<typeof PostingInput> = () => (
-  <PostingInput
-    name="postings"
-    account=""
-    unitNumber=""
-    unitCurrency=""
-    onDelete={action("onDelete")}
-    onAccountChange={action("onAccountChange")}
-    onUnitNumberChange={action("onUnitNumberChange")}
-    onUnitCurrencyChange={action("onUnitCurrencyChange")}
-  />
+  <PostingInput {...baseProps} />
 );
 
 export const WithAccountCandidates: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
-    name="postings"
-    account=""
-    unitNumber=""
-    unitCurrency=""
-    onDelete={action("onDelete")}
-    onAccountChange={action("onAccountChange")}
-    onUnitNumberChange={action("onUnitNumberChange")}
-    onUnitCurrencyChange={action("onUnitCurrencyChange")}
+    {...baseProps}
     onAccountCandidateClick={action("onAccountCandidateClick")}
     accountCandidates={[
       {
@@ -65,14 +60,7 @@ export const WithAccountCandidates: ComponentStory<typeof PostingInput> = () => 
 
 export const WithCurrencyCandidates: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
-    name="postings"
-    account=""
-    unitNumber=""
-    unitCurrency=""
-    onDelete={action("onDelete")}
-    onAccountChange={action("onAccountChange")}
-    onUnitNumberChange={action("onUnitNumberChange")}
-    onUnitCurrencyChange={action("onUnitCurrencyChange")}
+    {...baseProps}
     onAccountCandidateClick={action("onAccountCandidateClick")}
     unitCurrencyCandidates={[
       { value: "BTC", matchedPieces: [{ text: "BTC", matched: true }] },
@@ -88,104 +76,47 @@ export const WithCurrencyCandidates: ComponentStory<typeof PostingInput> = () =>
 );
 
 export const AccountError: ComponentStory<typeof PostingInput> = () => (
-  <PostingInput
-    name="postings"
-    account=""
-    unitNumber=""
-    unitCurrency=""
-    accountError="Account required"
-    onDelete={action("onDelete")}
-    onAccountChange={action("onAccountChange")}
-    onUnitNumberChange={action("onUnitNumberChange")}
-    onUnitCurrencyChange={action("onUnitCurrencyChange")}
-  />
+  <PostingInput {...baseProps} accountError="Account required" />
 );
 
 export const NumberError: ComponentStory<typeof PostingInput> = () => (
-  <PostingInput
-    name="postings"
-    account=""
-    unitNumber=""
-    unitCurrency=""
-    unitNumberError="Number required"
-    onDelete={action("onDelete")}
-    onAccountChange={action("onAccountChange")}
-    onUnitNumberChange={action("onUnitNumberChange")}
-    onUnitCurrencyChange={action("onUnitCurrencyChange")}
-  />
+  <PostingInput {...baseProps} unitNumberError="Number required" />
 );
 
 export const CurrencyError: ComponentStory<typeof PostingInput> = () => (
-  <PostingInput
-    name="postings"
-    account=""
-    unitNumber=""
-    unitCurrency=""
-    unitCurrencyError="Currency required"
-    onDelete={action("onDelete")}
-    onAccountChange={action("onAccountChange")}
-    onUnitNumberChange={action("onUnitNumberChange")}
-    onUnitCurrencyChange={action("onUnitCurrencyChange")}
-  />
+  <PostingInput {...baseProps} unitCurrencyError="Currency required" />
 );
 
 export const AccountNumberError: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
-    name="postings"
-    account=""
-    unitNumber=""
-    unitCurrency=""
+    {...baseProps}
     accountError="Account required"
     unitNumberError="Number required"
-    onDelete={action("onDelete")}
-    onAccountChange={action("onAccountChange")}
-    onUnitNumberChange={action("onUnitNumberChange")}
-    onUnitCurrencyChange={action("onUnitCurrencyChange")}
   />
 );
 
 export const NumberCurrencyError: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
-    name="postings"
-    account=""
-    unitNumber=""
-    unitCurrency=""
+    {...baseProps}
     unitNumberError="Number required"
     unitCurrencyError="Currency required"
-    onDelete={action("onDelete")}
-    onAccountChange={action("onAccountChange")}
-    onUnitNumberChange={action("onUnitNumberChange")}
-    onUnitCurrencyChange={action("onUnitCurrencyChange")}
   />
 );
 
 export const AllError: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
-    name="postings"
-    account=""
-    unitNumber=""
-    unitCurrency=""
+    {...baseProps}
     accountError="Account required"
     unitNumberError="Number required"
     unitCurrencyError="Currency required"
-    onDelete={action("onDelete")}
-    onAccountChange={action("onAccountChange")}
-    onUnitNumberChange={action("onUnitNumberChange")}
-    onUnitCurrencyChange={action("onUnitCurrencyChange")}
   />
 );
 
 export const Price: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
-    name="postings"
-    account=""
-    unitNumber=""
-    unitCurrency=""
+    {...baseProps}
     priceMode={PriceMode.PRICE}
-    onDelete={action("onDelete")}
-    onAccountChange={action("onAccountChange")}
-    onUnitNumberChange={action("onUnitNumberChange")}
-    onUnitCurrencyChange={action("onUnitCurrencyChange")}
+    onPriceButtonClick={action("onPriceButtonClick")}
     onPriceNumberChange={action("onPriceNumberChange")}
     onPriceCurrencyChange={action("onPriceCurrencyChange")}
   />
@@ -193,15 +124,9 @@ export const Price: ComponentStory<typeof PostingInput> = () => (
 
 export const TotalPrice: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
-    name="postings"
-    account=""
-    unitNumber=""
-    unitCurrency=""
+    {...baseProps}
     priceMode={PriceMode.TOTAL_PRICE}
-    onDelete={action("onDelete")}
-    onAccountChange={action("onAccountChange")}
-    onUnitNumberChange={action("onUnitNumberChange")}
-    onUnitCurrencyChange={action("onUnitCurrencyChange")}
+    onPriceButtonClick={action("onPriceButtonClick")}
     onPriceNumberChange={action("onPriceNumberChange")}
     onPriceCurrencyChange={action("onPriceCurrencyChange")}
   />
@@ -209,35 +134,25 @@ export const TotalPrice: ComponentStory<typeof PostingInput> = () => (
 
 export const PriceAllError: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
-    name="postings"
-    account=""
-    unitNumber=""
-    unitCurrency=""
+    {...baseProps}
     priceMode={PriceMode.PRICE}
     accountError="Account required"
     unitNumberError="Number required"
     unitCurrencyError="Currency required"
     priceNumberError="Number required"
     priceCurrencyError="Currency required"
-    onDelete={action("onDelete")}
-    onAccountChange={action("onAccountChange")}
-    onUnitNumberChange={action("onUnitNumberChange")}
-    onUnitCurrencyChange={action("onUnitCurrencyChange")}
+    onPriceButtonClick={action("onPriceButtonClick")}
   />
 );
 
-export const WithPriceCurrencyCandidates: ComponentStory<typeof PostingInput> = () => (
+export const WithPriceCurrencyCandidates: ComponentStory<
+  typeof PostingInput
+> = () => (
   <PostingInput
-    name="postings"
-    account=""
-    unitNumber=""
-    unitCurrency=""
+    {...baseProps}
     priceMode={PriceMode.PRICE}
-    onDelete={action("onDelete")}
-    onAccountChange={action("onAccountChange")}
-    onUnitNumberChange={action("onUnitNumberChange")}
-    onUnitCurrencyChange={action("onUnitCurrencyChange")}
     onAccountCandidateClick={action("onAccountCandidateClick")}
+    onPriceButtonClick={action("onPriceButtonClick")}
     priceCurrencyCandidates={[
       { value: "BTC", matchedPieces: [{ text: "BTC", matched: true }] },
       {
@@ -251,48 +166,68 @@ export const WithPriceCurrencyCandidates: ComponentStory<typeof PostingInput> = 
   />
 );
 
-export const Cost: ComponentStory<typeof PostingInput> = () => (
+export const AdvancedDetails: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
-    name="postings"
-    account=""
-    unitNumber=""
-    unitCurrency=""
+    {...baseProps}
+    advanced
+    account="Assets:Investments"
+    unitNumber="10"
+    unitCurrency="HOOL"
+    flag="!"
     costMode={CostMode.COST}
-    onDelete={action("onDelete")}
-    onAccountChange={action("onAccountChange")}
-    onUnitNumberChange={action("onUnitNumberChange")}
-    onUnitCurrencyChange={action("onUnitCurrencyChange")}
+    costNumber="123.45"
+    costCurrency="USD"
+    costDate="2022-01-15"
+    costLabel="lot-a"
+    priceMode={PriceMode.PRICE}
+    priceNumber="1.2"
+    priceCurrency="EUR"
+    onFlagChange={action("onFlagChange")}
+    onCostModeChange={action("onCostModeChange")}
     onCostNumberChange={action("onCostNumberChange")}
     onCostCurrencyChange={action("onCostCurrencyChange")}
     onCostDateChange={action("onCostDateChange")}
     onCostLabelChange={action("onCostLabelChange")}
+    onPriceModeChange={action("onPriceModeChange")}
+    onPriceNumberChange={action("onPriceNumberChange")}
+    onPriceCurrencyChange={action("onPriceCurrencyChange")}
   />
 );
 
-export const TotalCost: ComponentStory<typeof PostingInput> = () => (
+export const AdvancedCost: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
-    name="postings"
-    account=""
-    unitNumber=""
-    unitCurrency=""
+    {...baseProps}
+    advanced
+    costMode={CostMode.COST}
+    onFlagChange={action("onFlagChange")}
+    onCostModeChange={action("onCostModeChange")}
+    onCostNumberChange={action("onCostNumberChange")}
+    onCostCurrencyChange={action("onCostCurrencyChange")}
+    onCostDateChange={action("onCostDateChange")}
+    onCostLabelChange={action("onCostLabelChange")}
+    onPriceModeChange={action("onPriceModeChange")}
+  />
+);
+
+export const AdvancedTotalCost: ComponentStory<typeof PostingInput> = () => (
+  <PostingInput
+    {...baseProps}
+    advanced
     costMode={CostMode.TOTAL_COST}
-    onDelete={action("onDelete")}
-    onAccountChange={action("onAccountChange")}
-    onUnitNumberChange={action("onUnitNumberChange")}
-    onUnitCurrencyChange={action("onUnitCurrencyChange")}
+    onFlagChange={action("onFlagChange")}
+    onCostModeChange={action("onCostModeChange")}
     onCostNumberChange={action("onCostNumberChange")}
     onCostCurrencyChange={action("onCostCurrencyChange")}
     onCostDateChange={action("onCostDateChange")}
     onCostLabelChange={action("onCostLabelChange")}
+    onPriceModeChange={action("onPriceModeChange")}
   />
 );
 
-export const CostAllError: ComponentStory<typeof PostingInput> = () => (
+export const AdvancedCostAllError: ComponentStory<typeof PostingInput> = () => (
   <PostingInput
-    name="postings"
-    account=""
-    unitNumber=""
-    unitCurrency=""
+    {...baseProps}
+    advanced
     costMode={CostMode.COST}
     accountError="Account required"
     unitNumberError="Number required"
@@ -301,49 +236,19 @@ export const CostAllError: ComponentStory<typeof PostingInput> = () => (
     costCurrencyError="Currency required"
     costDateError="Bad date"
     costLabelError="Bad label"
-    onDelete={action("onDelete")}
-    onAccountChange={action("onAccountChange")}
-    onUnitNumberChange={action("onUnitNumberChange")}
-    onUnitCurrencyChange={action("onUnitCurrencyChange")}
-  />
-);
-
-export const WithCostCurrencyCandidates: ComponentStory<typeof PostingInput> = () => (
-  <PostingInput
-    name="postings"
-    account=""
-    unitNumber=""
-    unitCurrency=""
-    costMode={CostMode.COST}
-    onDelete={action("onDelete")}
-    onAccountChange={action("onAccountChange")}
-    onUnitNumberChange={action("onUnitNumberChange")}
-    onUnitCurrencyChange={action("onUnitCurrencyChange")}
-    onCostCurrencyCandidateClick={action("onCostCurrencyCandidateClick")}
-    costCurrencyCandidates={[
-      { value: "USD", matchedPieces: [{ text: "USD", matched: true }] },
-      {
-        value: "USDT",
-        matchedPieces: [
-          { text: "USD", matched: true },
-          { text: "T", matched: false },
-        ],
-      },
-    ]}
-  />
-);
-
-export const WithFlag: ComponentStory<typeof PostingInput> = () => (
-  <PostingInput
-    name="postings"
-    account=""
-    unitNumber=""
-    unitCurrency=""
-    flag="!"
-    onDelete={action("onDelete")}
-    onAccountChange={action("onAccountChange")}
-    onUnitNumberChange={action("onUnitNumberChange")}
-    onUnitCurrencyChange={action("onUnitCurrencyChange")}
     onFlagChange={action("onFlagChange")}
+    onCostModeChange={action("onCostModeChange")}
+    onPriceModeChange={action("onPriceModeChange")}
+  />
+);
+
+export const AdvancedWithFlag: ComponentStory<typeof PostingInput> = () => (
+  <PostingInput
+    {...baseProps}
+    advanced
+    flag="!"
+    onFlagChange={action("onFlagChange")}
+    onCostModeChange={action("onCostModeChange")}
+    onPriceModeChange={action("onPriceModeChange")}
   />
 );

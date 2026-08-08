@@ -43,33 +43,45 @@ const defaultCurrencies: Array<string> = [
   "TZS",
 ];
 
+const shared = {
+  files,
+  accounts,
+  accountCurrencies,
+  defaultCurrencies,
+};
+
 export default {
   component: Form,
 } as ComponentMeta<typeof Form>;
 
 export const Primary: ComponentStory<typeof Form> = () => (
+  <Form {...shared} />
+);
+
+export const WithPreview: ComponentStory<typeof Form> = () => (
   <Form
-    files={files}
-    accounts={accounts}
-    accountCurrencies={accountCurrencies}
-    defaultCurrencies={defaultCurrencies}
+    {...shared}
+    showPreview
+    initialDate="2022-03-02"
+    initialPayee="Jane Doe"
+    initialNarration="Coffee"
+    initialPostings={[
+      { account: "Assets:Cash", unitNumber: "-5", unitCurrency: "USD" },
+      { account: "Expenses:Food", unitNumber: "5", unitCurrency: "USD" },
+    ]}
   />
 );
 
 export const InputPrefix: ComponentStory<typeof Form> = () => (
   <InputPrefixContext.Provider value="forms-0-">
-    <Form
-      files={files}
-      accounts={accounts}
-      accountCurrencies={accountCurrencies}
-      defaultCurrencies={defaultCurrencies}
-    />
+    <Form {...shared} />
   </InputPrefixContext.Provider>
 );
 
 export const InitialValues: ComponentStory<typeof Form> = () => (
   <Form
-    files={files}
+    {...shared}
+    showPreview
     initialNarration="This "
     initialPayee="Jane Doe"
     initialDate="2022-03-02"
@@ -91,15 +103,13 @@ export const InitialValues: ComponentStory<typeof Form> = () => (
         metaValue: "import-data/connect/American Express/My Account/2023.csv",
       },
     ]}
-    accounts={accounts}
-    accountCurrencies={accountCurrencies}
-    defaultCurrencies={defaultCurrencies}
   />
 );
 
 export const InitialPriceValues: ComponentStory<typeof Form> = () => (
   <Form
-    files={files}
+    {...shared}
+    showPreview
     initialNarration="This "
     initialPayee="Jane Doe"
     initialDate="2022-03-02"
@@ -109,20 +119,18 @@ export const InitialPriceValues: ComponentStory<typeof Form> = () => (
         account: "Expenses",
         unitNumber: "12.34",
         unitCurrency: "USD",
-        priceMode: PriceMode.PRICE.toString() as any,
+        priceMode: PriceMode.PRICE,
         priceNumber: "45.67",
         priceCurrency: "BTC",
       },
     ]}
-    accounts={accounts}
-    accountCurrencies={accountCurrencies}
-    defaultCurrencies={defaultCurrencies}
   />
 );
 
 export const InitialCostValues: ComponentStory<typeof Form> = () => (
   <Form
-    files={files}
+    {...shared}
+    showPreview
     initialNarration="Buy shares"
     initialPayee="Broker"
     initialDate="2022-03-02"
@@ -140,15 +148,32 @@ export const InitialCostValues: ComponentStory<typeof Form> = () => (
       },
       { account: "Assets:Cash", unitNumber: "-1234.50", unitCurrency: "USD" },
     ]}
-    accounts={accounts}
-    accountCurrencies={accountCurrencies}
-    defaultCurrencies={defaultCurrencies}
   />
+);
+
+export const ForcedSimpleMode: ComponentStory<typeof Form> = () => (
+  <Form
+    {...shared}
+    initialMode="simple"
+    showPreview
+    initialFlag="!"
+    initialTags="hidden-in-ui"
+    initialDate="2022-03-02"
+    initialNarration="Still submitted via hidden fields"
+    initialPostings={[
+      { account: "Assets", unitNumber: "-1", unitCurrency: "USD" },
+      { account: "Expenses", unitNumber: "1", unitCurrency: "USD" },
+    ]}
+  />
+);
+
+export const ForcedAdvancedMode: ComponentStory<typeof Form> = () => (
+  <Form {...shared} initialMode="advanced" showPreview />
 );
 
 export const Errors: ComponentStory<typeof Form> = () => (
   <Form
-    files={files}
+    {...shared}
     dateError="Bad date format"
     flagError="Flag must be * or !"
     payeeError="Bad payee value"
@@ -161,9 +186,6 @@ export const Errors: ComponentStory<typeof Form> = () => (
         metaKeyError: "Invalid key value",
       },
     ]}
-    accounts={accounts}
-    accountCurrencies={accountCurrencies}
-    defaultCurrencies={defaultCurrencies}
     errors={["Account number not balanced", "Currency is not supported"]}
   />
 );

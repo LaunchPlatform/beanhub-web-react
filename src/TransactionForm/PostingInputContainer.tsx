@@ -40,6 +40,7 @@ export interface Props {
   readonly priceExpanded?: boolean;
   readonly accounts: Array<string>;
   readonly currencies: Array<string>;
+  readonly advanced?: boolean;
   readonly onAccountChange?: (value: string) => void;
   readonly onAccountBlur?: () => void;
   readonly onUnitNumberChange?: (value: string) => void;
@@ -224,6 +225,7 @@ const PostingInputContainer: FunctionComponent<Props> = ({
   priceCurrencyUpdateCounter,
   accounts,
   currencies,
+  advanced,
   name,
   onAccountChange,
   onAccountBlur,
@@ -285,9 +287,19 @@ const PostingInputContainer: FunctionComponent<Props> = ({
     priceCurrencyUpdateCounter,
     onPriceCurrencyChange
   );
+  const setNextPriceMode = (nextMode: PriceMode) => {
+    setPriceMode(nextMode);
+    onPriceModeChange?.(nextMode);
+  };
+  const setNextCostMode = (nextMode: CostMode) => {
+    setCostMode(nextMode);
+    onCostModeChange?.(nextMode);
+  };
+
   return (
     <PostingInput
       name={name}
+      advanced={advanced}
       onDelete={onDelete}
       // Flag
       flag={flagValue}
@@ -329,22 +341,12 @@ const PostingInputContainer: FunctionComponent<Props> = ({
       // Cost mode
       costMode={
         costMode === CostMode.INACTIVE
-          ? costExpanded
+          ? costExpanded && !advanced
             ? CostMode.EXPANDED
             : costMode
           : costMode
       }
-      onCostButtonClick={() => {
-        const options = [
-          CostMode.INACTIVE,
-          CostMode.COST,
-          CostMode.TOTAL_COST,
-        ];
-        const index = options.indexOf(costMode);
-        const nextMode = options[(index + 1) % options.length];
-        setCostMode(nextMode);
-        onCostModeChange?.(nextMode);
-      }}
+      onCostModeChange={setNextCostMode}
       // Cost number
       costNumber={costNumberValue}
       costNumberError={costNumberError}
@@ -379,11 +381,12 @@ const PostingInputContainer: FunctionComponent<Props> = ({
       // Price mode
       priceMode={
         priceMode === PriceMode.INACTIVE
-          ? priceExpanded
+          ? priceExpanded && !advanced
             ? PriceMode.EXPANDED
             : priceMode
           : priceMode
       }
+      onPriceModeChange={setNextPriceMode}
       onPriceButtonClick={() => {
         const options = [
           PriceMode.INACTIVE,
@@ -392,8 +395,7 @@ const PostingInputContainer: FunctionComponent<Props> = ({
         ];
         const index = options.indexOf(priceMode);
         const nextMode = options[(index + 1) % options.length];
-        setPriceMode(nextMode);
-        onPriceModeChange?.(nextMode);
+        setNextPriceMode(nextMode);
       }}
       // Price number
       priceNumber={priceNumberValue}

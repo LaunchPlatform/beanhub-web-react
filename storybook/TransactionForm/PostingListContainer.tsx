@@ -43,6 +43,16 @@ export const Primary: ComponentStory<typeof PostingListContainer> = () => (
   />
 );
 
+export const Advanced: ComponentStory<typeof PostingListContainer> = () => (
+  <PostingListContainer
+    name="postings"
+    advanced
+    accounts={accounts}
+    accountCurrencies={accountCurrencies}
+    defaultCurrencies={defaultCurrencies}
+  />
+);
+
 export const InitialValues: ComponentStory<typeof PostingListContainer> = () => (
   <PostingListContainer
     name="postings"
@@ -59,6 +69,7 @@ export const InitialValues: ComponentStory<typeof PostingListContainer> = () => 
 export const InitialCostValues: ComponentStory<typeof PostingListContainer> = () => (
   <PostingListContainer
     name="postings"
+    advanced
     initialPostings={[
       {
         account: "Assets:Investments",
