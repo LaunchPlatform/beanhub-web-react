@@ -1,7 +1,10 @@
 import React, {
   FunctionComponent,
+  KeyboardEvent,
   KeyboardEventHandler,
   MouseEvent,
+  useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -41,6 +44,22 @@ export interface Props {
   readonly onChange?: (value: string) => void;
 }
 
+interface EditSession {
+  original: string;
+  draft: string;
+}
+
+interface LabelHelpers {
+  stripPrefix?: string;
+  editingToken: string | null;
+  editingValue: string;
+  editSessionRef: React.MutableRefObject<EditSession | null>;
+  chipEditRef: React.MutableRefObject<HTMLInputElement | null>;
+  beginEdit: (token: string) => void;
+  finishEdit: (save: boolean) => void;
+  setEditingValue: (value: string) => void;
+}
+
 /** Chip label shows Beancount marker (# / ^); option.value stays bare for submit/edit. */
 const toOptions = (
   tokens: Array<string>,
@@ -63,12 +82,23 @@ const TagsInput: FunctionComponent<Props> = ({
   onChange,
 }: Props) => {
   const selectRef = useRef<SelectInstance<Option, true>>(null);
-  const editingOriginalRef = useRef<string | null>(null);
+  const chipEditRef = useRef<HTMLInputElement | null>(null);
+  const editSessionRef = useRef<EditSession | null>(null);
+  const labelHelpersRef = useRef<LabelHelpers | null>(null);
   const [tokens, setTokens] = useState<Array<string>>(
     parseTokenList(initialValue, stripPrefix)
   );
   const [inputValue, setInputValue] = useState("");
+  const [editingToken, setEditingToken] = useState<string | null>(null);
+  const [editingValue, setEditingValue] = useState("");
   const borderColor = error !== undefined ? "#fd3995" : "#E5E5E5";
+
+  useEffect(() => {
+    if (editingToken !== null) {
+      chipEditRef.current?.focus();
+      chipEditRef.current?.select();
+    }
+  }, [editingToken]);
 
   const commitTokens = (next: Array<string>) => {
     setTokens(next);
@@ -96,25 +126,175 @@ const TagsInput: FunctionComponent<Props> = ({
   };
 
   const addFromRaw = (raw: string) => {
-    editingOriginalRef.current = null;
-    commitTokens(mergeIncoming(tokens, raw));
+    setTokens((current) => {
+      const next = mergeIncoming(current, raw);
+      onChange?.(joinTokenList(next));
+      return next;
+    });
     setInputValue("");
   };
 
-  /** Click a chip → move bare value into the input for editing. */
   const beginEdit = (token: string) => {
-    let next = tokens;
-    if (inputValue.trim()) {
-      next = mergeIncoming(next, inputValue);
+    if (editSessionRef.current !== null) {
+      return;
     }
-    next = next.filter((item) => item !== token);
-    commitTokens(next);
-    editingOriginalRef.current = token;
-    setInputValue(token);
-    window.requestAnimationFrame(() => {
-      selectRef.current?.focus();
+    if (inputValue.trim()) {
+      addFromRaw(inputValue);
+    }
+    editSessionRef.current = { original: token, draft: token };
+    setEditingToken(token);
+    setEditingValue(token);
+  };
+
+  const finishEdit = (save: boolean) => {
+    const session = editSessionRef.current;
+    if (session === null) {
+      return;
+    }
+    editSessionRef.current = null;
+    const { original, draft } = session;
+    setEditingToken(null);
+    setEditingValue("");
+
+    if (!save) {
+      return;
+    }
+
+    const nextToken = normalizeToken(draft, stripPrefix);
+    if (!nextToken || nextToken === original) {
+      return;
+    }
+
+    setTokens((current) => {
+      const withoutOriginal = current.filter((item) => item !== original);
+      const next = withoutOriginal.includes(nextToken)
+        ? withoutOriginal
+        : current.map((item) => (item === original ? nextToken : item));
+      onChange?.(joinTokenList(next));
+      return next;
     });
   };
+
+  const updateEditingValue = (value: string) => {
+    if (editSessionRef.current !== null) {
+      editSessionRef.current = {
+        ...editSessionRef.current,
+        draft: value,
+      };
+    }
+    setEditingValue(value);
+  };
+
+  labelHelpersRef.current = {
+    stripPrefix,
+    editingToken,
+    editingValue,
+    editSessionRef,
+    chipEditRef,
+    beginEdit,
+    finishEdit,
+    setEditingValue: updateEditingValue,
+  };
+
+  // Stable component identity — recreating MultiValueLabel each render remounts
+  // the chip <input> and blurs mid-edit (only the last typed character survives).
+  const MultiValueLabel = useMemo(() => {
+    const Label = (props: MultiValueGenericProps<Option, true>) => {
+      const helpers = labelHelpersRef.current;
+      if (helpers === null) {
+        return <div {...props.innerProps}>{props.children}</div>;
+      }
+      const {
+        stripPrefix: prefix,
+        editingToken: active,
+        editingValue: draft,
+        chipEditRef: inputRef,
+        beginEdit: start,
+        finishEdit: stop,
+        setEditingValue: setDraft,
+      } = helpers;
+      const token = props.data.value;
+      const isEditing = active === token;
+
+      if (isEditing) {
+        const onChipKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+          event.stopPropagation();
+          if (event.key === "Enter" || event.key === "Tab") {
+            event.preventDefault();
+            stop(true);
+          } else if (event.key === "Escape") {
+            event.preventDefault();
+            stop(false);
+          } else if (event.key === "," || event.key === " ") {
+            event.preventDefault();
+            stop(true);
+          }
+        };
+        return (
+          <div
+            {...props.innerProps}
+            style={{ display: "flex", alignItems: "center" }}
+          >
+            {prefix ? (
+              <span
+                style={{
+                  color: "#5b3f8c",
+                  paddingLeft: 6,
+                  fontSize: "85%",
+                  lineHeight: 1,
+                }}
+              >
+                {prefix}
+              </span>
+            ) : null}
+            <input
+              ref={inputRef}
+              value={draft}
+              aria-label={`Edit ${formatTokenLabel(token, prefix)}`}
+              onChange={(event) => {
+                setDraft(sanitizeTokenInput(event.target.value, prefix));
+              }}
+              onKeyDown={onChipKeyDown}
+              onBlur={() => stop(true)}
+              onMouseDown={(event: MouseEvent) => {
+                event.stopPropagation();
+              }}
+              style={{
+                border: "none",
+                outline: "none",
+                background: "transparent",
+                color: "#5b3f8c",
+                fontSize: "85%",
+                padding: prefix ? "3px 6px 3px 0" : "3px 6px",
+                margin: 0,
+                minWidth: `${Math.max(draft.length, 1)}ch`,
+                width: `${Math.max(draft.length + 1, 2)}ch`,
+              }}
+            />
+          </div>
+        );
+      }
+
+      const onMouseDown = (event: MouseEvent) => {
+        event.preventDefault();
+        event.stopPropagation();
+        start(token);
+      };
+      return (
+        <div
+          {...props.innerProps}
+          onMouseDown={onMouseDown}
+          title="Click to edit"
+          role="button"
+          tabIndex={-1}
+        >
+          {props.children}
+        </div>
+      );
+    };
+    Label.displayName = "TagsMultiValueLabel";
+    return Label;
+  }, []);
 
   const styles: StylesConfig<Option, true> = {
     control: (provided, state) => ({
@@ -156,11 +336,17 @@ const TagsInput: FunctionComponent<Props> = ({
   };
 
   const handleChange = (value: OnChangeValue<Option, true>) => {
+    if (editSessionRef.current !== null) {
+      finishEdit(true);
+    }
     const next = (value ?? []).map((option) => option.value);
     commitTokens(next);
   };
 
   const handleKeyDown: KeyboardEventHandler<HTMLDivElement> = (event) => {
+    if (editSessionRef.current !== null) {
+      return;
+    }
     switch (event.key) {
       case "Enter":
       case "Tab":
@@ -172,42 +358,17 @@ const TagsInput: FunctionComponent<Props> = ({
         event.preventDefault();
         addFromRaw(inputValue);
         break;
-      case "Escape":
-        event.preventDefault();
-        if (editingOriginalRef.current !== null) {
-          const original = editingOriginalRef.current;
-          editingOriginalRef.current = null;
-          commitTokens(mergeIncoming(tokens, original));
-          setInputValue("");
-        } else {
-          setInputValue("");
-        }
-        break;
     }
   };
 
-  const MultiValueLabel = (
-    props: MultiValueGenericProps<Option, true>
-  ) => {
-    const token = props.data.value;
-    const onMouseDown = (event: MouseEvent) => {
-      // Keep select from taking the click as a blur/clear; start edit instead.
-      event.preventDefault();
-      event.stopPropagation();
-      beginEdit(token);
-    };
-    return (
-      <div
-        {...props.innerProps}
-        onMouseDown={onMouseDown}
-        title="Click to edit"
-        role="button"
-        tabIndex={-1}
-      >
-        {props.children}
-      </div>
-    );
-  };
+  const selectComponents = useMemo(
+    () => ({
+      DropdownIndicator: null,
+      IndicatorSeparator: null,
+      MultiValueLabel,
+    }),
+    [MultiValueLabel]
+  );
 
   return (
     <FormRow title={label} required={required}>
@@ -226,8 +387,10 @@ const TagsInput: FunctionComponent<Props> = ({
           if (action.action !== "input-change") {
             return;
           }
+          if (editSessionRef.current !== null) {
+            finishEdit(true);
+          }
           const bare = sanitizeTokenInput(value, stripPrefix);
-          // Comma or space in the middle of pasted/typed text: commit completed tokens.
           if (/[,\s]/.test(bare)) {
             const parts = bare.split(/[,\s]+/);
             const complete = parts.slice(0, -1).join(" ");
@@ -242,6 +405,9 @@ const TagsInput: FunctionComponent<Props> = ({
         }}
         onKeyDown={handleKeyDown}
         onBlur={() => {
+          if (editSessionRef.current !== null) {
+            return;
+          }
           if (inputValue.trim()) {
             addFromRaw(inputValue);
           }
@@ -256,11 +422,7 @@ const TagsInput: FunctionComponent<Props> = ({
         }}
         styles={styles}
         theme={(theme) => ({ ...theme, borderRadius: 0 })}
-        components={{
-          DropdownIndicator: null,
-          IndicatorSeparator: null,
-          MultiValueLabel,
-        }}
+        components={selectComponents}
         aria-label={label}
       />
       <small className="form-text text-muted">
