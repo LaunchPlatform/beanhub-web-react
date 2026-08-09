@@ -18,6 +18,7 @@ const Preview: FunctionComponent<Props> = ({ source }: Props) => (
         backgroundColor: "#f8f9fa",
         marginBottom: 0,
         padding: "0.5rem 0.75rem",
+        overflow: "auto",
       }}
     >
       {source || " "}
