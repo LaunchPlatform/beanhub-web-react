@@ -15,6 +15,7 @@ export interface Props {
   readonly accountError?: string;
   readonly unitNumber?: string;
   readonly unitNumberError?: string;
+  readonly unitNumberUpdateCounter?: number;
   readonly unitCurrency?: string;
   readonly unitCurrencyError?: string;
   readonly unitCurrencyUpdateCounter?: number;
@@ -54,6 +55,8 @@ export interface Props {
   readonly onPriceNumberChange?: (value: string) => void;
   readonly onPriceCurrencyChange?: (value: string) => void;
   readonly onPriceModeChange?: (priceMode: PriceMode) => void;
+  readonly onFillRemaining?: () => void;
+  readonly fillRemainingDisabled?: boolean;
   readonly onDelete?: () => void;
 }
 
@@ -203,6 +206,7 @@ const PostingInputContainer: FunctionComponent<Props> = ({
   unitCurrency,
   unitCurrencyUpdateCounter,
   unitNumberError,
+  unitNumberUpdateCounter,
   flag,
   flagError,
   initialCostMode,
@@ -240,11 +244,19 @@ const PostingInputContainer: FunctionComponent<Props> = ({
   onPriceNumberChange,
   onPriceCurrencyChange,
   onPriceModeChange,
+  onFillRemaining,
+  fillRemainingDisabled,
   onDelete,
 }: Props) => {
   const [unitNumberValue, setUnitNumberValue] = useState<string>(
     unitNumber ?? ""
   );
+  const [unitNumberUpdateCounterValue, setUnitNumberUpdateCounterValue] =
+    useState<number>(unitNumberUpdateCounter ?? 0);
+  if (unitNumberUpdateCounterValue !== (unitNumberUpdateCounter ?? 0)) {
+    setUnitNumberValue(unitNumber ?? "");
+    setUnitNumberUpdateCounterValue(unitNumberUpdateCounter ?? 0);
+  }
   const [flagValue, setFlagValue] = useState<string>(flag ?? "");
   const [costMode, setCostMode] = useState<CostMode>(
     initialCostMode ?? CostMode.INACTIVE
@@ -414,6 +426,8 @@ const PostingInputContainer: FunctionComponent<Props> = ({
       onPriceCurrencyKeyPress={priceCurrencyProps.onKeyPress}
       onPriceCurrencyCandidateClick={priceCurrencyProps.onCandidateClick}
       onPriceCurrencyBlur={priceCurrencyProps.onBlur}
+      onFillRemaining={onFillRemaining}
+      fillRemainingDisabled={fillRemainingDisabled}
     />
   );
 };
