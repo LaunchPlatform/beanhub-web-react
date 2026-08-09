@@ -46,3 +46,19 @@ const compactUpdated = [
 export const SpacingOnly: ComponentStory<typeof DiffPreview> = () => (
   <DiffPreview original={spacedOriginal} updated={compactUpdated} />
 );
+
+/** Character-level marks inside paired remove/add lines. */
+export const InlineCharHighlight: ComponentStory<typeof DiffPreview> = () => (
+  <DiffPreview
+    original={[
+      '2026-04-26 * "Uber"',
+      "  Liabilities:CreditCard:US:ChaseSapphirePreferred  -6.33 USD",
+      "  Expenses:Travel                                   6.33 USD",
+    ].join("\n")}
+    updated={[
+      '2026-04-26 ! "asdf" "Uber"',
+      "  Liabilities:CreditCard:US:ChaseSapphirePreferred  -6.34 USD",
+      "  Expenses:Travel                                   6.34 USD",
+    ].join("\n")}
+  />
+);

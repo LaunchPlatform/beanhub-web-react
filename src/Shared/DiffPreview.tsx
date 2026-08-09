@@ -1,6 +1,6 @@
-import React, { FunctionComponent, CSSProperties } from "react";
+import React, { FunctionComponent, CSSProperties, ReactNode } from "react";
 import FormRow from "./FormRow";
-import { computeLineDiff, DiffLine } from "./diff";
+import { computeLineDiff, DiffLine, DiffSegment } from "./diff";
 
 export interface Props {
   readonly original?: string;
@@ -29,12 +29,41 @@ const prefix = (type: DiffLine["type"]): string => {
   }
 };
 
+const segmentStyle = (
+  type: DiffLine["type"],
+  changed: boolean
+): CSSProperties | undefined => {
+  if (!changed || type === "same") {
+    return undefined;
+  }
+  // Stronger mark for the changed chars inside an already tinted line.
+  return {
+    backgroundColor: type === "add" ? "#acf2bd" : "#fdb8c0",
+    borderRadius: 2,
+  };
+};
+
+const renderSegments = (
+  type: DiffLine["type"],
+  segments: Array<DiffSegment> | undefined,
+  text: string
+): ReactNode => {
+  if (!segments || segments.length === 0) {
+    return text || " ";
+  }
+  return segments.map((segment, index) => (
+    <span key={index} style={segmentStyle(type, segment.changed)}>
+      {segment.text}
+    </span>
+  ));
+};
+
 const DiffPreview: FunctionComponent<Props> = ({
   original,
   updated,
 }: Props) => {
   const hasOriginal = (original ?? "").trim().length > 0;
-  const lines = hasOriginal
+  const lines: Array<DiffLine> = hasOriginal
     ? computeLineDiff(original ?? "", updated)
     : updated.split("\n").map((text) => ({ type: "same" as const, text }));
 
@@ -69,14 +98,14 @@ const DiffPreview: FunctionComponent<Props> = ({
             }}
           >
             {hasOriginal ? prefix(line.type) : null}
-            {line.text || " "}
+            {renderSegments(line.type, line.segments, line.text)}
           </div>
         ))}
       </pre>
       {hasOriginal ? (
         <small className="form-text text-muted">
           Green lines are additions; red lines are removals compared to the
-          original entry.
+          original entry. Darker marks highlight changed characters.
         </small>
       ) : null}
     </FormRow>
