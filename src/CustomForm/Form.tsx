@@ -349,14 +349,16 @@ const initialValuesFromFields = (
   return values;
 };
 
-const entryGroups = (
-  fields: Array<Field>
-): Array<{ key: string; fields: Array<Field>; title?: string }> => {
-  const groups: Array<{ key: string; fields: Array<Field>; title?: string }> =
-    [];
-  let pendingTitle: string | undefined;
-  let current: { key: string; fields: Array<Field>; title?: string } | null =
-    null;
+type EntryGroup = {
+  key: string;
+  fields: Array<Field>;
+  header?: HeaderField;
+};
+
+const entryGroups = (fields: Array<Field>): Array<EntryGroup> => {
+  const groups: Array<EntryGroup> = [];
+  let pendingHeader: HeaderField | undefined;
+  let current: EntryGroup | null = null;
 
   const pushCurrent = () => {
     if (current && current.fields.length > 0) {
@@ -368,7 +370,7 @@ const entryGroups = (
   for (const field of fields) {
     if (field.type === FieldType.header) {
       pushCurrent();
-      pendingTitle = field.displayName;
+      pendingHeader = field;
       continue;
     }
     const prefix = fieldPrefix(field.name) ?? "__form__";
@@ -377,9 +379,9 @@ const entryGroups = (
       current = {
         key: prefix,
         fields: [],
-        title: pendingTitle,
+        header: pendingHeader,
       };
-      pendingTitle = undefined;
+      pendingHeader = undefined;
     }
     current.fields.push(field);
   }
@@ -462,50 +464,48 @@ const Form: FunctionComponent<Props> = ({
     const originalKey = prefix ?? "__form__";
     return {
       key: group.key,
-      title: group.title,
       source,
       original: originalSources?.[originalKey],
     };
   });
-  const multiEntryPreview = previews.length > 1;
 
   return (
     <form action={action} method={method ?? "POST"}>
       {hasTxnFields ? <ModeToggle mode={mode} onChange={setMode} /> : null}
-      {fields.map((field) => (
-        <FormField
-          key={field.name}
-          field={field}
-          currencies={currencies}
-          files={files}
-          accounts={accounts}
-          accountCurrencies={accountCurrencies}
-          defaultDate={defaultDate}
-          advanced={advanced}
-          onValueChange={(name, value) =>
-            setValues((current) => ({ ...current, [name]: value }))
-          }
-        />
-      ))}
-      {showPreview
-        ? previews.map((preview) => {
-            const kind = preview.original ? "Diff" : "Preview";
-            // HeaderLine already shows file:lineno above each entry; only
-            // repeat it in the preview label when multiple entries need disambiguation.
-            const title =
-              multiEntryPreview && preview.title
-                ? `${kind} · ${preview.title}`
-                : kind;
-            return (
+      {groups.map((group, index) => {
+        const preview = previews[index];
+        return (
+          <React.Fragment key={group.key}>
+            {group.header ? (
+              <HeaderLine
+                title={group.header.displayName ?? group.header.name}
+                href={group.header.href}
+              />
+            ) : null}
+            {group.fields.map((field) => (
+              <FormField
+                key={field.name}
+                field={field}
+                currencies={currencies}
+                files={files}
+                accounts={accounts}
+                accountCurrencies={accountCurrencies}
+                defaultDate={defaultDate}
+                advanced={advanced}
+                onValueChange={(name, value) =>
+                  setValues((current) => ({ ...current, [name]: value }))
+                }
+              />
+            ))}
+            {showPreview ? (
               <DiffPreview
-                key={`preview-${preview.key}`}
-                title={title}
                 original={preview.original}
                 updated={preview.source}
               />
-            );
-          })
-        : null}
+            ) : null}
+          </React.Fragment>
+        );
+      })}
       {hiddenFields !== undefined
         ? Object.entries(hiddenFields).map(([key, value]) => (
             <input type="hidden" name={key} value={value} />

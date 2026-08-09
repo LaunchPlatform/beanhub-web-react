@@ -199,6 +199,141 @@ export const WithDiffPreview: ComponentStory<typeof Form> = () => (
   />
 );
 
+const multiEntryFields: Array<Field> = [
+  {
+    name: "header0",
+    displayName: "books/2026.bean:61",
+    type: FieldType.header,
+    href: "#",
+  },
+  {
+    name: "e1_file",
+    displayName: "File",
+    type: FieldType.file,
+    default: "books/2022.bean",
+  },
+  {
+    name: "e1_date",
+    displayName: "Date",
+    type: FieldType.date,
+    default: "2026-06-25",
+  },
+  {
+    name: "e1_payee",
+    displayName: "Payee",
+    type: FieldType.str,
+    default: "",
+  },
+  {
+    name: "e1_narration",
+    displayName: "Narration",
+    type: FieldType.str,
+    default: "Uber",
+  },
+  {
+    name: "e1_postings",
+    displayName: "Postings",
+    type: FieldType.postings,
+    default: [
+      {
+        account: "Assets:Cash",
+        unitNumber: "-6.33",
+        unitCurrency: "USD",
+      },
+      {
+        account: "Expenses:Office",
+        unitNumber: "6.33",
+        unitCurrency: "USD",
+      },
+    ],
+  },
+  {
+    name: "e1_meta",
+    displayName: "Metadata",
+    type: FieldType.meta,
+    default: [{ metaKey: "import-id", metaValue: "abc" }],
+  },
+  {
+    name: "header1",
+    displayName: "books/2026.bean:67",
+    type: FieldType.header,
+    href: "#",
+  },
+  {
+    name: "e2_file",
+    displayName: "File",
+    type: FieldType.file,
+    default: "books/2022.bean",
+  },
+  {
+    name: "e2_date",
+    displayName: "Date",
+    type: FieldType.date,
+    default: "2026-06-26",
+  },
+  {
+    name: "e2_payee",
+    displayName: "Payee",
+    type: FieldType.str,
+    default: "",
+  },
+  {
+    name: "e2_narration",
+    displayName: "Narration",
+    type: FieldType.str,
+    default: "Coffee",
+  },
+  {
+    name: "e2_postings",
+    displayName: "Postings",
+    type: FieldType.postings,
+    default: [
+      {
+        account: "Assets:Cash",
+        unitNumber: "-5",
+        unitCurrency: "USD",
+      },
+      {
+        account: "Expenses:Office",
+        unitNumber: "5",
+        unitCurrency: "USD",
+      },
+    ],
+  },
+  {
+    name: "e2_meta",
+    displayName: "Metadata",
+    type: FieldType.meta,
+    default: [],
+  },
+];
+
+export const MultiEntryWithDiff: ComponentStory<typeof Form> = () => (
+  <Form
+    files={files}
+    currencies={currencies}
+    accounts={accounts}
+    accountCurrencies={accountCurrencies}
+    fields={multiEntryFields}
+    defaultDate={today}
+    showPreview
+    previewType="transaction"
+    originalSources={{
+      e1: [
+        '2026-06-25 * "" "Uber"',
+        "  Assets:Cash      -6.33 USD",
+        "  Expenses:Office   6.33 USD",
+        '  import-id: "abc"',
+      ].join("\n"),
+      e2: [
+        '2026-06-26 * "" "Latte"',
+        "  Assets:Cash      -5 USD",
+        "  Expenses:Office   5 USD",
+      ].join("\n"),
+    }}
+  />
+);
+
 export const Creatable: ComponentStory<typeof Form> = () => (
   <Form
     files={files}
