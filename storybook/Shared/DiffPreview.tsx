@@ -29,3 +29,20 @@ export const WithDiff: ComponentStory<typeof DiffPreview> = () => (
 export const Unchanged: ComponentStory<typeof DiffPreview> = () => (
   <DiffPreview original={original} updated={original} />
 );
+
+const spacedOriginal = [
+  '2026-06-12 * "Uber"',
+  "  Liabilities:CreditCard:US:ChaseSapphirePreferred           -5.40 USD",
+  "  Expenses:Travel                                             5.40 USD",
+].join("\n");
+
+const compactUpdated = [
+  '2026-06-12 * "Uber"',
+  "  Liabilities:CreditCard:US:ChaseSapphirePreferred -5.40 USD",
+  "  Expenses:Travel                                   5.40 USD",
+].join("\n");
+
+/** Spacing-only differences should not appear as add/remove. */
+export const SpacingOnly: ComponentStory<typeof DiffPreview> = () => (
+  <DiffPreview original={spacedOriginal} updated={compactUpdated} />
+);

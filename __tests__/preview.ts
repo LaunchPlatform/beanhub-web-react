@@ -8,7 +8,11 @@ import {
 } from "../src/TransactionForm/preview";
 import { CostMode, PriceMode } from "../src/TransactionForm/PostingInput";
 import { shouldUseAdvancedMode } from "../src/TransactionForm/formMode";
-import { computeLineDiff } from "../src/Shared/diff";
+import {
+  beancountLinesEqual,
+  computeLineDiff,
+  normalizeBeancountLine,
+} from "../src/Shared/diff";
 import { formatEntryBeancount } from "../src/TransactionForm/preview";
 
 describe("formatNumber", () => {
@@ -245,6 +249,56 @@ describe("shouldUseAdvancedMode", () => {
   });
 });
 
+describe("normalizeBeancountLine", () => {
+  it("collapses insignificant whitespace outside strings", () => {
+    expect(
+      normalizeBeancountLine(
+        "  Liabilities:CreditCard:US:ChaseSapphirePreferred           -5.40 USD"
+      )
+    ).toBe("Liabilities:CreditCard:US:ChaseSapphirePreferred -5.40 USD");
+    expect(
+      normalizeBeancountLine(
+        "  Liabilities:CreditCard:US:ChaseSapphirePreferred -5.40 USD"
+      )
+    ).toBe("Liabilities:CreditCard:US:ChaseSapphirePreferred -5.40 USD");
+  });
+
+  it("preserves spaces inside quoted strings", () => {
+    expect(
+      normalizeBeancountLine('2022-03-02 * "Jane  Doe" "Morning  coffee"')
+    ).toBe('2022-03-02 * "Jane  Doe" "Morning  coffee"');
+    expect(
+      normalizeBeancountLine('  import-src: "path/with  spaces.csv"')
+    ).toBe('import-src: "path/with  spaces.csv"');
+  });
+
+  it("handles escaped quotes inside strings", () => {
+    expect(normalizeBeancountLine('  note: "say \\"hi\\""')).toBe(
+      'note: "say \\"hi\\""'
+    );
+  });
+});
+
+describe("beancountLinesEqual", () => {
+  it("treats column-alignment differences as equal", () => {
+    expect(
+      beancountLinesEqual(
+        "  Expenses:Travel                                             5.40 USD",
+        "  Expenses:Travel                                   5.40 USD"
+      )
+    ).toBe(true);
+  });
+
+  it("still distinguishes real content changes", () => {
+    expect(
+      beancountLinesEqual(
+        "  Expenses:Travel 5.40 USD",
+        "  Expenses:Travel 6.40 USD"
+      )
+    ).toBe(false);
+  });
+});
+
 describe("computeLineDiff", () => {
   it("marks changed lines", () => {
     expect(
@@ -254,6 +308,62 @@ describe("computeLineDiff", () => {
       ["remove", "b"],
       ["add", "x"],
       ["same", "c"],
+    ]);
+  });
+
+  it("ignores posting column-alignment differences", () => {
+    const original = [
+      '2026-06-12 * "Uber"',
+      '  import-id: "bBwQxELJaZu8VPoDA958CNND5gaNZKfv3aBdo"',
+      "  Liabilities:CreditCard:US:ChaseSapphirePreferred           -5.40 USD",
+      "  Expenses:Travel                                             5.40 USD",
+    ].join("\n");
+    const updated = [
+      '2026-06-12 * "Uber"',
+      '  import-id: "bBwQxELJaZu8VPoDA958CNND5gaNZKfv3aBdo"',
+      "  Liabilities:CreditCard:US:ChaseSapphirePreferred -5.40 USD",
+      "  Expenses:Travel                                   5.40 USD",
+    ].join("\n");
+
+    expect(
+      computeLineDiff(original, updated).map((line) => [line.type, line.text])
+    ).toEqual([
+      ["same", '2026-06-12 * "Uber"'],
+      ["same", '  import-id: "bBwQxELJaZu8VPoDA958CNND5gaNZKfv3aBdo"'],
+      ["same", "  Liabilities:CreditCard:US:ChaseSapphirePreferred -5.40 USD"],
+      ["same", "  Expenses:Travel                                   5.40 USD"],
+    ]);
+  });
+
+  it("still highlights real amount changes amid spacing noise", () => {
+    const original = [
+      '2026-06-12 * "Uber"',
+      "  Liabilities:CreditCard:US:ChaseSapphirePreferred           -5.40 USD",
+      "  Expenses:Travel                                             5.40 USD",
+    ].join("\n");
+    const updated = [
+      '2026-06-12 * "Uber"',
+      "  Liabilities:CreditCard:US:ChaseSapphirePreferred -6.40 USD",
+      "  Expenses:Travel                                   6.40 USD",
+    ].join("\n");
+
+    expect(
+      computeLineDiff(original, updated).map((line) => [line.type, line.text])
+    ).toEqual([
+      ["same", '2026-06-12 * "Uber"'],
+      [
+        "remove",
+        "  Liabilities:CreditCard:US:ChaseSapphirePreferred           -5.40 USD",
+      ],
+      [
+        "remove",
+        "  Expenses:Travel                                             5.40 USD",
+      ],
+      [
+        "add",
+        "  Liabilities:CreditCard:US:ChaseSapphirePreferred -6.40 USD",
+      ],
+      ["add", "  Expenses:Travel                                   6.40 USD"],
     ]);
   });
 });
