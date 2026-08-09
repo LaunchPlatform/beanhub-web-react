@@ -38,43 +38,45 @@ const DiffPreview: FunctionComponent<Props> = ({
     : updated.split("\n").map((text) => ({ type: "same" as const, text }));
 
   return (
-    <div className="form-group">
-      <pre
-        className="form-control"
-        style={{
-          minHeight: "8rem",
-          whiteSpace: "pre",
-          fontFamily:
-            "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
-          fontSize: "0.875rem",
-          backgroundColor: "#f8f9fa",
-          marginBottom: 0,
-          padding: "0.5rem 0.75rem",
-          overflow: "auto",
-        }}
-      >
-        {lines.map((line, index) => (
-          <div
-            key={`${line.type}-${index}-${line.text}`}
-            style={{
-              ...lineStyle(line.type),
-              marginLeft: hasOriginal ? "-0.75rem" : undefined,
-              marginRight: hasOriginal ? "-0.75rem" : undefined,
-              paddingLeft: hasOriginal ? "0.75rem" : undefined,
-              paddingRight: hasOriginal ? "0.75rem" : undefined,
-            }}
-          >
-            {hasOriginal ? prefix(line.type) : null}
-            {line.text || " "}
-          </div>
-        ))}
-      </pre>
-      {hasOriginal ? (
-        <small className="form-text text-muted">
-          Green lines are additions; red lines are removals compared to the
-          original entry.
-        </small>
-      ) : null}
+    <div className="form-group row">
+      <div className="col-12">
+        <pre
+          className="form-control"
+          style={{
+            minHeight: "8rem",
+            whiteSpace: "pre",
+            fontFamily:
+              "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+            fontSize: "0.875rem",
+            backgroundColor: "#f8f9fa",
+            marginBottom: 0,
+            padding: "0.5rem 0.75rem",
+            overflow: "auto",
+          }}
+        >
+          {lines.map((line, index) => (
+            <div
+              key={`${line.type}-${index}-${line.text}`}
+              style={{
+                ...lineStyle(line.type),
+                marginLeft: hasOriginal ? "-0.75rem" : undefined,
+                marginRight: hasOriginal ? "-0.75rem" : undefined,
+                paddingLeft: hasOriginal ? "0.75rem" : undefined,
+                paddingRight: hasOriginal ? "0.75rem" : undefined,
+              }}
+            >
+              {hasOriginal ? prefix(line.type) : null}
+              {line.text || " "}
+            </div>
+          ))}
+        </pre>
+        {hasOriginal ? (
+          <small className="form-text text-muted">
+            Green lines are additions; red lines are removals compared to the
+            original entry.
+          </small>
+        ) : null}
+      </div>
     </div>
   );
 };
