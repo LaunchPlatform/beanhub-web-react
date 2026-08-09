@@ -43,7 +43,9 @@ const DiffPreview: FunctionComponent<Props> = ({
         <pre
           className="form-control"
           style={{
-            minHeight: "8rem",
+            // Override Bootstrap .form-control's fixed single-line height so
+            // the preview grows with its content instead of scrolling inside.
+            height: "auto",
             whiteSpace: "pre",
             fontFamily:
               "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
@@ -51,7 +53,8 @@ const DiffPreview: FunctionComponent<Props> = ({
             backgroundColor: "#f8f9fa",
             marginBottom: 0,
             padding: "0.5rem 0.75rem",
-            overflow: "auto",
+            overflowX: "auto",
+            overflowY: "visible",
           }}
         >
           {lines.map((line, index) => (
