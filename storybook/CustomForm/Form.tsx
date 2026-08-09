@@ -175,6 +175,7 @@ export const DefaultValues: ComponentStory<typeof Form> = () => (
   />
 );
 
+/** Diff baseline is field defaults (structured DB values), not file plaintext. */
 export const WithDiffPreview: ComponentStory<typeof Form> = () => (
   <Form
     files={files}
@@ -188,14 +189,6 @@ export const WithDiffPreview: ComponentStory<typeof Form> = () => (
     defaultDate={today}
     showPreview
     previewType="transaction"
-    originalSources={{
-      __form__: [
-        '2023-07-21 * "" "My txn"',
-        "  Assets:Cash      123.45 USD",
-        "  Expenses:Office -123.45 USD",
-        '  doc: "my-invoice.pdf"',
-      ].join("\n"),
-    }}
   />
 );
 
@@ -318,19 +311,6 @@ export const MultiEntryWithDiff: ComponentStory<typeof Form> = () => (
     defaultDate={today}
     showPreview
     previewType="transaction"
-    originalSources={{
-      e1: [
-        '2026-06-25 * "" "Uber"',
-        "  Assets:Cash      -6.33 USD",
-        "  Expenses:Office   6.33 USD",
-        '  import-id: "abc"',
-      ].join("\n"),
-      e2: [
-        '2026-06-26 * "" "Latte"',
-        "  Assets:Cash      -5 USD",
-        "  Expenses:Office   5 USD",
-      ].join("\n"),
-    }}
   />
 );
 

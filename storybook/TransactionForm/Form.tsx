@@ -72,15 +72,11 @@ export const WithPreview: ComponentStory<typeof Form> = () => (
   />
 );
 
+/** Diff baseline is the initial form values (structured), not file plaintext. */
 export const WithDiffPreview: ComponentStory<typeof Form> = () => (
   <Form
     {...shared}
     showPreview
-    originalSource={[
-      '2022-03-02 * "Jane Doe" "Coffee"',
-      "  Assets:Cash   -5 USD",
-      "  Expenses:Food  5 USD",
-    ].join("\n")}
     initialDate="2022-03-02"
     initialPayee="Jane Doe"
     initialNarration="Morning coffee"

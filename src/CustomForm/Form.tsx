@@ -109,8 +109,6 @@ export interface Props {
   readonly submit?: string;
   readonly showPreview?: boolean;
   readonly previewType?: PreviewType;
-  /** Map of entry id (field prefix without trailing `_`) to original Beancount source. */
-  readonly originalSources?: Record<string, string>;
 }
 
 interface FieldProps {
@@ -325,9 +323,10 @@ const FormField: FunctionComponent<FieldProps> = ({
   }
 };
 
-const initialValuesFromFields = (
+const defaultsFromFields = (
   fields: Array<Field>,
-  defaultDate: string
+  defaultDate: string,
+  options: { includeHistoryState?: boolean } = {}
 ): Record<string, unknown> => {
   const values: Record<string, unknown> = {};
   for (const field of fields) {
@@ -335,7 +334,10 @@ const initialValuesFromFields = (
       continue;
     }
     let value = "default" in field ? field.default : undefined;
-    if (window.history.state?.[field.name] !== undefined) {
+    if (
+      options.includeHistoryState &&
+      window.history.state?.[field.name] !== undefined
+    ) {
       value = window.history.state?.[field.name];
     }
     if (field.type === FieldType.date && value === undefined) {
@@ -348,6 +350,12 @@ const initialValuesFromFields = (
   }
   return values;
 };
+
+const initialValuesFromFields = (
+  fields: Array<Field>,
+  defaultDate: string
+): Record<string, unknown> =>
+  defaultsFromFields(fields, defaultDate, { includeHistoryState: true });
 
 type EntryGroup = {
   key: string;
@@ -423,7 +431,6 @@ const Form: FunctionComponent<Props> = ({
   submit,
   showPreview,
   previewType,
-  originalSources,
 }: Props) => {
   const hasTxnFields = fields.some((field) => field.type === FieldType.postings);
   const flagField = fields.find((f) => isFlagField(f.name));
@@ -452,6 +459,12 @@ const Form: FunctionComponent<Props> = ({
     hasTxnFields && inferredAdvanced ? "advanced" : "simple"
   );
   const advanced = !hasTxnFields || mode === "advanced";
+  // Baseline is DB/form defaults only — Diff original must not include
+  // browser history state from in-progress edits.
+  const baselineValues = useMemo(
+    () => defaultsFromFields(fields, defaultDate),
+    [fields, defaultDate]
+  );
   const [values, setValues] = useState<Record<string, unknown>>(() =>
     initialValuesFromFields(fields, defaultDate)
   );
@@ -459,13 +472,19 @@ const Form: FunctionComponent<Props> = ({
   const groups = useMemo(() => entryGroups(fields), [fields]);
   const previews = groups.map((group) => {
     const prefix = group.key === "__form__" ? null : group.key;
-    const scoped = stripPrefixValues(values, prefix);
-    const source = formatEntryBeancount(previewType ?? "auto", scoped);
-    const originalKey = prefix ?? "__form__";
+    const kind = previewType ?? "auto";
+    const source = formatEntryBeancount(
+      kind,
+      stripPrefixValues(values, prefix)
+    );
+    const original = formatEntryBeancount(
+      kind,
+      stripPrefixValues(baselineValues, prefix)
+    );
     return {
       key: group.key,
       source,
-      original: originalSources?.[originalKey],
+      original,
     };
   });
 
