@@ -1,9 +1,7 @@
 import React, { FunctionComponent, CSSProperties } from "react";
-import FormRow from "./FormRow";
 import { computeLineDiff, DiffLine } from "./diff";
 
 export interface Props {
-  readonly title?: string;
   readonly original?: string;
   readonly updated: string;
 }
@@ -31,7 +29,6 @@ const prefix = (type: DiffLine["type"]): string => {
 };
 
 const DiffPreview: FunctionComponent<Props> = ({
-  title,
   original,
   updated,
 }: Props) => {
@@ -41,7 +38,7 @@ const DiffPreview: FunctionComponent<Props> = ({
     : updated.split("\n").map((text) => ({ type: "same" as const, text }));
 
   return (
-    <FormRow title={title ?? (hasOriginal ? "Diff" : "Preview")}>
+    <div className="form-group">
       <pre
         className="form-control"
         style={{
@@ -78,7 +75,7 @@ const DiffPreview: FunctionComponent<Props> = ({
           original entry.
         </small>
       ) : null}
-    </FormRow>
+    </div>
   );
 };
 
