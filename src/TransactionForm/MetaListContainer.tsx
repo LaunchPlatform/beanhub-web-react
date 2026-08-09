@@ -67,15 +67,17 @@ const MetaListContainer: FunctionComponent<Props> = ({
         metaValueReadonly: item.metaValueReadonly,
       } as MetaRecordState)
   );
-  if (window.history.state?.meta !== undefined) {
-    initialState = window.history.state.meta;
+  // Key by field `name` so multi-entry edit forms (and different pages) do not
+  // clobber each other via a single global `history.state.meta` slot.
+  if (window.history.state?.[name] !== undefined) {
+    initialState = window.history.state[name];
   }
   useEffect(() => {
-    if (window.history.state?.meta === undefined) {
+    if (window.history.state?.[name] === undefined) {
       window.history.replaceState(
         {
           ...window.history.state,
-          meta: initialState,
+          [name]: initialState,
         },
         ""
       );
@@ -90,7 +92,7 @@ const MetaListContainer: FunctionComponent<Props> = ({
     window.history.replaceState(
       {
         ...window.history.state,
-        meta: newMeta,
+        [name]: newMeta,
       },
       ""
     );

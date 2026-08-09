@@ -136,15 +136,17 @@ const PostingListContainer: FunctionComponent<Props> = ({
         priceCurrencyError: posting.priceCurrencyError,
       } as PostingRecordState)
   );
-  if (window.history.state?.postings !== undefined) {
-    initialState = window.history.state.postings;
+  // Key by field `name` so multi-entry edit forms (and different pages) do not
+  // clobber each other via a single global `history.state.postings` slot.
+  if (window.history.state?.[name] !== undefined) {
+    initialState = window.history.state[name];
   }
   useEffect(() => {
-    if (window.history.state?.postings === undefined) {
+    if (window.history.state?.[name] === undefined) {
       window.history.replaceState(
         {
           ...window.history.state,
-          postings: initialState,
+          [name]: initialState,
         },
         ""
       );
@@ -159,7 +161,7 @@ const PostingListContainer: FunctionComponent<Props> = ({
     window.history.replaceState(
       {
         ...window.history.state,
-        postings: newPostings,
+        [name]: newPostings,
       },
       ""
     );
