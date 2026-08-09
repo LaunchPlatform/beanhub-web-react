@@ -10,7 +10,6 @@ import SubmitButton from "../Shared/SubmitButton";
 import { InputPrefixContext } from "./context";
 import { FormMode, shouldUseAdvancedMode } from "./formMode";
 import ModeToggle from "./ModeToggle";
-import Preview from "./Preview";
 import DiffPreview from "../Shared/DiffPreview";
 import { formatTransactionBeancount } from "./preview";
 
@@ -42,7 +41,6 @@ export interface Props {
   readonly errors?: Array<string>;
   readonly initialMode?: FormMode;
   readonly showPreview?: boolean;
-  readonly originalSource?: string;
 }
 
 const Form: FunctionComponent<Props> = ({
@@ -73,7 +71,6 @@ const Form: FunctionComponent<Props> = ({
   errors,
   initialMode,
   showPreview,
-  originalSource,
 }: Props) => {
   const inputPrefix = useContext(InputPrefixContext);
   let initialFileValue = initialFile;
@@ -140,6 +137,17 @@ const Form: FunctionComponent<Props> = ({
   );
 
   const advanced = mode === "advanced";
+  // Diff baseline uses prop defaults (DB / server), not history.state.
+  const originalSource = formatTransactionBeancount({
+    date: initialDate ?? "",
+    flag: initialFlag ?? "*",
+    payee: initialPayee ?? "",
+    narration: initialNarration ?? "",
+    tags: initialTags ?? "",
+    links: initialLinks ?? "",
+    postings: initialPostings ?? [],
+    metadata: initialMeta ?? [],
+  });
   const previewSource = formatTransactionBeancount({
     date: dateValue,
     flag: flagValue,
@@ -309,11 +317,7 @@ const Form: FunctionComponent<Props> = ({
         onChange={setMetaValue}
       />
       {showPreview ? (
-        originalSource !== undefined ? (
-          <DiffPreview original={originalSource} updated={previewSource} />
-        ) : (
-          <Preview source={previewSource} />
-        )
+        <DiffPreview original={originalSource} updated={previewSource} />
       ) : null}
       {hiddenFields !== undefined
         ? Object.entries(hiddenFields).map(([key, value]) => (
