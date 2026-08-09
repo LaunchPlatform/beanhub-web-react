@@ -314,7 +314,11 @@ const PostingInput: FunctionComponent<Props> = ({
           className="btn btn-outline-default"
           onClick={onFillRemaining}
           disabled={fillRemainingDisabled}
-          title="Fill remaining amount to balance"
+          title={
+            fillRemainingDisabled
+              ? "Need other same-currency amounts to fill the remainder"
+              : "Fill remaining amount to balance"
+          }
           aria-label="Fill remaining amount to balance"
         >
           <i className="fal fa-equals"></i>
@@ -345,7 +349,11 @@ const PostingInput: FunctionComponent<Props> = ({
             "btn btn-outline-default" + (priceActive ? " active" : "")
           }
           title={
-            priceModeValue === PriceMode.TOTAL_PRICE ? "Total Price" : "Price"
+            priceModeValue === PriceMode.TOTAL_PRICE
+              ? "Total price (@@) — click to clear"
+              : priceModeValue === PriceMode.PRICE
+              ? "Unit price (@) — click for total price (@@)"
+              : "Add unit price (@) — click again for total price (@@)"
           }
           onClick={onPriceButtonClick}
         >
