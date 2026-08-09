@@ -3,6 +3,7 @@ import { v4 as uuid } from "uuid";
 import FormRow from "../Shared/FormRow";
 import PostingInputContainer from "./PostingInputContainer";
 import { CostMode, PriceMode } from "./PostingInput";
+import { computeBalancingAmount } from "./balanceAmount";
 
 export interface PostingRecord {
   readonly account?: string;
@@ -35,6 +36,7 @@ interface PostingRecordState {
   readonly accountError?: string;
   readonly unitNumber: string;
   readonly unitNumberError?: string;
+  readonly unitNumberUpdateCounter?: number;
   readonly unitCurrency: string;
   readonly unitCurrencyUpdateCounter?: number;
   readonly unitCurrencyError?: string;
@@ -218,6 +220,7 @@ const PostingListContainer: FunctionComponent<Props> = ({
           accountError={posting.accountError}
           unitNumber={posting.unitNumber}
           unitNumberError={posting.unitNumberError}
+          unitNumberUpdateCounter={posting.unitNumberUpdateCounter}
           unitCurrency={posting.unitCurrency}
           unitCurrencyUpdateCounter={posting.unitCurrencyUpdateCounter}
           unitCurrencyError={posting.unitCurrencyError}
@@ -288,6 +291,26 @@ const PostingListContainer: FunctionComponent<Props> = ({
             };
             updatePostings(newPostings);
           }}
+          onFillRemaining={() => {
+            const remaining = computeBalancingAmount(postingsState, index);
+            if (remaining === null) {
+              return;
+            }
+            let newPostings = [...postingsState];
+            newPostings[index] = {
+              ...newPostings[index],
+              unitNumber: remaining.number,
+              unitNumberUpdateCounter:
+                (newPostings[index].unitNumberUpdateCounter ?? 0) + 1,
+              unitCurrency: remaining.currency,
+              unitCurrencyUpdateCounter:
+                (newPostings[index].unitCurrencyUpdateCounter ?? 0) + 1,
+            };
+            updatePostings(newPostings);
+          }}
+          fillRemainingDisabled={
+            computeBalancingAmount(postingsState, index) === null
+          }
           onUnitCurrencyChange={(unitCurrency) => {
             let newPostings = [...postingsState];
             newPostings[index] = {

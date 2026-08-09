@@ -22,6 +22,7 @@ const baseProps = {
   onAccountChange: action("onAccountChange"),
   onUnitNumberChange: action("onUnitNumberChange"),
   onUnitCurrencyChange: action("onUnitCurrencyChange"),
+  onFillRemaining: action("onFillRemaining"),
 };
 
 export const Primary: ComponentStory<typeof PostingInput> = () => (

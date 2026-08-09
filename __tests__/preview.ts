@@ -192,15 +192,47 @@ describe("shouldUseAdvancedMode", () => {
     expect(shouldUseAdvancedMode({})).toBe(false);
   });
 
+  it("keeps default txn flag and null cost/price modes in simple", () => {
+    expect(shouldUseAdvancedMode({ initialFlag: "*" })).toBe(false);
+    expect(shouldUseAdvancedMode({ initialFlag: "" })).toBe(false);
+    expect(
+      shouldUseAdvancedMode({
+        initialFlag: "*",
+        initialPostings: [
+          {
+            account: "Assets:Cash",
+            unitNumber: "-5.00",
+            unitCurrency: "USD",
+            // Backend serializes unset WTForms fields as null
+            costMode: null as unknown as undefined,
+            costNumber: null as unknown as undefined,
+            costCurrency: null as unknown as undefined,
+            costDate: null as unknown as undefined,
+            costLabel: null as unknown as undefined,
+            priceMode: null as unknown as undefined,
+            priceNumber: null as unknown as undefined,
+            priceCurrency: null as unknown as undefined,
+            flag: null as unknown as undefined,
+          },
+        ],
+      })
+    ).toBe(false);
+  });
+
   it("turns on for tags and non-default flag", () => {
     expect(shouldUseAdvancedMode({ initialTags: "food" })).toBe(true);
     expect(shouldUseAdvancedMode({ initialFlag: "!" })).toBe(true);
   });
 
-  it("turns on for posting costs", () => {
+  it("turns on for posting costs and prices", () => {
     expect(
       shouldUseAdvancedMode({
         initialPostings: [{ costMode: CostMode.COST, costNumber: "1" }],
+      })
+    ).toBe(true);
+    expect(
+      shouldUseAdvancedMode({
+        initialPostings: [{ priceMode: PriceMode.PRICE, priceNumber: "1" }],
       })
     ).toBe(true);
   });

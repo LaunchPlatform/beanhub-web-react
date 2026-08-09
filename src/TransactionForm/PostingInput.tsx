@@ -97,6 +97,8 @@ export interface Props {
   ) => void;
   readonly onPriceCurrencyBlur?: () => void;
   readonly onPriceCurrencyCandidateClick?: (value: string) => void;
+  readonly onFillRemaining?: () => void;
+  readonly fillRemainingDisabled?: boolean;
   readonly onDelete?: () => void;
 }
 
@@ -170,6 +172,8 @@ const PostingInput: FunctionComponent<Props> = ({
   onPriceCurrencyKeyDown,
   onPriceCurrencyBlur,
   onPriceCurrencyCandidateClick,
+  onFillRemaining,
+  fillRemainingDisabled,
   onDelete,
 }: Props) => {
   const isInvalid = [accountError, unitNumberError, unitCurrencyError].some(
@@ -302,6 +306,22 @@ const PostingInput: FunctionComponent<Props> = ({
     </>
   );
 
+  const fillRemainingButton =
+    onFillRemaining !== undefined ? (
+      <div className="input-group-append">
+        <button
+          type="button"
+          className="btn btn-outline-default"
+          onClick={onFillRemaining}
+          disabled={fillRemainingDisabled}
+          title="Fill remaining amount to balance"
+          aria-label="Fill remaining amount to balance"
+        >
+          <i className="fal fa-equals"></i>
+        </button>
+      </div>
+    ) : null;
+
   const deleteButton = (
     <div className="input-group-append">
       <button
@@ -411,6 +431,7 @@ const PostingInput: FunctionComponent<Props> = ({
         <div className="input-group">
           {accountInput}
           {amountInputs}
+          {fillRemainingButton}
           {simplePriceControls}
           {deleteButton}
           {isInvalid ? (
@@ -430,6 +451,7 @@ const PostingInput: FunctionComponent<Props> = ({
       <div className="input-group">
         {accountInput}
         {amountInputs}
+        {fillRemainingButton}
         <div className="input-group-append">
           <button
             type="button"

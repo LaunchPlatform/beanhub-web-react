@@ -14,6 +14,23 @@ export interface AdvancedModeHints {
   readonly initialPostings?: Array<PostingRecord>;
 }
 
+function hasText(value: unknown): boolean {
+  if (value == null) {
+    return false;
+  }
+  return String(value).trim().length > 0;
+}
+
+function hasError(value: unknown): boolean {
+  if (value == null) {
+    return false;
+  }
+  if (Array.isArray(value)) {
+    return value.some(Boolean);
+  }
+  return String(value).trim().length > 0;
+}
+
 export function shouldUseAdvancedMode(hints: AdvancedModeHints): boolean {
   if (hints.initialMode === "advanced") {
     return true;
@@ -24,7 +41,9 @@ export function shouldUseAdvancedMode(hints: AdvancedModeHints): boolean {
   if (hints.flagError || hints.tagsError || hints.linksError) {
     return true;
   }
-  if (hints.initialFlag !== undefined && hints.initialFlag !== "*") {
+  // Every Beancount txn has a flag; only non-default flags need advanced UI.
+  const flag = (hints.initialFlag ?? "").trim();
+  if (flag.length > 0 && flag !== "*") {
     return true;
   }
   if ((hints.initialTags ?? "").trim().length > 0) {
@@ -34,26 +53,31 @@ export function shouldUseAdvancedMode(hints: AdvancedModeHints): boolean {
     return true;
   }
   for (const posting of hints.initialPostings ?? []) {
-    if ((posting.flag ?? "").trim().length > 0) {
+    if (hasText(posting.flag)) {
+      return true;
+    }
+    // Backend may send costMode/priceMode as null for simple postings; only
+    // active modes (or filled cost/price fields) should force advanced.
+    if (isActiveCostMode(posting.costMode)) {
+      return true;
+    }
+    if (isActivePriceMode(posting.priceMode)) {
       return true;
     }
     if (
-      posting.costMode !== undefined &&
-      posting.costMode !== CostMode.INACTIVE &&
-      posting.costMode !== CostMode.EXPANDED
-    ) {
-      return true;
-    }
-    if (
-      (posting.costNumber ?? "").trim().length > 0 ||
-      (posting.costCurrency ?? "").trim().length > 0 ||
-      (posting.costDate ?? "").trim().length > 0 ||
-      (posting.costLabel ?? "").trim().length > 0 ||
-      posting.costNumberError !== undefined ||
-      posting.costCurrencyError !== undefined ||
-      posting.costDateError !== undefined ||
-      posting.costLabelError !== undefined ||
-      posting.flagError !== undefined
+      hasText(posting.costNumber) ||
+      hasText(posting.costCurrency) ||
+      hasText(posting.costDate) ||
+      hasText(posting.costLabel) ||
+      hasText(posting.priceNumber) ||
+      hasText(posting.priceCurrency) ||
+      hasError(posting.costNumberError) ||
+      hasError(posting.costCurrencyError) ||
+      hasError(posting.costDateError) ||
+      hasError(posting.costLabelError) ||
+      hasError(posting.priceNumberError) ||
+      hasError(posting.priceCurrencyError) ||
+      hasError(posting.flagError)
     ) {
       return true;
     }
@@ -61,10 +85,10 @@ export function shouldUseAdvancedMode(hints: AdvancedModeHints): boolean {
   return false;
 }
 
-export function isActiveCostMode(mode?: CostMode): boolean {
+export function isActiveCostMode(mode?: CostMode | null): boolean {
   return mode === CostMode.COST || mode === CostMode.TOTAL_COST;
 }
 
-export function isActivePriceMode(mode?: PriceMode): boolean {
+export function isActivePriceMode(mode?: PriceMode | null): boolean {
   return mode === PriceMode.PRICE || mode === PriceMode.TOTAL_PRICE;
 }
