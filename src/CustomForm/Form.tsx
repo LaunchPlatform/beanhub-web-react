@@ -9,7 +9,12 @@ import SubmitButton from "../Shared/SubmitButton";
 import CurrencyInput from "../Shared/CurrencyInput";
 import NumberInput from "../Shared/NumberInput";
 import DiffPreview from "../Shared/DiffPreview";
-import { FormMode, shouldUseAdvancedMode } from "../TransactionForm/formMode";
+import {
+  FormMode,
+  persistFormMode,
+  resolveInitialFormMode,
+  shouldUseAdvancedMode,
+} from "../TransactionForm/formMode";
 import ModeToggle from "../TransactionForm/ModeToggle";
 import PostingListContainer, {
   PostingRecord,
@@ -433,31 +438,48 @@ const Form: FunctionComponent<Props> = ({
   previewType,
 }: Props) => {
   const hasTxnFields = fields.some((field) => field.type === FieldType.postings);
-  const flagField = fields.find((f) => isFlagField(f.name));
-  const tagsField = fields.find((f) => isTagsField(f.name));
-  const linksField = fields.find((f) => isLinksField(f.name));
-  const postingsField = fields.find((f) => f.type === FieldType.postings);
-  const inferredAdvanced = shouldUseAdvancedMode({
-    initialFlag:
-      flagField && "default" in flagField
-        ? (flagField.default as string | undefined)
-        : undefined,
-    initialTags:
-      tagsField && "default" in tagsField
-        ? (tagsField.default as string | undefined)
-        : undefined,
-    initialLinks:
-      linksField && "default" in linksField
-        ? (linksField.default as string | undefined)
-        : undefined,
-    initialPostings:
-      postingsField && "default" in postingsField
-        ? (postingsField.default as Array<PostingRecord> | undefined)
-        : undefined,
+  const [mode, setMode] = useState<FormMode>(() => {
+    if (!hasTxnFields) {
+      return "simple";
+    }
+    // Include history.state so a restored `!` flag / tags / costs re-infers
+    // Advanced when formMode itself was not yet persisted.
+    const liveValues = initialValuesFromFields(fields, defaultDate);
+    const needsAdvanced = fields.some((field) => {
+      if (isFlagField(field.name)) {
+        return shouldUseAdvancedMode({
+          initialFlag: liveValues[field.name] as string | undefined,
+        });
+      }
+      if (isTagsField(field.name)) {
+        return shouldUseAdvancedMode({
+          initialTags: liveValues[field.name] as string | undefined,
+        });
+      }
+      if (isLinksField(field.name)) {
+        return shouldUseAdvancedMode({
+          initialLinks: liveValues[field.name] as string | undefined,
+        });
+      }
+      if (field.type === FieldType.postings) {
+        return shouldUseAdvancedMode({
+          initialPostings: liveValues[field.name] as
+            | Array<PostingRecord>
+            | undefined,
+        });
+      }
+      return false;
+    });
+    const resolved = resolveInitialFormMode({
+      initialMode: needsAdvanced ? "advanced" : undefined,
+    });
+    persistFormMode(resolved);
+    return resolved;
   });
-  const [mode, setMode] = useState<FormMode>(
-    hasTxnFields && inferredAdvanced ? "advanced" : "simple"
-  );
+  const updateMode = (next: FormMode) => {
+    persistFormMode(next);
+    setMode(next);
+  };
   const advanced = !hasTxnFields || mode === "advanced";
   // Baseline is DB/form defaults only — Diff original must not include
   // browser history state from in-progress edits.
@@ -490,7 +512,9 @@ const Form: FunctionComponent<Props> = ({
 
   return (
     <form action={action} method={method ?? "POST"}>
-      {hasTxnFields ? <ModeToggle mode={mode} onChange={setMode} /> : null}
+      {hasTxnFields ? (
+        <ModeToggle mode={mode} onChange={updateMode} />
+      ) : null}
       {groups.map((group, index) => {
         const preview = previews[index];
         return (

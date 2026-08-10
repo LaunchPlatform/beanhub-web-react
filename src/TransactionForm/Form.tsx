@@ -8,7 +8,11 @@ import PostingListContainer, { PostingRecord } from "./PostingListContainer";
 import MetaListContainer, { MetaRecord } from "./MetaListContainer";
 import SubmitButton from "../Shared/SubmitButton";
 import { InputPrefixContext } from "./context";
-import { FormMode, shouldUseAdvancedMode } from "./formMode";
+import {
+  FormMode,
+  persistFormMode,
+  resolveInitialFormMode,
+} from "./formMode";
 import ModeToggle from "./ModeToggle";
 import DiffPreview from "../Shared/DiffPreview";
 import { formatTransactionBeancount } from "./preview";
@@ -102,19 +106,24 @@ const Form: FunctionComponent<Props> = ({
     initialLinksValue = window.history.state?.links;
   }
 
-  const inferredAdvanced = shouldUseAdvancedMode({
-    initialMode,
-    initialFlag: initialFlagValue,
-    flagError,
-    initialTags: initialTagsValue,
-    tagsError,
-    initialLinks: initialLinksValue,
-    linksError,
-    initialPostings,
+  const [mode, setMode] = useState<FormMode>(() => {
+    const resolved = resolveInitialFormMode({
+      initialMode,
+      initialFlag: initialFlagValue,
+      flagError,
+      initialTags: initialTagsValue,
+      tagsError,
+      initialLinks: initialLinksValue,
+      linksError,
+      initialPostings,
+    });
+    persistFormMode(resolved);
+    return resolved;
   });
-  const [mode, setMode] = useState<FormMode>(
-    inferredAdvanced ? "advanced" : "simple"
-  );
+  const updateMode = (next: FormMode) => {
+    persistFormMode(next);
+    setMode(next);
+  };
   const [dateValue, setDateValue] = useState<string>(initialDateValue ?? "");
   const [flagValue, setFlagValue] = useState<string>(
     initialFlagValue ?? "*"
@@ -161,7 +170,7 @@ const Form: FunctionComponent<Props> = ({
 
   return (
     <form action={action} method={method ?? "POST"}>
-      <ModeToggle mode={mode} onChange={setMode} />
+      <ModeToggle mode={mode} onChange={updateMode} />
       <SelectionInput
         title="File"
         name={`${inputPrefix}file`}
