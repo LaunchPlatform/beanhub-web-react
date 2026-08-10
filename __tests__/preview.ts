@@ -15,6 +15,11 @@ import {
   shouldUseAdvancedMode,
 } from "../src/TransactionForm/formMode";
 import {
+  normalizePostingState,
+  normalizePostingStates,
+} from "../src/TransactionForm/postingState";
+import { normalizeMetaState } from "../src/TransactionForm/metaState";
+import {
   beancountLinesEqual,
   computeInlineSegments,
   computeLineDiff,
@@ -520,5 +525,47 @@ describe("formatEntryBeancount", () => {
         description: "Paris",
       })
     ).toBe('2022-01-01 event "location" "Paris"');
+  });
+});
+
+describe("history draft normalization", () => {
+  it("adds keys and coerces null cost/price modes from plain records", () => {
+    const normalized = normalizePostingState({
+      account: "Assets:Cash",
+      unitNumber: "1",
+      unitCurrency: "USD",
+      costMode: null,
+      priceMode: null,
+    });
+    expect(normalized.key.length).toBeGreaterThan(0);
+    expect(normalized.costMode).toBe(CostMode.INACTIVE);
+    expect(normalized.priceMode).toBe(PriceMode.INACTIVE);
+    expect(normalizePostingStates([{ account: "A" }, { account: "B" }])).toHaveLength(
+      2
+    );
+  });
+
+  it("preserves existing posting keys from history state", () => {
+    const normalized = normalizePostingState({
+      key: "keep-me",
+      account: "Assets:Cash",
+      costMode: CostMode.COST,
+      priceMode: PriceMode.PRICE,
+    });
+    expect(normalized.key).toBe("keep-me");
+    expect(normalized.costMode).toBe(CostMode.COST);
+    expect(normalized.priceMode).toBe(PriceMode.PRICE);
+  });
+
+  it("adds keys for plain metadata records", () => {
+    const normalized = normalizeMetaState({
+      metaKey: "import-id",
+      metaValue: "x",
+    });
+    expect(normalized.key.length).toBeGreaterThan(0);
+    expect(normalized.metaKey).toBe("import-id");
+    expect(normalizeMetaState({ key: "m1", metaKey: "a", metaValue: "b" }).key).toBe(
+      "m1"
+    );
   });
 });

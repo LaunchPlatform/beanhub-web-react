@@ -1,3 +1,4 @@
+import { getHistoryValue, setHistoryValue } from "../Shared/historyState";
 import { CostMode, PriceMode } from "./PostingInput";
 import { PostingRecord } from "./PostingListContainer";
 
@@ -18,12 +19,14 @@ export interface AdvancedModeHints {
 }
 
 export function readFormModeFromHistory(
-  state: unknown = typeof window !== "undefined" ? window.history.state : null
+  state?: unknown
 ): FormMode | undefined {
-  if (state == null || typeof state !== "object") {
-    return undefined;
-  }
-  const mode = (state as Record<string, unknown>)[FORM_MODE_HISTORY_KEY];
+  const mode =
+    state === undefined
+      ? getHistoryValue<unknown>(FORM_MODE_HISTORY_KEY)
+      : state != null && typeof state === "object"
+      ? (state as Record<string, unknown>)[FORM_MODE_HISTORY_KEY]
+      : undefined;
   if (mode === "simple" || mode === "advanced") {
     return mode;
   }
@@ -31,16 +34,7 @@ export function readFormModeFromHistory(
 }
 
 export function persistFormMode(mode: FormMode) {
-  if (typeof window === "undefined") {
-    return;
-  }
-  window.history.replaceState(
-    {
-      ...window.history.state,
-      [FORM_MODE_HISTORY_KEY]: mode,
-    },
-    ""
-  );
+  setHistoryValue(FORM_MODE_HISTORY_KEY, mode);
 }
 
 /** Prefer stored history mode; otherwise infer from field hints. */

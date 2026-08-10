@@ -1,23 +1,19 @@
 import React, { FunctionComponent, useState, useEffect } from "react";
-import { v4 as uuid } from "uuid";
+import { getHistoryValue, setHistoryValue } from "../Shared/historyState";
 import FormRow from "../Shared/FormRow";
 import MetaInputContainer from "./MetaInputContainer";
+import {
+  emptyMeta,
+  metaStatesToRecords,
+  MetaRecordState,
+  normalizeMetaStates,
+} from "./metaState";
 
 export interface MetaRecord {
   readonly metaKey?: string;
   readonly metaKeyError?: string;
   readonly metaKeyReadonly?: boolean;
   readonly metaValue?: string;
-  readonly metaValueError?: string;
-  readonly metaValueReadonly?: boolean;
-}
-
-interface MetaRecordState {
-  readonly key?: string;
-  readonly metaKey: string;
-  readonly metaKeyError?: string;
-  readonly metaKeyReadonly?: boolean;
-  readonly metaValue: string;
   readonly metaValueError?: string;
   readonly metaValueReadonly?: boolean;
 }
@@ -46,41 +42,19 @@ const MetaListContainer: FunctionComponent<Props> = ({
         (item.metaValue?.trim().length || 0) === 0
     ).length <= 0
   ) {
-    filledInitialMeta = [
-      ...filledInitialMeta,
-      {
-        key: uuid(),
-        metaKey: "",
-        metaValue: "",
-      } as MetaRecordState,
-    ];
+    filledInitialMeta = [...filledInitialMeta, emptyMeta()];
   }
-  let initialState = (filledInitialMeta ?? [{}]).map(
-    (item) =>
-      ({
-        key: uuid(),
-        metaKey: item.metaKey,
-        metaKeyError: item.metaKeyError,
-        metaKeyReadonly: item.metaKeyReadonly,
-        metaValue: item.metaValue,
-        metaValueError: item.metaValueError,
-        metaValueReadonly: item.metaValueReadonly,
-      } as MetaRecordState)
-  );
+  let initialState = normalizeMetaStates(filledInitialMeta ?? [{}]);
   // Key by field `name` so multi-entry edit forms (and different pages) do not
   // clobber each other via a single global `history.state.meta` slot.
-  if (window.history.state?.[name] !== undefined) {
-    initialState = window.history.state[name];
+  // Always normalize — older drafts may be plain MetaRecord[] without keys.
+  const historyMeta = getHistoryValue<unknown>(name);
+  if (historyMeta !== undefined) {
+    initialState = normalizeMetaStates(historyMeta);
   }
   useEffect(() => {
-    if (window.history.state?.[name] === undefined) {
-      window.history.replaceState(
-        {
-          ...window.history.state,
-          [name]: initialState,
-        },
-        ""
-      );
+    if (getHistoryValue(name) === undefined) {
+      setHistoryValue(name, initialState);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -89,23 +63,8 @@ const MetaListContainer: FunctionComponent<Props> = ({
   );
   const updateMeta = (newMeta: Array<MetaRecordState>) => {
     setMetaState(newMeta);
-    window.history.replaceState(
-      {
-        ...window.history.state,
-        [name]: newMeta,
-      },
-      ""
-    );
-    onChange?.(
-      newMeta.map((item) => ({
-        metaKey: item.metaKey,
-        metaKeyError: item.metaKeyError,
-        metaKeyReadonly: item.metaKeyReadonly,
-        metaValue: item.metaValue,
-        metaValueError: item.metaValueError,
-        metaValueReadonly: item.metaValueReadonly,
-      }))
-    );
+    setHistoryValue(name, newMeta);
+    onChange?.(metaStatesToRecords(newMeta));
   };
   useEffect(() => {
     onChange?.(
@@ -142,14 +101,7 @@ const MetaListContainer: FunctionComponent<Props> = ({
               ).length <= 0
             ) {
               // Append a new meta
-              newMeta = [
-                ...newMeta,
-                {
-                  key: uuid(),
-                  metaKey: "",
-                  metaValue: "",
-                } as MetaRecordState,
-              ];
+              newMeta = [...newMeta, emptyMeta()];
             }
             updateMeta(newMeta);
           }}
@@ -168,23 +120,10 @@ const MetaListContainer: FunctionComponent<Props> = ({
             let newMeta;
             // Only one item left, clear it instead
             if (metaState.length <= 1) {
-              newMeta = [
-                {
-                  key: uuid(),
-                  metaKey: "",
-                  metaValue: "",
-                },
-              ];
+              newMeta = [emptyMeta()];
               // Deleting the last item, make it clear content of the last item instead
             } else if (itemIndex === metaState.length - 1) {
-              newMeta = [
-                ...metaState.slice(0, -1),
-                {
-                  key: uuid(),
-                  metaKey: "",
-                  metaValue: "",
-                },
-              ];
+              newMeta = [...metaState.slice(0, -1), emptyMeta()];
             } else {
               newMeta = metaState.filter((item) => item.key !== metaItem.key);
             }

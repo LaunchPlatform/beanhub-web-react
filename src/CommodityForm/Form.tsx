@@ -4,6 +4,7 @@ import ErrorRow from "../Shared/ErrorRow";
 import SelectionInput from "../Shared/Selection";
 import TextInput from "../Shared/TextInput";
 import SubmitButton from "../Shared/SubmitButton";
+import { getHistoryValue, setHistoryValue } from "../Shared/historyState";
 
 export interface Props {
   readonly action?: string;
@@ -35,14 +36,17 @@ const Form: FunctionComponent<Props> = ({
   let initialFileValue = initialFile;
   let initialDateValue = initialDate;
   let initialSymbolValue = initialSymbol;
-  if (window.history.state?.file !== undefined) {
-    initialFileValue = window.history.state?.file;
+  const _hist_file = getHistoryValue<typeof initialFileValue>("file");
+  if (_hist_file !== undefined) {
+    initialFileValue = _hist_file;
   }
-  if (window.history.state?.date !== undefined) {
-    initialDateValue = window.history.state?.date;
+  const _hist_date = getHistoryValue<typeof initialDateValue>("date");
+  if (_hist_date !== undefined) {
+    initialDateValue = _hist_date;
   }
-  if (window.history.state?.symbol !== undefined) {
-    initialSymbolValue = window.history.state?.symbol;
+  const _hist_symbol = getHistoryValue<typeof initialSymbolValue>("symbol");
+  if (_hist_symbol !== undefined) {
+    initialSymbolValue = _hist_symbol;
   }
 
   return (
@@ -55,13 +59,7 @@ const Form: FunctionComponent<Props> = ({
         error={fileError}
         required
         onChange={(value) => {
-          window.history.replaceState(
-            {
-              ...window.history.state,
-              file: value,
-            },
-            ""
-          );
+          setHistoryValue("file", value);
         }}
       />
       <DateInput
@@ -69,13 +67,7 @@ const Form: FunctionComponent<Props> = ({
         error={dateError}
         required
         onChange={(value) => {
-          window.history.replaceState(
-            {
-              ...window.history.state,
-              date: value,
-            },
-            ""
-          );
+          setHistoryValue("date", value);
         }}
       />
       <TextInput
@@ -86,13 +78,7 @@ const Form: FunctionComponent<Props> = ({
         error={symbolError}
         required
         onChange={(value) => {
-          window.history.replaceState(
-            {
-              ...window.history.state,
-              symbol: value,
-            },
-            ""
-          );
+          setHistoryValue("symbol", value);
         }}
       />
       {hiddenFields !== undefined

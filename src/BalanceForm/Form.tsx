@@ -4,6 +4,7 @@ import ErrorRow from "../Shared/ErrorRow";
 import NumberInput from "../Shared/NumberInput";
 import SelectionInput from "../Shared/Selection";
 import SubmitButton from "../Shared/SubmitButton";
+import { getHistoryValue, setHistoryValue } from "../Shared/historyState";
 
 export interface Props {
   readonly action?: string;
@@ -47,20 +48,25 @@ const Form: FunctionComponent<Props> = ({
   let initialAccountValue = initialAccount;
   let initialNumberValue = initialNumber;
   let initialToleranceValue = initialTolerance;
-  if (window.history.state?.file !== undefined) {
-    initialFileValue = window.history.state?.file;
+  const _hist_file = getHistoryValue<typeof initialFileValue>("file");
+  if (_hist_file !== undefined) {
+    initialFileValue = _hist_file;
   }
-  if (window.history.state?.date !== undefined) {
-    initialDateValue = window.history.state?.date;
+  const _hist_date = getHistoryValue<typeof initialDateValue>("date");
+  if (_hist_date !== undefined) {
+    initialDateValue = _hist_date;
   }
-  if (window.history.state?.number !== undefined) {
-    initialNumberValue = window.history.state?.number;
+  const _hist_number = getHistoryValue<typeof initialNumberValue>("number");
+  if (_hist_number !== undefined) {
+    initialNumberValue = _hist_number;
   }
-  if (window.history.state?.tolerance !== undefined) {
-    initialToleranceValue = window.history.state?.tolerance;
+  const _hist_tolerance = getHistoryValue<typeof initialToleranceValue>("tolerance");
+  if (_hist_tolerance !== undefined) {
+    initialToleranceValue = _hist_tolerance;
   }
-  if (window.history.state?.account !== undefined) {
-    initialAccountValue = window.history.state?.account;
+  const _hist_account = getHistoryValue<typeof initialAccountValue>("account");
+  if (_hist_account !== undefined) {
+    initialAccountValue = _hist_account;
   }
 
   return (
@@ -73,13 +79,7 @@ const Form: FunctionComponent<Props> = ({
         error={fileError}
         required
         onChange={(value) => {
-          window.history.replaceState(
-            {
-              ...window.history.state,
-              file: value,
-            },
-            ""
-          );
+          setHistoryValue("file", value);
         }}
       />
       <DateInput
@@ -87,13 +87,7 @@ const Form: FunctionComponent<Props> = ({
         error={dateError}
         required
         onChange={(value) => {
-          window.history.replaceState(
-            {
-              ...window.history.state,
-              date: value,
-            },
-            ""
-          );
+          setHistoryValue("date", value);
         }}
       />
       <SelectionInput
@@ -104,13 +98,7 @@ const Form: FunctionComponent<Props> = ({
         error={accountError}
         required
         onChange={(value) => {
-          window.history.replaceState(
-            {
-              ...window.history.state,
-              account: value,
-            },
-            ""
-          );
+          setHistoryValue("account", value);
         }}
       />
       <NumberInput
@@ -121,29 +109,17 @@ const Form: FunctionComponent<Props> = ({
         error={numberError}
         required
         onChange={(value) => {
-          window.history.replaceState(
-            {
-              ...window.history.state,
-              number: value,
-            },
-            ""
-          );
+          setHistoryValue("number", value);
         }}
       />
       <NumberInput
         label="Tolerance"
         name="tolerance"
         placeholder="0.015 (optional)"
-        defaultValue={initialTolerance}
+        defaultValue={initialToleranceValue}
         error={toleranceError}
         onChange={(value) => {
-          window.history.replaceState(
-            {
-              ...window.history.state,
-              tolerance: value,
-            },
-            ""
-          );
+          setHistoryValue("tolerance", value);
         }}
       />
       {hiddenFields !== undefined

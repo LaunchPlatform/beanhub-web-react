@@ -9,6 +9,7 @@ import SubmitButton from "../Shared/SubmitButton";
 import CurrencyInput from "../Shared/CurrencyInput";
 import NumberInput from "../Shared/NumberInput";
 import DiffPreview from "../Shared/DiffPreview";
+import { getHistoryValue, setHistoryValue } from "../Shared/historyState";
 import {
   FormMode,
   persistFormMode,
@@ -157,21 +158,23 @@ const FormField: FunctionComponent<FieldProps> = ({
   advanced,
   onValueChange,
 }: FieldProps) => {
-  let initialValue = "default" in field ? field.default : undefined;
-  if (window.history.state?.[field.name] !== undefined) {
-    initialValue = window.history.state?.[field.name];
+  let initialValue = (
+    "default" in field ? field.default : undefined
+  ) as string | string[] | Array<PostingRecord> | Array<MetaRecord> | undefined;
+  const historyValue = getHistoryValue<typeof initialValue>(field.name);
+  if (historyValue !== undefined) {
+    initialValue = historyValue;
   }
   const displayName = field.displayName ?? field.name;
   const placeholder = field.placeholder ?? displayName;
   const persist = (value: unknown) => {
     onValueChange(field.name, value);
-    window.history.replaceState(
-      {
-        ...window.history.state,
-        [field.name]: value,
-      },
-      ""
-    );
+    setHistoryValue(field.name, value);
+  };
+  // Postings/meta containers own their history.state (including row keys).
+  // Only sync React Diff values here — never overwrite that richer draft.
+  const syncValue = (value: unknown) => {
+    onValueChange(field.name, value);
   };
 
   switch (field.type) {
@@ -310,7 +313,7 @@ const FormField: FunctionComponent<FieldProps> = ({
           required={field.required}
           error={field.error}
           advanced={advanced}
-          onChange={(postings) => persist(postings)}
+          onChange={syncValue}
         />
       );
     case FieldType.meta:
@@ -320,7 +323,7 @@ const FormField: FunctionComponent<FieldProps> = ({
           name={field.name}
           required={field.required}
           error={field.error}
-          onChange={(meta) => persist(meta)}
+          onChange={syncValue}
         />
       );
     case FieldType.header:
@@ -338,12 +341,14 @@ const defaultsFromFields = (
     if (field.type === FieldType.header) {
       continue;
     }
-    let value = "default" in field ? field.default : undefined;
-    if (
-      options.includeHistoryState &&
-      window.history.state?.[field.name] !== undefined
-    ) {
-      value = window.history.state?.[field.name];
+    let value = (
+      "default" in field ? field.default : undefined
+    ) as string | string[] | Array<PostingRecord> | Array<MetaRecord> | undefined;
+    if (options.includeHistoryState) {
+      const historyValue = getHistoryValue<typeof value>(field.name);
+      if (historyValue !== undefined) {
+        value = historyValue;
+      }
     }
     if (field.type === FieldType.date && value === undefined) {
       value = defaultDate;
