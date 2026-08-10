@@ -1,7 +1,11 @@
+import { getHistoryValue, setHistoryValue } from "../Shared/historyState";
 import { CostMode, PriceMode } from "./PostingInput";
 import { PostingRecord } from "./PostingListContainer";
 
 export type FormMode = "simple" | "advanced";
+
+/** Browser history.state key for Simple/Advanced form mode. */
+export const FORM_MODE_HISTORY_KEY = "formMode";
 
 export interface AdvancedModeHints {
   readonly initialMode?: FormMode;
@@ -12,6 +16,34 @@ export interface AdvancedModeHints {
   readonly initialLinks?: string;
   readonly linksError?: string;
   readonly initialPostings?: Array<PostingRecord>;
+}
+
+export function readFormModeFromHistory(
+  state?: unknown
+): FormMode | undefined {
+  const mode =
+    state === undefined
+      ? getHistoryValue<unknown>(FORM_MODE_HISTORY_KEY)
+      : state != null && typeof state === "object"
+      ? (state as Record<string, unknown>)[FORM_MODE_HISTORY_KEY]
+      : undefined;
+  if (mode === "simple" || mode === "advanced") {
+    return mode;
+  }
+  return undefined;
+}
+
+export function persistFormMode(mode: FormMode) {
+  setHistoryValue(FORM_MODE_HISTORY_KEY, mode);
+}
+
+/** Prefer stored history mode; otherwise infer from field hints. */
+export function resolveInitialFormMode(hints: AdvancedModeHints): FormMode {
+  const stored = readFormModeFromHistory();
+  if (stored !== undefined) {
+    return stored;
+  }
+  return shouldUseAdvancedMode(hints) ? "advanced" : "simple";
 }
 
 function hasText(value: unknown): boolean {

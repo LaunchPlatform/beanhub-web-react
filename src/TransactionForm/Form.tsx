@@ -7,11 +7,21 @@ import TagsInput from "../Shared/TagsInput";
 import PostingListContainer, { PostingRecord } from "./PostingListContainer";
 import MetaListContainer, { MetaRecord } from "./MetaListContainer";
 import SubmitButton from "../Shared/SubmitButton";
+import { getHistoryValue, setHistoryValue } from "../Shared/historyState";
 import { InputPrefixContext } from "./context";
-import { FormMode, shouldUseAdvancedMode } from "./formMode";
+import {
+  FormMode,
+  persistFormMode,
+  resolveInitialFormMode,
+} from "./formMode";
 import ModeToggle from "./ModeToggle";
 import DiffPreview from "../Shared/DiffPreview";
 import { formatTransactionBeancount } from "./preview";
+import {
+  normalizePostingStates,
+  postingStatesToRecords,
+} from "./postingState";
+import { metaStatesToRecords, normalizeMetaStates } from "./metaState";
 
 export interface Props {
   readonly action?: string;
@@ -73,48 +83,51 @@ const Form: FunctionComponent<Props> = ({
   showPreview,
 }: Props) => {
   const inputPrefix = useContext(InputPrefixContext);
-  let initialFileValue = initialFile;
-  let initialDateValue = initialDate;
-  let initialFlagValue = initialFlag;
-  let initialNarrationValue = initialNarration;
-  let initialPayeeValue = initialPayee;
-  let initialTagsValue = initialTags;
-  let initialLinksValue = initialLinks;
-  if (window.history.state?.file !== undefined) {
-    initialFileValue = window.history.state?.file;
-  }
-  if (window.history.state?.date !== undefined) {
-    initialDateValue = window.history.state?.date;
-  }
-  if (window.history.state?.flag !== undefined) {
-    initialFlagValue = window.history.state?.flag;
-  }
-  if (window.history.state?.narration !== undefined) {
-    initialNarrationValue = window.history.state?.narration;
-  }
-  if (window.history.state?.payee !== undefined) {
-    initialPayeeValue = window.history.state?.payee;
-  }
-  if (window.history.state?.tags !== undefined) {
-    initialTagsValue = window.history.state?.tags;
-  }
-  if (window.history.state?.links !== undefined) {
-    initialLinksValue = window.history.state?.links;
-  }
+  const historyKey = (suffix: string) => `${inputPrefix}${suffix}`;
+  const fromHistory = <T,>(suffix: string, fallback?: T): T | undefined => {
+    const stored = getHistoryValue<T>(historyKey(suffix));
+    return stored !== undefined ? stored : fallback;
+  };
+  const persist = (suffix: string, value: unknown) => {
+    setHistoryValue(historyKey(suffix), value);
+  };
 
-  const inferredAdvanced = shouldUseAdvancedMode({
-    initialMode,
-    initialFlag: initialFlagValue,
-    flagError,
-    initialTags: initialTagsValue,
-    tagsError,
-    initialLinks: initialLinksValue,
-    linksError,
-    initialPostings,
+  const initialFileValue = fromHistory("file", initialFile);
+  const initialDateValue = fromHistory("date", initialDate);
+  const initialFlagValue = fromHistory("flag", initialFlag);
+  const initialNarrationValue = fromHistory("narration", initialNarration);
+  const initialPayeeValue = fromHistory("payee", initialPayee);
+  const initialTagsValue = fromHistory("tags", initialTags);
+  const initialLinksValue = fromHistory("links", initialLinks);
+  const historyPostings = getHistoryValue<unknown>(historyKey("postings"));
+  const historyMeta = getHistoryValue<unknown>(historyKey("metadata"));
+  const effectivePostings =
+    historyPostings !== undefined
+      ? postingStatesToRecords(normalizePostingStates(historyPostings))
+      : initialPostings;
+  const effectiveMeta =
+    historyMeta !== undefined
+      ? metaStatesToRecords(normalizeMetaStates(historyMeta))
+      : initialMeta;
+
+  const [mode, setMode] = useState<FormMode>(() => {
+    const resolved = resolveInitialFormMode({
+      initialMode,
+      initialFlag: initialFlagValue,
+      flagError,
+      initialTags: initialTagsValue,
+      tagsError,
+      initialLinks: initialLinksValue,
+      linksError,
+      initialPostings: effectivePostings,
+    });
+    persistFormMode(resolved);
+    return resolved;
   });
-  const [mode, setMode] = useState<FormMode>(
-    inferredAdvanced ? "advanced" : "simple"
-  );
+  const updateMode = (next: FormMode) => {
+    persistFormMode(next);
+    setMode(next);
+  };
   const [dateValue, setDateValue] = useState<string>(initialDateValue ?? "");
   const [flagValue, setFlagValue] = useState<string>(
     initialFlagValue ?? "*"
@@ -130,10 +143,10 @@ const Form: FunctionComponent<Props> = ({
     initialLinksValue ?? ""
   );
   const [postingsValue, setPostingsValue] = useState<Array<PostingRecord>>(
-    initialPostings ?? []
+    effectivePostings ?? []
   );
   const [metaValue, setMetaValue] = useState<Array<MetaRecord>>(
-    initialMeta ?? []
+    effectiveMeta ?? []
   );
 
   const advanced = mode === "advanced";
@@ -161,7 +174,7 @@ const Form: FunctionComponent<Props> = ({
 
   return (
     <form action={action} method={method ?? "POST"}>
-      <ModeToggle mode={mode} onChange={setMode} />
+      <ModeToggle mode={mode} onChange={updateMode} />
       <SelectionInput
         title="File"
         name={`${inputPrefix}file`}
@@ -170,13 +183,7 @@ const Form: FunctionComponent<Props> = ({
         error={fileError}
         required
         onChange={(value) => {
-          window.history.replaceState(
-            {
-              ...window.history.state,
-              file: value,
-            },
-            ""
-          );
+          persist("file", value);
         }}
       />
       <DateInput
@@ -186,13 +193,7 @@ const Form: FunctionComponent<Props> = ({
         required
         onChange={(value) => {
           setDateValue(value);
-          window.history.replaceState(
-            {
-              ...window.history.state,
-              date: value,
-            },
-            ""
-          );
+          persist("date", value);
         }}
       />
       {advanced ? (
@@ -205,13 +206,7 @@ const Form: FunctionComponent<Props> = ({
           required
           onChange={(value) => {
             setFlagValue(value);
-            window.history.replaceState(
-              {
-                ...window.history.state,
-                flag: value,
-              },
-              ""
-            );
+            persist("flag", value);
           }}
         />
       ) : (
@@ -225,13 +220,7 @@ const Form: FunctionComponent<Props> = ({
         error={payeeError}
         onChange={(value) => {
           setPayeeValue(value);
-          window.history.replaceState(
-            {
-              ...window.history.state,
-              payee: value,
-            },
-            ""
-          );
+          persist("payee", value);
         }}
       />
       <TextInput
@@ -243,13 +232,7 @@ const Form: FunctionComponent<Props> = ({
         required
         onChange={(value) => {
           setNarrationValue(value);
-          window.history.replaceState(
-            {
-              ...window.history.state,
-              narration: value,
-            },
-            ""
-          );
+          persist("narration", value);
         }}
       />
       {advanced ? (
@@ -263,13 +246,7 @@ const Form: FunctionComponent<Props> = ({
             error={tagsError}
             onChange={(value) => {
               setTagsValue(value);
-              window.history.replaceState(
-                {
-                  ...window.history.state,
-                  tags: value,
-                },
-                ""
-              );
+              persist("tags", value);
             }}
           />
           <TagsInput
@@ -281,13 +258,7 @@ const Form: FunctionComponent<Props> = ({
             error={linksError}
             onChange={(value) => {
               setLinksValue(value);
-              window.history.replaceState(
-                {
-                  ...window.history.state,
-                  links: value,
-                },
-                ""
-              );
+              persist("links", value);
             }}
           />
         </>

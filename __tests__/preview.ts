@@ -1,4 +1,4 @@
-import { it, expect, describe } from "@jest/globals";
+import { it, expect, describe, jest } from "@jest/globals";
 import {
   formatNumber,
   formatPostingCost,
@@ -7,7 +7,18 @@ import {
   calculateColumnWidths,
 } from "../src/TransactionForm/preview";
 import { CostMode, PriceMode } from "../src/TransactionForm/PostingInput";
-import { shouldUseAdvancedMode } from "../src/TransactionForm/formMode";
+import {
+  FORM_MODE_HISTORY_KEY,
+  persistFormMode,
+  readFormModeFromHistory,
+  resolveInitialFormMode,
+  shouldUseAdvancedMode,
+} from "../src/TransactionForm/formMode";
+import {
+  normalizePostingState,
+  normalizePostingStates,
+} from "../src/TransactionForm/postingState";
+import { normalizeMetaState } from "../src/TransactionForm/metaState";
 import {
   beancountLinesEqual,
   computeInlineSegments,
@@ -250,6 +261,78 @@ describe("shouldUseAdvancedMode", () => {
   });
 });
 
+describe("formMode history", () => {
+  it("reads formMode from a history.state object", () => {
+    expect(readFormModeFromHistory(null)).toBeUndefined();
+    expect(readFormModeFromHistory({})).toBeUndefined();
+    expect(
+      readFormModeFromHistory({ [FORM_MODE_HISTORY_KEY]: "advanced" })
+    ).toBe("advanced");
+    expect(
+      readFormModeFromHistory({ [FORM_MODE_HISTORY_KEY]: "simple" })
+    ).toBe("simple");
+    expect(readFormModeFromHistory({ [FORM_MODE_HISTORY_KEY]: "other" })).toBe(
+      undefined
+    );
+  });
+
+  it("persistFormMode writes formMode into window.history.state", () => {
+    const replaceState = jest.fn();
+    const previous = global.window;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (global as any).window = {
+      history: {
+        state: { payee: "kept" },
+        replaceState,
+      },
+    };
+    try {
+      persistFormMode("advanced");
+      expect(replaceState).toHaveBeenCalledWith(
+        { payee: "kept", [FORM_MODE_HISTORY_KEY]: "advanced" },
+        ""
+      );
+    } finally {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (global as any).window = previous;
+    }
+  });
+
+  it("resolveInitialFormMode prefers history over inference", () => {
+    const previous = global.window;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (global as any).window = {
+      history: {
+        state: { [FORM_MODE_HISTORY_KEY]: "simple" },
+        replaceState: jest.fn(),
+      },
+    };
+    try {
+      expect(
+        resolveInitialFormMode({ initialFlag: "!", initialTags: "food" })
+      ).toBe("simple");
+    } finally {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (global as any).window = previous;
+    }
+  });
+
+  it("resolveInitialFormMode infers when history has no formMode", () => {
+    const previous = global.window;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (global as any).window = {
+      history: { state: null, replaceState: jest.fn() },
+    };
+    try {
+      expect(resolveInitialFormMode({ initialFlag: "!" })).toBe("advanced");
+      expect(resolveInitialFormMode({ initialFlag: "*" })).toBe("simple");
+    } finally {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (global as any).window = previous;
+    }
+  });
+});
+
 describe("normalizeBeancountLine", () => {
   it("collapses insignificant whitespace outside strings", () => {
     expect(
@@ -442,5 +525,47 @@ describe("formatEntryBeancount", () => {
         description: "Paris",
       })
     ).toBe('2022-01-01 event "location" "Paris"');
+  });
+});
+
+describe("history draft normalization", () => {
+  it("adds keys and coerces null cost/price modes from plain records", () => {
+    const normalized = normalizePostingState({
+      account: "Assets:Cash",
+      unitNumber: "1",
+      unitCurrency: "USD",
+      costMode: null,
+      priceMode: null,
+    });
+    expect(normalized.key.length).toBeGreaterThan(0);
+    expect(normalized.costMode).toBe(CostMode.INACTIVE);
+    expect(normalized.priceMode).toBe(PriceMode.INACTIVE);
+    expect(normalizePostingStates([{ account: "A" }, { account: "B" }])).toHaveLength(
+      2
+    );
+  });
+
+  it("preserves existing posting keys from history state", () => {
+    const normalized = normalizePostingState({
+      key: "keep-me",
+      account: "Assets:Cash",
+      costMode: CostMode.COST,
+      priceMode: PriceMode.PRICE,
+    });
+    expect(normalized.key).toBe("keep-me");
+    expect(normalized.costMode).toBe(CostMode.COST);
+    expect(normalized.priceMode).toBe(PriceMode.PRICE);
+  });
+
+  it("adds keys for plain metadata records", () => {
+    const normalized = normalizeMetaState({
+      metaKey: "import-id",
+      metaValue: "x",
+    });
+    expect(normalized.key.length).toBeGreaterThan(0);
+    expect(normalized.metaKey).toBe("import-id");
+    expect(normalizeMetaState({ key: "m1", metaKey: "a", metaValue: "b" }).key).toBe(
+      "m1"
+    );
   });
 });

@@ -1,9 +1,15 @@
 import React, { FunctionComponent, useState, useEffect } from "react";
-import { v4 as uuid } from "uuid";
+import { getHistoryValue, setHistoryValue } from "../Shared/historyState";
 import FormRow from "../Shared/FormRow";
 import PostingInputContainer from "./PostingInputContainer";
 import { CostMode, PriceMode } from "./PostingInput";
 import { computeBalancingAmount } from "./balanceAmount";
+import {
+  emptyPosting,
+  normalizePostingStates,
+  postingStatesToRecords,
+  PostingRecordState,
+} from "./postingState";
 
 export interface PostingRecord {
   readonly account?: string;
@@ -29,53 +35,6 @@ export interface PostingRecord {
   readonly priceCurrency?: string;
   readonly priceCurrencyError?: string;
 }
-
-interface PostingRecordState {
-  readonly key: string;
-  readonly account: string;
-  readonly accountError?: string;
-  readonly unitNumber: string;
-  readonly unitNumberError?: string;
-  readonly unitNumberUpdateCounter?: number;
-  readonly unitCurrency: string;
-  readonly unitCurrencyUpdateCounter?: number;
-  readonly unitCurrencyError?: string;
-  readonly flag: string;
-  readonly flagError?: string;
-  readonly costMode: CostMode;
-  readonly costNumber: string;
-  readonly costNumberError?: string;
-  readonly costCurrency: string;
-  readonly costCurrencyUpdateCounter?: number;
-  readonly costCurrencyError?: string;
-  readonly costDate: string;
-  readonly costDateError?: string;
-  readonly costLabel: string;
-  readonly costLabelError?: string;
-  readonly priceMode: PriceMode;
-  readonly priceNumber: string;
-  readonly priceNumberError?: string;
-  readonly priceCurrency: string;
-  readonly priceCurrencyUpdateCounter?: number;
-  readonly priceCurrencyError?: string;
-}
-
-const emptyPosting = (): PostingRecordState =>
-  ({
-    key: uuid(),
-    account: "",
-    unitNumber: "",
-    unitCurrency: "",
-    flag: "",
-    costMode: CostMode.INACTIVE,
-    costNumber: "",
-    costCurrency: "",
-    costDate: "",
-    costLabel: "",
-    priceMode: PriceMode.INACTIVE,
-    priceNumber: "",
-    priceCurrency: "",
-  } as PostingRecordState);
 
 export interface Props {
   readonly initialPostings?: Array<PostingRecord>;
@@ -118,38 +77,13 @@ const PostingListContainer: FunctionComponent<Props> = ({
   ) {
     filledInitialPostings = [...filledInitialPostings, emptyPosting()];
   }
-  let initialState = (filledInitialPostings ?? [{}, {}]).map(
-    (posting) =>
-      ({
-        key: uuid(),
-        account: posting.account ?? "",
-        accountError: posting.accountError,
-        unitNumber: posting.unitNumber ?? "",
-        unitNumberError: posting.unitNumberError,
-        unitCurrency: posting.unitCurrency ?? "",
-        unitCurrencyError: posting.unitCurrencyError,
-        flag: posting.flag ?? "",
-        flagError: posting.flagError,
-        costMode: posting.costMode ?? CostMode.INACTIVE,
-        costNumber: posting.costNumber ?? "",
-        costNumberError: posting.costNumberError,
-        costCurrency: posting.costCurrency ?? "",
-        costCurrencyError: posting.costCurrencyError,
-        costDate: posting.costDate ?? "",
-        costDateError: posting.costDateError,
-        costLabel: posting.costLabel ?? "",
-        costLabelError: posting.costLabelError,
-        priceMode: posting.priceMode ?? PriceMode.INACTIVE,
-        priceNumber: posting.priceNumber ?? "",
-        priceNumberError: posting.priceNumberError,
-        priceCurrency: posting.priceCurrency ?? "",
-        priceCurrencyError: posting.priceCurrencyError,
-      } as PostingRecordState)
-  );
+  let initialState = normalizePostingStates(filledInitialPostings ?? [{}, {}]);
   // Key by field `name` so multi-entry edit forms (and different pages) do not
   // clobber each other via a single global `history.state.postings` slot.
-  if (window.history.state?.[name] !== undefined) {
-    initialState = window.history.state[name];
+  // Always normalize — older drafts may be plain PostingRecord[] without keys.
+  const historyPostings = getHistoryValue<unknown>(name);
+  if (historyPostings !== undefined) {
+    initialState = normalizePostingStates(historyPostings);
   }
   if (
     initialState.length > 0 &&
@@ -158,14 +92,8 @@ const PostingListContainer: FunctionComponent<Props> = ({
     initialState = [...initialState, emptyPosting()];
   }
   useEffect(() => {
-    if (window.history.state?.[name] === undefined) {
-      window.history.replaceState(
-        {
-          ...window.history.state,
-          [name]: initialState,
-        },
-        ""
-      );
+    if (getHistoryValue(name) === undefined) {
+      setHistoryValue(name, initialState);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -174,57 +102,11 @@ const PostingListContainer: FunctionComponent<Props> = ({
   );
   const updatePostings = (newPostings: Array<PostingRecordState>) => {
     setPostingsState(newPostings);
-    window.history.replaceState(
-      {
-        ...window.history.state,
-        [name]: newPostings,
-      },
-      ""
-    );
-    onChange?.(
-      newPostings.map((posting) => ({
-        account: posting.account,
-        accountError: posting.accountError,
-        unitNumber: posting.unitNumber,
-        unitNumberError: posting.unitNumberError,
-        unitCurrency: posting.unitCurrency,
-        unitCurrencyError: posting.unitCurrencyError,
-        flag: posting.flag,
-        flagError: posting.flagError,
-        costMode: posting.costMode,
-        costNumber: posting.costNumber,
-        costNumberError: posting.costNumberError,
-        costCurrency: posting.costCurrency,
-        costCurrencyError: posting.costCurrencyError,
-        costDate: posting.costDate,
-        costDateError: posting.costDateError,
-        costLabel: posting.costLabel,
-        costLabelError: posting.costLabelError,
-        priceMode: posting.priceMode,
-        priceNumber: posting.priceNumber,
-        priceNumberError: posting.priceNumberError,
-        priceCurrency: posting.priceCurrency,
-        priceCurrencyError: posting.priceCurrencyError,
-      }))
-    );
+    setHistoryValue(name, newPostings);
+    onChange?.(postingStatesToRecords(newPostings));
   };
   useEffect(() => {
-    onChange?.(
-      postingsState.map((posting) => ({
-        account: posting.account,
-        unitNumber: posting.unitNumber,
-        unitCurrency: posting.unitCurrency,
-        flag: posting.flag,
-        costMode: posting.costMode,
-        costNumber: posting.costNumber,
-        costCurrency: posting.costCurrency,
-        costDate: posting.costDate,
-        costLabel: posting.costLabel,
-        priceMode: posting.priceMode,
-        priceNumber: posting.priceNumber,
-        priceCurrency: posting.priceCurrency,
-      }))
-    );
+    onChange?.(postingStatesToRecords(postingsState));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
