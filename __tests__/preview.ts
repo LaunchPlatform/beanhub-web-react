@@ -10,6 +10,7 @@ import { CostMode, PriceMode } from "../src/TransactionForm/PostingInput";
 import { shouldUseAdvancedMode } from "../src/TransactionForm/formMode";
 import {
   beancountLinesEqual,
+  computeInlineSegments,
   computeLineDiff,
   normalizeBeancountLine,
 } from "../src/Shared/diff";
@@ -365,6 +366,43 @@ describe("computeLineDiff", () => {
       ],
       ["add", "  Expenses:Travel                                   6.40 USD"],
     ]);
+  });
+
+  it("annotates character-level segments on paired remove/add lines", () => {
+    const lines = computeLineDiff(
+      '2026-04-26 * "Uber"',
+      '2026-04-26 ! "asdf" "Uber"'
+    );
+    expect(lines.map((line) => line.type)).toEqual(["remove", "add"]);
+    expect(lines[0].segments?.some((s) => s.changed && s.text.includes("*"))).toBe(
+      true
+    );
+    expect(
+      lines[1].segments?.some((s) => s.changed && s.text.includes("asdf"))
+    ).toBe(true);
+    expect(
+      lines[0].segments?.some((s) => !s.changed && s.text.includes("2026-04-26"))
+    ).toBe(true);
+    expect(
+      lines[1].segments?.some((s) => !s.changed && s.text.includes("Uber"))
+    ).toBe(true);
+  });
+});
+
+describe("computeInlineSegments", () => {
+  it("marks only the changed digits in an amount", () => {
+    expect(computeInlineSegments("6.33 USD", "6.34 USD")).toEqual({
+      original: [
+        { text: "6.3", changed: false },
+        { text: "3", changed: true },
+        { text: " USD", changed: false },
+      ],
+      updated: [
+        { text: "6.3", changed: false },
+        { text: "4", changed: true },
+        { text: " USD", changed: false },
+      ],
+    });
   });
 });
 

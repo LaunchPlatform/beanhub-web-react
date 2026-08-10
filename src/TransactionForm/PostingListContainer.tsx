@@ -108,6 +108,16 @@ const PostingListContainer: FunctionComponent<Props> = ({
       filledInitialPostings = [...filledInitialPostings, emptyPosting()];
     }
   }
+  // Keep a trailing empty row for adding another posting (same idea as metadata).
+  if (
+    filledInitialPostings !== undefined &&
+    filledInitialPostings.length > 0 &&
+    filledInitialPostings.every(
+      (item) => (item.account?.trim().length || 0) > 0
+    )
+  ) {
+    filledInitialPostings = [...filledInitialPostings, emptyPosting()];
+  }
   let initialState = (filledInitialPostings ?? [{}, {}]).map(
     (posting) =>
       ({
@@ -140,6 +150,12 @@ const PostingListContainer: FunctionComponent<Props> = ({
   // clobber each other via a single global `history.state.postings` slot.
   if (window.history.state?.[name] !== undefined) {
     initialState = window.history.state[name];
+  }
+  if (
+    initialState.length > 0 &&
+    initialState.every((item) => item.account.trim().length > 0)
+  ) {
+    initialState = [...initialState, emptyPosting()];
   }
   useEffect(() => {
     if (window.history.state?.[name] === undefined) {
