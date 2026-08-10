@@ -188,6 +188,7 @@ export const WithDiffPreview: ComponentStory<typeof Form> = () => (
     }))}
     defaultDate={today}
     showPreview
+    showDiff
     previewType="transaction"
   />
 );
@@ -310,6 +311,7 @@ export const MultiEntryWithDiff: ComponentStory<typeof Form> = () => (
     fields={multiEntryFields}
     defaultDate={today}
     showPreview
+    showDiff
     previewType="transaction"
   />
 );
