@@ -114,6 +114,8 @@ export interface Props {
   readonly errors?: Array<string>;
   readonly submit?: string;
   readonly showPreview?: boolean;
+  /** When true, compare against field defaults (edit). Add flows stay Preview-only. */
+  readonly showDiff?: boolean;
   readonly previewType?: PreviewType;
 }
 
@@ -440,6 +442,7 @@ const Form: FunctionComponent<Props> = ({
   errors,
   submit,
   showPreview,
+  showDiff,
   previewType,
 }: Props) => {
   const hasTxnFields = fields.some((field) => field.type === FieldType.postings);
@@ -547,7 +550,7 @@ const Form: FunctionComponent<Props> = ({
             ))}
             {showPreview ? (
               <DiffPreview
-                original={preview.original}
+                original={showDiff ? preview.original : undefined}
                 updated={preview.source}
               />
             ) : null}

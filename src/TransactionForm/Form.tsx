@@ -51,6 +51,8 @@ export interface Props {
   readonly errors?: Array<string>;
   readonly initialMode?: FormMode;
   readonly showPreview?: boolean;
+  /** When true, compare against prop defaults (edit). Add flows stay Preview-only. */
+  readonly showDiff?: boolean;
 }
 
 const Form: FunctionComponent<Props> = ({
@@ -81,6 +83,7 @@ const Form: FunctionComponent<Props> = ({
   errors,
   initialMode,
   showPreview,
+  showDiff,
 }: Props) => {
   const inputPrefix = useContext(InputPrefixContext);
   const historyKey = (suffix: string) => `${inputPrefix}${suffix}`;
@@ -288,7 +291,10 @@ const Form: FunctionComponent<Props> = ({
         onChange={setMetaValue}
       />
       {showPreview ? (
-        <DiffPreview original={originalSource} updated={previewSource} />
+        <DiffPreview
+          original={showDiff ? originalSource : undefined}
+          updated={previewSource}
+        />
       ) : null}
       {hiddenFields !== undefined
         ? Object.entries(hiddenFields).map(([key, value]) => (
