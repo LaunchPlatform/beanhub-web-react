@@ -128,6 +128,35 @@ describe("formatPostingLine", () => {
   it("does not pad short postings without amounts", () => {
     expect(formatPostingLine({ account: "Assets:Cash" })).toBe("Assets:Cash");
   });
+
+  it("keeps a typed negative number in the preview without currency", () => {
+    const widths = calculateColumnWidths([
+      { account: "Assets:Foobar", unitNumber: "-1" },
+    ]);
+    expect(
+      formatPostingLine({ account: "Assets:Foobar", unitNumber: "-1" }, widths)
+    ).toBe(`${"Assets:Foobar".padEnd(widths.accountWidth)} -1`);
+  });
+
+  it("coerces numeric unit amounts so -1 is not dropped", () => {
+    const widths = calculateColumnWidths([
+      {
+        account: "Assets:Foobar",
+        unitNumber: -1 as unknown as string,
+        unitCurrency: "USD",
+      },
+    ]);
+    expect(
+      formatPostingLine(
+        {
+          account: "Assets:Foobar",
+          unitNumber: -1 as unknown as string,
+          unitCurrency: "USD",
+        },
+        widths
+      )
+    ).toBe(`${"Assets:Foobar".padEnd(widths.accountWidth)} -1 USD`);
+  });
 });
 
 describe("formatTransactionBeancount", () => {
@@ -198,6 +227,34 @@ describe("formatTransactionBeancount", () => {
         '2022-03-02 * "Jane Doe" "Coffee"',
         "  * Assets:Cash   -5 USD {555 BTC}",
         "    Expenses:Food  5 USD",
+      ].join("\n")
+    );
+  });
+
+  it("includes a typed -1 amount on the second posting", () => {
+    expect(
+      formatTransactionBeancount({
+        date: "2026-08-18",
+        flag: "*",
+        narration: "gg",
+        postings: [
+          {
+            account: "Assets:Cash",
+            unitNumber: "1",
+            unitCurrency: "USD",
+          },
+          {
+            account: "Assets:Foobar",
+            unitNumber: "-1",
+            unitCurrency: "USD",
+          },
+        ],
+      })
+    ).toBe(
+      [
+        '2026-08-18 * "gg"',
+        "  Assets:Cash    1 USD",
+        "  Assets:Foobar -1 USD",
       ].join("\n")
     );
   });

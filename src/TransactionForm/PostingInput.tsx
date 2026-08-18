@@ -248,7 +248,8 @@ const PostingInput: FunctionComponent<Props> = ({
   const amountInputs = (
     <>
       <input
-        type="number"
+        // type="text" so typing "-1" is not dropped by HTML number inputs.
+        type="text"
         aria-label="Unit Number"
         className={
           "form-control" + (unitNumberError !== undefined ? " is-invalid" : "")
@@ -370,7 +371,7 @@ const PostingInput: FunctionComponent<Props> = ({
             />
           ) : null}
           <input
-            type="number"
+            type="text"
             aria-label="Price Number"
             className={
               "form-control" +
@@ -567,7 +568,7 @@ const PostingInput: FunctionComponent<Props> = ({
               <div className="form-group col-md-3 mb-2">
                 <label className="small text-muted mb-1">Cost amount</label>
                 <input
-                  type="number"
+                  type="text"
                   aria-label="Cost Number"
                   className={
                     "form-control form-control-sm" +
@@ -668,7 +669,7 @@ const PostingInput: FunctionComponent<Props> = ({
               <div className="form-group col-md-3 mb-0">
                 <label className="small text-muted mb-1">Price amount</label>
                 <input
-                  type="number"
+                  type="text"
                   aria-label="Price Number"
                   className={
                     "form-control form-control-sm" +
