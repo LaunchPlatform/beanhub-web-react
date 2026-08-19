@@ -1,5 +1,6 @@
 import { FunctionComponent, KeyboardEvent, useState } from "react";
 import PostingCandidateList, { MatchedText } from "./PostingCandidateList";
+import { isPlainAmountInput } from "./amountInput";
 import { isActiveCostMode, isActivePriceMode } from "./formMode";
 
 export enum PriceMode {
@@ -109,6 +110,13 @@ const fieldStyle = (error?: string) =>
         position: "relative" as const,
       }
     : {};
+
+const emitAmount = (value: string, onChange?: (value: string) => void) => {
+  if (!isPlainAmountInput(value)) {
+    return;
+  }
+  onChange?.(value);
+};
 
 const PostingInput: FunctionComponent<Props> = ({
   account,
@@ -248,7 +256,7 @@ const PostingInput: FunctionComponent<Props> = ({
   const amountInputs = (
     <>
       <input
-        // type="text" so typing "-1" is not dropped by HTML number inputs.
+        // type="text" so "-1" is kept; isPlainAmountInput rejects non-numeric junk.
         type="text"
         aria-label="Unit Number"
         className={
@@ -257,7 +265,7 @@ const PostingInput: FunctionComponent<Props> = ({
         placeholder="12.34"
         name={`${name}-number`}
         value={unitNumber}
-        onChange={(event) => onUnitNumberChange?.(event.target.value)}
+        onChange={(event) => emitAmount(event.target.value, onUnitNumberChange)}
         style={{
           marginLeft: -1,
           ...fieldStyle(unitNumberError),
@@ -380,7 +388,9 @@ const PostingInput: FunctionComponent<Props> = ({
             placeholder="12.34"
             name={`${name}-price_number`}
             value={priceNumber}
-            onChange={(event) => onPriceNumberChange?.(event.target.value)}
+            onChange={(event) =>
+              emitAmount(event.target.value, onPriceNumberChange)
+            }
             disabled={priceModeValue === PriceMode.EXPANDED}
             style={{
               marginLeft: -1,
@@ -577,7 +587,9 @@ const PostingInput: FunctionComponent<Props> = ({
                   placeholder="12.34"
                   name={`${name}-cost_number`}
                   value={costNumber}
-                  onChange={(event) => onCostNumberChange?.(event.target.value)}
+                  onChange={(event) =>
+                    emitAmount(event.target.value, onCostNumberChange)
+                  }
                 />
                 {costNumberError !== undefined ? (
                   <div className="invalid-feedback">{costNumberError}</div>
@@ -678,7 +690,9 @@ const PostingInput: FunctionComponent<Props> = ({
                   placeholder="12.34"
                   name={`${name}-price_number`}
                   value={priceNumber}
-                  onChange={(event) => onPriceNumberChange?.(event.target.value)}
+                  onChange={(event) =>
+                    emitAmount(event.target.value, onPriceNumberChange)
+                  }
                 />
                 {priceNumberError !== undefined ? (
                   <div className="invalid-feedback">{priceNumberError}</div>
