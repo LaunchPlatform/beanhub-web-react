@@ -1,5 +1,6 @@
 import { FunctionComponent, KeyboardEvent, useState } from "react";
 import PostingCandidateList, { MatchedText } from "./PostingCandidateList";
+import { isPlainAmountInput } from "./amountInput";
 import { isActiveCostMode, isActivePriceMode } from "./formMode";
 
 export enum PriceMode {
@@ -109,6 +110,13 @@ const fieldStyle = (error?: string) =>
         position: "relative" as const,
       }
     : {};
+
+const emitAmount = (value: string, onChange?: (value: string) => void) => {
+  if (!isPlainAmountInput(value)) {
+    return;
+  }
+  onChange?.(value);
+};
 
 const PostingInput: FunctionComponent<Props> = ({
   account,
@@ -248,7 +256,8 @@ const PostingInput: FunctionComponent<Props> = ({
   const amountInputs = (
     <>
       <input
-        type="number"
+        // type="text" so "-1" is kept; isPlainAmountInput rejects non-numeric junk.
+        type="text"
         aria-label="Unit Number"
         className={
           "form-control" + (unitNumberError !== undefined ? " is-invalid" : "")
@@ -256,7 +265,7 @@ const PostingInput: FunctionComponent<Props> = ({
         placeholder="12.34"
         name={`${name}-number`}
         value={unitNumber}
-        onChange={(event) => onUnitNumberChange?.(event.target.value)}
+        onChange={(event) => emitAmount(event.target.value, onUnitNumberChange)}
         style={{
           marginLeft: -1,
           ...fieldStyle(unitNumberError),
@@ -370,7 +379,7 @@ const PostingInput: FunctionComponent<Props> = ({
             />
           ) : null}
           <input
-            type="number"
+            type="text"
             aria-label="Price Number"
             className={
               "form-control" +
@@ -379,7 +388,9 @@ const PostingInput: FunctionComponent<Props> = ({
             placeholder="12.34"
             name={`${name}-price_number`}
             value={priceNumber}
-            onChange={(event) => onPriceNumberChange?.(event.target.value)}
+            onChange={(event) =>
+              emitAmount(event.target.value, onPriceNumberChange)
+            }
             disabled={priceModeValue === PriceMode.EXPANDED}
             style={{
               marginLeft: -1,
@@ -567,7 +578,7 @@ const PostingInput: FunctionComponent<Props> = ({
               <div className="form-group col-md-3 mb-2">
                 <label className="small text-muted mb-1">Cost amount</label>
                 <input
-                  type="number"
+                  type="text"
                   aria-label="Cost Number"
                   className={
                     "form-control form-control-sm" +
@@ -576,7 +587,9 @@ const PostingInput: FunctionComponent<Props> = ({
                   placeholder="12.34"
                   name={`${name}-cost_number`}
                   value={costNumber}
-                  onChange={(event) => onCostNumberChange?.(event.target.value)}
+                  onChange={(event) =>
+                    emitAmount(event.target.value, onCostNumberChange)
+                  }
                 />
                 {costNumberError !== undefined ? (
                   <div className="invalid-feedback">{costNumberError}</div>
@@ -668,7 +681,7 @@ const PostingInput: FunctionComponent<Props> = ({
               <div className="form-group col-md-3 mb-0">
                 <label className="small text-muted mb-1">Price amount</label>
                 <input
-                  type="number"
+                  type="text"
                   aria-label="Price Number"
                   className={
                     "form-control form-control-sm" +
@@ -677,7 +690,9 @@ const PostingInput: FunctionComponent<Props> = ({
                   placeholder="12.34"
                   name={`${name}-price_number`}
                   value={priceNumber}
-                  onChange={(event) => onPriceNumberChange?.(event.target.value)}
+                  onChange={(event) =>
+                    emitAmount(event.target.value, onPriceNumberChange)
+                  }
                 />
                 {priceNumberError !== undefined ? (
                   <div className="invalid-feedback">{priceNumberError}</div>

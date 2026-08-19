@@ -27,15 +27,22 @@ export const DEFAULT_NUMBER_WIDTH = 12;
 /** Length of `"YYYY-MM-DD balance "` so posting amounts align with balance amounts. */
 export const BALANCE_PREFIX_WIDTH = 19;
 
+function fieldText(value: unknown): string {
+  if (value == null) {
+    return "";
+  }
+  return String(value).trim();
+}
+
 export function formatNumber(raw: string): string {
-  const cleaned = raw.replace(/,/g, "").trim();
+  const cleaned = fieldText(raw).replace(/,/g, "");
   if (!cleaned) {
-    return raw;
+    return fieldText(raw);
   }
   // Leave arithmetic expressions and other non-plain numbers untouched.
   const match = cleaned.match(/^([+-]?)(\d+)(?:\.(\d+))?$/);
   if (!match) {
-    return raw.trim();
+    return cleaned;
   }
   const [, sign, intPart, frac] = match;
   const withCommas = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -85,13 +92,12 @@ export function calculateColumnWidths(
   let numberWidth = 1;
 
   for (const posting of postings) {
-    const account = (posting.account ?? "").trim();
+    const account = fieldText(posting.account);
     if (account.length > accountWidth) {
       accountWidth = account.length;
     }
-    const number = (posting.unitNumber ?? "").trim();
-    const currency = (posting.unitCurrency ?? "").trim();
-    if (number && currency) {
+    const number = fieldText(posting.unitNumber);
+    if (number) {
       const formatted = formatNumber(number);
       if (formatted.length > numberWidth) {
         numberWidth = formatted.length;
@@ -163,11 +169,13 @@ export function formatPostingLine(
   },
   options: { reserveFlagColumn?: boolean } = {}
 ): string {
-  const account = (posting.account ?? "").trim();
-  const number = (posting.unitNumber ?? "").trim();
-  const currency = (posting.unitCurrency ?? "").trim();
-  const hasAmount = number.length > 0 && currency.length > 0;
-  const flag = (posting.flag ?? "").trim();
+  const account = fieldText(posting.account);
+  const number = fieldText(posting.unitNumber);
+  const currency = fieldText(posting.unitCurrency);
+  const hasNumber = number.length > 0;
+  const hasCurrency = currency.length > 0;
+  const hasAmount = hasNumber || hasCurrency;
+  const flag = fieldText(posting.flag);
 
   if (!account && !hasAmount) {
     return "";
@@ -195,8 +203,12 @@ export function formatPostingLine(
     items.push(" ");
   }
   items.push(padEnd(account, widths.accountWidth));
-  items.push(padStart(formatNumber(number), widths.numberWidth));
-  items.push(currency);
+  if (hasNumber) {
+    items.push(padStart(formatNumber(number), widths.numberWidth));
+  }
+  if (hasCurrency) {
+    items.push(currency);
+  }
 
   const cost = formatPostingCost(posting);
   if (cost) {

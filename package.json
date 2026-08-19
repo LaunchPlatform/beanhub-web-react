@@ -1,6 +1,6 @@
 {
   "name": "beanhub-web-react",
-  "version": "0.8.16",
+  "version": "0.8.17",
   "private": false,
   "dependencies": {
     "@testing-library/jest-dom": "^5.14.1",
