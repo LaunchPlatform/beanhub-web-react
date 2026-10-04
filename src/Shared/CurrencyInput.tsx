@@ -7,6 +7,8 @@ import Select, {
 } from "react-select";
 import CreatableSelect from "react-select/creatable";
 import FormRow from "./FormRow";
+import { reactSelectFieldStyles } from "./selectFieldStyles";
+import { useDarkSkin } from "../Theme/darkSkin";
 
 export interface Props {
   readonly name?: string;
@@ -74,7 +76,7 @@ const CurrencyInput: FunctionComponent<Props> = ({
   creatable,
   onChange,
 }: Props) => {
-  const borderColor = error !== undefined ? "#fd3995" : "#E5E5E5";
+  const dark = useDarkSkin();
   const SelectComponent = multiple ? MultiCustomSelect : SingleCustomSelect;
   let defaultValue: Option | Array<Option> | undefined;
   if (multiple) {
@@ -96,33 +98,7 @@ const CurrencyInput: FunctionComponent<Props> = ({
         className={error !== undefined ? "is-invalid" : ""}
         isMulti={multiple}
         creatable={creatable}
-        styles={{
-          option: (provided, state) => ({
-            ...provided,
-            "&:hover": {
-              backgroundColor: "#eeeeee",
-              color: "black",
-            },
-            backgroundColor: state.isSelected ? "#886ab5" : "white",
-          }),
-          control: (provided, state) => ({
-            ...provided,
-            borderRadius: "4px",
-            borderWidth: "1px",
-            borderColor:
-              state.isFocused && error === undefined ? "#886ab5" : borderColor,
-            boxShadow: undefined,
-            "&:hover": undefined,
-            ...(state.isFocused && error !== undefined
-              ? {
-                  boxShadow: "0 0 0 0.2rem rgba(253, 57, 149, 0.25)",
-                }
-              : undefined),
-          }),
-          menu: (provided, state) => {
-            return { ...provided, zIndex: 5 };
-          },
-        }}
+        styles={reactSelectFieldStyles(dark, error)}
         options={currencies.map((file) => ({ value: file, label: file }))}
         defaultValue={defaultValue}
         onChange={(options) => {
