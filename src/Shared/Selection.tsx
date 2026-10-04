@@ -2,6 +2,8 @@ import React, { FunctionComponent } from "react";
 import Select, { GroupBase, Props as SelectProps } from "react-select";
 import CreatableSelect from "react-select/creatable";
 import FormRow from "./FormRow";
+import { reactSelectFieldStyles } from "./selectFieldStyles";
+import { useDarkSkin } from "../Theme/darkSkin";
 import { fuzzyMatch } from "../TransactionForm/fuzzyMatch";
 
 export interface Props {
@@ -49,7 +51,7 @@ const SelectionInput: FunctionComponent<Props> = ({
   creatable,
   onChange,
 }: Props) => {
-  const borderColor = error !== undefined ? "#fd3995" : "#E5E5E5";
+  const dark = useDarkSkin();
   return (
     <FormRow title={title} required={required}>
       <CustomSelect
@@ -63,33 +65,7 @@ const SelectionInput: FunctionComponent<Props> = ({
           const matchedPieces = fuzzyMatch(options.value, keyword);
           return matchedPieces !== null;
         }}
-        styles={{
-          option: (provided, state) => ({
-            ...provided,
-            "&:hover": {
-              backgroundColor: "#eeeeee",
-              color: "black",
-            },
-            backgroundColor: state.isSelected ? "#886ab5" : "white",
-          }),
-          control: (provided, state) => ({
-            ...provided,
-            borderRadius: "4px",
-            borderWidth: "1px",
-            borderColor:
-              state.isFocused && error === undefined ? "#886ab5" : borderColor,
-            boxShadow: undefined,
-            "&:hover": undefined,
-            ...(state.isFocused && error !== undefined
-              ? {
-                  boxShadow: "0 0 0 0.2rem rgba(253, 57, 149, 0.25)",
-                }
-              : undefined),
-          }),
-          menu: (provided, state) => {
-            return { ...provided, zIndex: 5 };
-          },
-        }}
+        styles={reactSelectFieldStyles(dark, error)}
         options={values.map((value) => ({ value, label: value }))}
         defaultValue={
           initialValue !== undefined

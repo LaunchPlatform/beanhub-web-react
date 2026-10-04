@@ -1,4 +1,5 @@
 import { FunctionComponent, KeyboardEvent, useState } from "react";
+import { useDarkSkin } from "../Theme/darkSkin";
 import PostingCandidateList, { MatchedText } from "./PostingCandidateList";
 import { isPlainAmountInput } from "./amountInput";
 import { isActiveCostMode, isActivePriceMode } from "./formMode";
@@ -202,6 +203,7 @@ const PostingInput: FunctionComponent<Props> = ({
     costLabelError !== undefined ||
     priceNumberError !== undefined ||
     priceCurrencyError !== undefined;
+  const dark = useDarkSkin();
   const [detailsOpen, setDetailsOpen] = useState<boolean>(hasAdvancedDetails);
 
   const accountInput = (
@@ -493,7 +495,7 @@ const PostingInput: FunctionComponent<Props> = ({
       {detailsOpen ? (
         <div
           className="border rounded p-2 mt-1"
-          style={{ backgroundColor: "#fafafa" }}
+          style={{ backgroundColor: dark ? "#202225" : "#fafafa" }}
         >
           <div className="form-row">
             <div className="form-group col-md-2 mb-2">

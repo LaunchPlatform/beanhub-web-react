@@ -1,20 +1,25 @@
 import React, { FunctionComponent, CSSProperties, ReactNode } from "react";
 import FormRow from "./FormRow";
+import { diffColors } from "./diffColors";
 import { computeLineDiff, DiffLine, DiffSegment } from "./diff";
+import { useDarkSkin } from "../Theme/darkSkin";
 
 export interface Props {
   readonly original?: string;
   readonly updated: string;
 }
 
-const lineStyle = (type: DiffLine["type"]): CSSProperties => {
+const lineStyle = (
+  type: DiffLine["type"],
+  colors: ReturnType<typeof diffColors>
+): CSSProperties => {
   switch (type) {
     case "add":
-      return { backgroundColor: "#e6ffed", color: "#22863a" };
+      return { backgroundColor: colors.addBg, color: colors.addText };
     case "remove":
-      return { backgroundColor: "#ffeef0", color: "#b31d28" };
+      return { backgroundColor: colors.removeBg, color: colors.removeText };
     default:
-      return {};
+      return { color: colors.text };
   }
 };
 
@@ -31,14 +36,15 @@ const prefix = (type: DiffLine["type"]): string => {
 
 const segmentStyle = (
   type: DiffLine["type"],
-  changed: boolean
+  changed: boolean,
+  colors: ReturnType<typeof diffColors>
 ): CSSProperties | undefined => {
   if (!changed || type === "same") {
     return undefined;
   }
   // Stronger mark for the changed chars inside an already tinted line.
   return {
-    backgroundColor: type === "add" ? "#acf2bd" : "#fdb8c0",
+    backgroundColor: type === "add" ? colors.addMark : colors.removeMark,
     borderRadius: 2,
   };
 };
@@ -46,13 +52,14 @@ const segmentStyle = (
 const renderSegments = (
   type: DiffLine["type"],
   segments: Array<DiffSegment> | undefined,
-  text: string
+  text: string,
+  colors: ReturnType<typeof diffColors>
 ): ReactNode => {
   if (!segments || segments.length === 0) {
     return text || " ";
   }
   return segments.map((segment, index) => (
-    <span key={index} style={segmentStyle(type, segment.changed)}>
+    <span key={index} style={segmentStyle(type, segment.changed, colors)}>
       {segment.text}
     </span>
   ));
@@ -62,6 +69,7 @@ const DiffPreview: FunctionComponent<Props> = ({
   original,
   updated,
 }: Props) => {
+  const colors = diffColors(useDarkSkin());
   const hasOriginal = (original ?? "").trim().length > 0;
   const lines: Array<DiffLine> = hasOriginal
     ? computeLineDiff(original ?? "", updated)
@@ -79,7 +87,10 @@ const DiffPreview: FunctionComponent<Props> = ({
           fontFamily:
             "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
           fontSize: "0.875rem",
-          backgroundColor: "#f8f9fa",
+          // Inline, so dark-mode `pre` / `.form-control { color: #fff }` cannot
+          // paint white text onto a light surface (or the reverse).
+          color: colors.text,
+          backgroundColor: colors.surface,
           marginBottom: 0,
           padding: "0.5rem 0.75rem",
           overflowX: "auto",
@@ -90,7 +101,7 @@ const DiffPreview: FunctionComponent<Props> = ({
           <div
             key={`${line.type}-${index}-${line.text}`}
             style={{
-              ...lineStyle(line.type),
+              ...lineStyle(line.type, colors),
               marginLeft: hasOriginal ? "-0.75rem" : undefined,
               marginRight: hasOriginal ? "-0.75rem" : undefined,
               paddingLeft: hasOriginal ? "0.75rem" : undefined,
@@ -98,7 +109,7 @@ const DiffPreview: FunctionComponent<Props> = ({
             }}
           >
             {hasOriginal ? prefix(line.type) : null}
-            {renderSegments(line.type, line.segments, line.text)}
+            {renderSegments(line.type, line.segments, line.text, colors)}
           </div>
         ))}
       </pre>

@@ -24,7 +24,7 @@ const PostingCandidateList: FunctionComponent<Props> = ({
   style,
   onClick,
 }: Props) => (
-  <div className="list-group" style={style}>
+  <div className="list-group posting-candidates" style={style}>
     {candidates.map((candidate, index) => (
       <PostingCandidate
         key={candidate.value}

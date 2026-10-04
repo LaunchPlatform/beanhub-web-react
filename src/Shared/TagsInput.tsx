@@ -16,6 +16,7 @@ import {
   StylesConfig,
 } from "react-select";
 import FormRow from "./FormRow";
+import { useDarkSkin } from "../Theme/darkSkin";
 import {
   formatTokenLabel,
   isValidToken,
@@ -116,7 +117,9 @@ const TagsInput: FunctionComponent<Props> = ({
   const [inputValue, setInputValue] = useState("");
   const [editingToken, setEditingToken] = useState<string | null>(null);
   const [editingValue, setEditingValue] = useState("");
-  const borderColor = error !== undefined ? "#fd3995" : "#E5E5E5";
+  const dark = useDarkSkin();
+  const borderColor =
+    error !== undefined ? "#fd3995" : dark ? "rgba(0, 0, 0, 0.35)" : "#E5E5E5";
 
   useEffect(() => {
     if (editingToken !== null) {
@@ -325,6 +328,7 @@ const TagsInput: FunctionComponent<Props> = ({
   const styles: StylesConfig<Option, true> = {
     control: (provided, state) => ({
       ...provided,
+      backgroundColor: dark ? "#202225" : provided.backgroundColor,
       borderRadius: "4px",
       borderWidth: "1px",
       borderColor:
@@ -337,6 +341,14 @@ const TagsInput: FunctionComponent<Props> = ({
             boxShadow: "0 0 0 0.2rem rgba(253, 57, 149, 0.25)",
           }
         : undefined),
+    }),
+    input: (provided) => ({
+      ...provided,
+      color: dark ? "#ffffff" : provided.color,
+    }),
+    placeholder: (provided) => ({
+      ...provided,
+      color: dark ? "#a5abb1" : provided.color,
     }),
     multiValue: (provided, { data }) => {
       const isEditing = data.value === editingToken;
